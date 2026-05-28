@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1"/>
+<meta name="theme-color" content="#3971b8"/>
+<title>Yoricha — Staff</title>
+<link href="https://fonts.googleapis.com/css2?family=Merienda:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--blue:#3971b8;--blue-light:#e8f0fb;--blue-mid:#b5d0f0;--green-dark:#343b1b;--cream:#fbfcee;--gold:#f6e6a5;--gold-dark:#d4a017;--red:#e74c3c;--orange:#f39c12;--green2:#27ae60}
+html,body{height:100%;font-family:'Nunito',sans-serif;background:#f0f4fa;color:#222;-webkit-tap-highlight-color:transparent}
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem}
+.login-card{background:#fff;border:2px solid var(--blue-mid);border-radius:20px;padding:2rem 1.5rem;width:100%;max-width:340px;text-align:center;box-shadow:0 4px 24px rgba(57,113,184,.1)}
+.login-logo{margin-bottom:1rem}
+.login-logo img{height:56px;object-fit:contain}
+.login-title{font-family:'Merienda',cursive;color:var(--blue);font-size:1.15rem;margin-bottom:1.25rem}
+/* HEADER */
+.header{background:var(--blue);padding:.75rem 1rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:80}
+.header img{height:36px;object-fit:contain}
+.header-title{font-family:'Merienda',cursive;color:#fff;font-size:.95rem}
+.logout-btn{background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:10px;padding:.35rem .75rem;font-size:.75rem;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer}
+/* TABS */
+.tab-bar{background:#fff;border-bottom:2px solid var(--blue-mid);display:flex;position:sticky;top:56px;z-index:70;overflow-x:auto;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab{flex:1;min-width:80px;padding:.7rem .5rem;text-align:center;font-family:'Merienda',cursive;font-size:.8rem;color:#999;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.tab.on{color:var(--blue);border-bottom-color:var(--blue)}
+.tab-panel{display:none;padding:.85rem;max-width:600px;margin:0 auto}
+.tab-panel.on{display:block}
+/* FORM */
+.card{background:#fff;border-radius:14px;padding:1.1rem;margin-bottom:.65rem;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.card-title{font-family:'Merienda',cursive;color:var(--blue);font-size:.9rem;margin-bottom:.75rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+label{display:block;font-size:.75rem;font-weight:700;color:var(--green-dark);margin-bottom:.25rem}
+input,select,textarea{width:100%;border:1.5px solid var(--blue-mid);border-radius:10px;padding:.6rem .85rem;font-family:'Nunito',sans-serif;font-size:.9rem;color:var(--green-dark);background:#fafafa;outline:none;-webkit-appearance:none;transition:border-color .2s;margin-bottom:.65rem}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);background:#fff}
+textarea{resize:none;height:56px}
+.btn{display:inline-block;background:var(--blue);color:#fff;font-family:'Merienda',cursive;font-size:.88rem;border:none;border-radius:11px;padding:.65rem 1.1rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.btn:active{filter:brightness(.9)}
+.btn:disabled{background:#aaa}
+.btn-full{display:block;width:100%;text-align:center}
+.btn-sm{padding:.4rem .8rem;font-size:.78rem;border-radius:8px}
+.btn-outline{background:transparent;border:2px solid var(--blue);color:var(--blue)}
+.btn-green{background:var(--green2)}
+.btn-orange{background:var(--orange)}
+.btn-red{background:var(--red)}
+.row-btns{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.6rem}
+/* ORDERS */
+.ocard{background:#fff;border-radius:12px;padding:.9rem;margin-bottom:.55rem;box-shadow:0 2px 6px rgba(0,0,0,.06);border-left:4px solid #ddd}
+.ocard.new{border-left-color:var(--orange)}
+.ocard.making{border-left-color:var(--blue)}
+.ocard.done{border-left-color:var(--green2);opacity:.65}
+.ohead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.4rem}
+.oid{font-family:'Merienda',cursive;color:var(--blue);font-size:.9rem;font-weight:700}
+.otime{font-size:.68rem;color:#999}
+.oname{font-weight:700;font-size:.82rem;margin-bottom:.2rem}
+.oitems{font-size:.78rem;color:#555;line-height:1.6;margin-bottom:.35rem}
+.onote{font-size:.72rem;color:var(--orange);font-style:italic;margin-bottom:.35rem}
+.ofoot{display:flex;justify-content:space-between;align-items:center}
+.oprice{font-weight:700;color:var(--blue);font-size:.82rem}
+.opill{display:inline-block;padding:.18rem .7rem;border-radius:20px;font-size:.7rem;font-weight:700}
+.opill.new{background:#fff3cd;color:#856404}
+.opill.making{background:#cfe2ff;color:#084298}
+.opill.done{background:#d1e7dd;color:#0a3622}
+.mbadge{display:inline-block;background:var(--blue-light);color:var(--blue);font-size:.65rem;font-weight:700;padding:.1rem .45rem;border-radius:6px;margin-left:.35rem;vertical-align:middle}
+/* MEMBERS */
+.mtable{width:100%;border-collapse:collapse;font-size:.78rem}
+.mtable th{text-align:left;padding:.55rem .65rem;background:var(--blue);color:#fff;font-family:'Merienda',cursive;font-weight:400}
+.mtable td{padding:.55rem .65rem;border-bottom:1px solid #eee}
+.mtable tr:last-child td{border-bottom:none}
+.sdots{display:flex;gap:2px}
+.sdot{width:10px;height:10px;border-radius:50%;background:#dde;border:1px solid #bbc;flex-shrink:0}
+.sdot.on{background:var(--blue);border-color:var(--blue)}
+.sdot.ms.on{background:var(--gold-dark);border-color:var(--gold-dark)}
+/* MENU EDITOR */
+.mrow{display:flex;align-items:center;gap:.5rem;padding:.55rem 0;border-bottom:1px solid #eee}
+.mrow:last-child{border-bottom:none}
+.mr-name{flex:1;min-width:0}
+.mr-n{font-weight:700;font-size:.83rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mr-cat{font-size:.68rem;color:#888;margin-top:.05rem}
+.mr-price{font-size:.75rem;color:var(--blue);font-weight:700;white-space:nowrap;margin-right:.3rem}
+.toggle{position:relative;display:inline-block;width:38px;height:21px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.slider{position:absolute;inset:0;background:#ccc;border-radius:21px;cursor:pointer;transition:.25s}
+.slider::before{content:'';position:absolute;width:15px;height:15px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.25s}
+input:checked+.slider{background:var(--blue)}
+input:checked+.slider::before{transform:translateX(17px)}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.fgrid .full{grid-column:1/-1}
+/* MISC */
+.alert{border-radius:10px;padding:.6rem .85rem;font-size:.78rem;font-weight:600;margin-bottom:.65rem;display:none}
+.alert.ok{background:#e6f7ed;color:#1a7f3c;border:1px solid #a3d9b1}
+.alert.err{background:#fdecea;color:#b91c1c;border:1px solid #fca5a5}
+.refresh{background:none;border:none;cursor:pointer;color:var(--blue);font-size:1rem;padding:.2rem;-webkit-tap-highlight-color:transparent}
+.empty{text-align:center;padding:2rem .75rem;color:#aaa;font-size:.85rem}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem;margin:.65rem 0}
+.pbtn{background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:9px;padding:.5rem .4rem;font-size:.75rem;font-weight:700;color:var(--blue);cursor:pointer;text-align:center;-webkit-tap-highlight-color:transparent}
+.pbtn:active{background:var(--blue-mid)}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="login-logo"><img id="logo-login" src="" alt="Yoricha"/></div>
+      <div class="login-title">Staff Dashboard</div>
+      <div id="login-alert" class="alert"></div>
+      <label>Mã nhân viên</label>
+      <input type="password" id="inp-pwd" placeholder="••••" inputmode="numeric" onkeydown="if(event.key==='Enter')login()"/>
+      <button class="btn btn-full" onclick="login()">Đăng nhập</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main" style="display:none">
+  <div class="header">
+    <img id="logo-main" src="" alt="Yoricha"/>
+    <div class="header-title">Staff Panel</div>
+    <button class="logout-btn" onclick="logout()">Đăng xuất</button>
+  </div>
+  <div class="tab-bar">
+    <div class="tab on" onclick="swTab(this,'orders')">📋 Đơn hàng</div>
+    <div class="tab" onclick="swTab(this,'members')">👥 Thành viên</div>
+    <div class="tab" onclick="swTab(this,'menu')">🍵 Menu</div>
+  </div>
+
+  <!-- ORDERS -->
+  <div class="tab-panel on" id="tab-orders">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.65rem">
+      <span style="font-family:'Merienda',cursive;color:var(--blue);font-size:.9rem">Đơn hàng</span>
+      <div style="display:flex;gap:.4rem;align-items:center">
+        <select id="ofilter" onchange="renderOrders()" style="margin:0;width:auto;padding:.35rem .6rem;font-size:.75rem">
+          <option value="Mới" selected>Mới</option>
+          <option value="Đang làm">Đang làm</option>
+          <option value="Xong">Xong</option>
+          <option value="all">Tất cả</option>
+        </select>
+        <button class="refresh" onclick="loadOrders()" title="Làm mới">🔄</button>
+      </div>
+    </div>
+    <div id="orders-alert" class="alert"></div>
+    <div id="orders-list"></div>
+  </div>
+
+  <!-- MEMBERS -->
+  <div class="tab-panel" id="tab-members">
+    <div class="card">
+      <div class="card-title">Tra cứu & cộng điểm</div>
+      <div id="mem-alert" class="alert"></div>
+      <div style="display:flex;gap:.5rem">
+        <input type="tel" id="mem-phone" placeholder="0901 234 567" inputmode="tel" style="margin:0;flex:1"/>
+        <button class="btn btn-sm" onclick="lookupMem()">Tìm</button>
+      </div>
+      <div id="mem-result" style="margin-top:.65rem"></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>Tất cả thành viên</span><button class="refresh" onclick="loadMembers()">🔄</button></div>
+      <div id="mem-table"><div class="empty">Nhấn 🔄 để tải danh sách</div></div>
+    </div>
+  </div>
+
+  <!-- MENU -->
+  <div class="tab-panel" id="tab-menu">
+    <div class="card">
+      <div class="card-title"><span>Danh sách món</span><button class="refresh" onclick="loadMenuS()">🔄</button></div>
+      <div id="menu-alert" class="alert"></div>
+      <div id="menu-list"></div>
+      <button class="btn btn-full" style="margin-top:.75rem" onclick="saveMenu()">💾 Lưu thay đổi</button>
+    </div>
+    <div class="card">
+      <div class="card-title">➕ Thêm món mới</div>
+      <div class="fgrid">
+        <div class="full"><label>Tên món</label><input type="text" id="new-name" placeholder="Matcha Latte"/></div>
+        <div><label>Danh mục</label>
+          <select id="new-cat"><option>Matcha</option><option>Sữa hạt</option><option>Trà trái cây</option></select></div>
+        <div><label>Giá S (nghìn đ)</label><input type="number" id="new-ps" placeholder="35"/></div>
+        <div><label>Giá L (nghìn đ)</label><input type="number" id="new-pl" placeholder="50"/></div>
+        <div class="full"><label>Mô tả ngắn</label><textarea id="new-desc" placeholder="Matcha Kagoshima, béo ngậy..."></textarea></div>
+      </div>
+      <button class="btn btn-sm" onclick="addMenuItem()">+ Thêm món</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var API='https://script.google.com/macros/s/AKfycbxs-jt4COAvW__D7UFp1gmeiCbPJE7zNCqn7pEGOKUKDYmbcht1Wm765sxZcWH9gF4A/exec';
+// Thay FILE_ID bằng Google Drive File ID của logo
+var LOGO_URL='https://drive.google.com/thumbnail?id=FILE_ID&sz=w300';
+document.getElementById('logo-login').src=LOGO_URL;
+document.getElementById('logo-main').src=LOGO_URL;
+
+var PWD='',orders=[],menuS=[],autoT=null;
+function fmt(n){return Number(n).toLocaleString('vi-VN')+'đ';}
+async function api(p){return(await fetch(API+'?'+new URLSearchParams(p).toString())).json();}
+function al(id,msg,type){var e=document.getElementById(id);e.textContent=msg;e.className='alert '+type;e.style.display='block';setTimeout(function(){e.style.display='none';},5000);}
+
+// ── LOGIN ────────────────────────────────────────────────────
+async function login(){
+  var p=document.getElementById('inp-pwd').value;
+  if(!p){al('login-alert','Nhập mã nhân viên.','err');return;}
+  var d=await api({action:'getOrders',password:p});
+  if(!d.ok){al('login-alert','Sai mã nhân viên!','err');return;}
+  PWD=p;orders=d.orders;
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('main').style.display='block';
+  renderOrders();
+  autoT=setInterval(loadOrders,20000);
+}
+function logout(){if(autoT)clearInterval(autoT);PWD='';document.getElementById('main').style.display='none';document.getElementById('login-screen').style.display='block';document.getElementById('inp-pwd').value='';}
+
+// ── TABS ─────────────────────────────────────────────────────
+function swTab(el,name){
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('on');});
+  el.classList.add('on');
+  document.getElementById('tab-'+name).classList.add('on');
+  if(name==='members')loadMembers();
+  if(name==='menu')loadMenuS();
+}
+
+// ── ORDERS ───────────────────────────────────────────────────
+async function loadOrders(){var d=await api({action:'getOrders',password:PWD});if(d.ok){orders=d.orders;renderOrders();}}
+function renderOrders(){
+  var f=document.getElementById('ofilter').value;
+  var list=f==='all'?orders:orders.filter(function(o){return o.status===f;});
+  if(!list.length){document.getElementById('orders-list').innerHTML='<div class="empty">Không có đơn nào 🍵</div>';return;}
+  var cm={'Mới':'new','Đang làm':'making','Xong':'done'};
+  document.getElementById('orders-list').innerHTML=list.map(function(o){
+    var cls=cm[o.status]||'';
+    var mem=o.phone?'<span class="mbadge">Thành viên</span>':'';
+    var note=o.note&&o.note!='undefined'?'<div class="onote">📝 '+o.note+'</div>':'';
+    var btns='';
+    if(o.status==='Mới')btns='<button class="btn btn-sm btn-orange" onclick="updOrd(\''+o.orderID+'\',\'Đang làm\')">▶ Bắt đầu làm</button>';
+    if(o.status==='Đang làm')btns='<button class="btn btn-sm btn-green" onclick="updOrd(\''+o.orderID+'\',\'Xong\')">✅ Xong rồi</button>';
+    return'<div class="ocard '+cls+'"><div class="ohead"><div class="oid">#'+o.orderID+'</div><div class="otime">'+o.createdAt+'</div></div>'+
+      '<div class="oname">'+o.name+mem+'</div>'+
+      '<div class="oitems">'+o.items+'</div>'+note+
+      '<div class="ofoot"><div class="oprice">'+fmt(o.total)+'</div><span class="opill '+cls+'">'+o.status+'</span></div>'+
+      (o.status!=='Xong'?'<div class="row-btns">'+btns+'</div>':'')+
+      '</div>';
+  }).join('');
+}
+async function updOrd(oid,status){
+  var d=await api({action:'updateOrder',password:PWD,orderID:oid,status:status});
+  if(!d.ok){alert(d.error);return;}
+  await loadOrders();
+  if(status==='Xong'){var msgs={'Xong':'✅ Xong! Đơn #'+oid+' đã hoàn thành — điểm thành viên đã được cộng tự động.'};if(msgs[status])alert(msgs[status]);}
+}
+
+// ── MEMBERS ──────────────────────────────────────────────────
+async function lookupMem(){
+  var ph=document.getElementById('mem-phone').value.trim();
+  if(!ph){al('mem-alert','Nhập số điện thoại.','err');return;}
+  var d=await api({action:'lookup',phone:ph});
+  if(!d.ok){al('mem-alert',d.error,'err');document.getElementById('mem-result').innerHTML='';return;}
+  var m=d.member;
+  var dots='';for(var i=1;i<=10;i++){var c='sdot'+(i===4||i===7||i===10?' ms':'')+(i<=m.stamps?' on':'');dots+='<div class="'+c+'"></div>';}
+  var pbns=menuS.filter(function(it){return it.available;}).map(function(it){
+    return'<button class="pbtn" onclick="addPurch(\''+ph+'\',\''+it.name+'\')">'+it.name+'</button>';
+  }).join('');
+  if(!pbns)pbns='<button class="pbtn" onclick="addPurch(\''+ph+'\',\'Matcha\')">Matcha</button>';
+  document.getElementById('mem-result').innerHTML=
+    '<div class="card" style="margin:0"><div style="display:flex;align-items:center;gap:.65rem;margin-bottom:.65rem">'+
+    '<div style="width:42px;height:42px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;color:#fff;font-family:Merienda,cursive;font-size:1rem;flex-shrink:0">'+m.name.charAt(0).toUpperCase()+'</div>'+
+    '<div><div style="font-weight:700;color:var(--blue)">'+m.name+'</div><div style="font-size:.75rem;color:#888">'+m.phone+'</div></div></div>'+
+    '<div style="font-size:.8rem;font-weight:700;margin-bottom:.35rem">Dấu mốc: '+m.stamps+'/10</div>'+
+    '<div class="sdots" style="margin-bottom:.75rem">'+dots+'</div>'+
+    '<div style="font-size:.75rem;font-weight:700;margin-bottom:.35rem">Cộng điểm — chọn món:</div>'+
+    '<div class="pgrid">'+pbns+'</div></div>';
+}
+async function addPurch(phone,product){
+  var d=await api({action:'purchase',password:PWD,phone:phone,product:product});
+  if(!d.ok){alert(d.error);return;}
+  al('mem-alert','✅ Đã cộng 1 điểm cho '+d.member.name+' — Tổng: '+d.member.stamps+'/10','ok');
+  document.getElementById('mem-phone').value=d.member.phone.replace('84','0');
+  lookupMem();
+}
+async function loadMembers(){
+  var d=await api({action:'getMembers',password:PWD});
+  if(!d.ok)return;
+  if(!d.members.length){document.getElementById('mem-table').innerHTML='<div class="empty">Chưa có thành viên</div>';return;}
+  var rows=d.members.map(function(m){
+    var dots='';for(var i=1;i<=10;i++){var c='sdot'+(i===4||i===7||i===10?' ms':'')+(i<=m.stamps?' on':'');dots+='<div class="'+c+'"></div>';}
+    return'<tr><td>'+m.name+'</td><td style="font-size:.72rem">'+m.phone+'</td><td><div class="sdots">'+dots+'</div></td></tr>';
+  }).join('');
+  document.getElementById('mem-table').innerHTML='<div style="overflow-x:auto"><table class="mtable"><tr><th>Tên</th><th>SĐT</th><th>Mốc</th></tr>'+rows+'</table></div>';
+}
+
+// ── MENU ─────────────────────────────────────────────────────
+async function loadMenuS(){
+  var d=await api({action:'getMenu'});if(!d.ok)return;menuS=d.menu;renderMenuS();
+}
+function renderMenuS(){
+  if(!menuS.length){document.getElementById('menu-list').innerHTML='<div class="empty">Chưa có món nào</div>';return;}
+  document.getElementById('menu-list').innerHTML=menuS.map(function(it,i){
+    var p='';if(it.price_s)p+=it.price_s+'k ';if(it.price_l)p+='/ '+it.price_l+'k';
+    return'<div class="mrow"><div class="mr-name"><div class="mr-n">'+it.name+'</div><div class="mr-cat">'+it.category+'</div></div>'+
+      '<div class="mr-price">'+p+'</div>'+
+      '<label class="toggle"><input type="checkbox"'+(it.available?' checked':'')+' onchange="menuS['+i+'].available=this.checked"/><span class="slider"></span></label>'+
+      '<button style="background:none;border:none;color:var(--red);cursor:pointer;font-size:.95rem;margin-left:.3rem;padding:.15rem" onclick="delItem('+i+')">🗑</button>'+
+      '</div>';
+  }).join('');
+}
+function delItem(i){if(confirm('Xoá "'+menuS[i].name+'"?')){menuS.splice(i,1);renderMenuS();}}
+async function saveMenu(){
+  var d=await api({action:'saveMenu',password:PWD,items:JSON.stringify(menuS)});
+  al('menu-alert',d.ok?'✅ Đã lưu menu!':'Lỗi: '+d.error,d.ok?'ok':'err');
+}
+function addMenuItem(){
+  var name=document.getElementById('new-name').value.trim();
+  var cat=document.getElementById('new-cat').value;
+  var ps=Number(document.getElementById('new-ps').value)||0;
+  var pl=Number(document.getElementById('new-pl').value)||0;
+  var desc=document.getElementById('new-desc').value.trim();
+  if(!name){al('menu-alert','Nhập tên món.','err');return;}
+  menuS.push({id:'item_'+Date.now(),name:name,category:cat,price_s:ps,price_l:pl,description:desc,available:true});
+  renderMenuS();
+  ['new-name','new-ps','new-pl','new-desc'].forEach(function(id){document.getElementById(id).value='';});
+  al('menu-alert','Đã thêm "'+name+'". Nhấn 💾 Lưu để cập nhật lên Sheet.','ok');
+}
+</script>
+</body>
+</html>
