@@ -295,7 +295,17 @@ input:checked+.slider::before{transform:translateX(16px)}
           <div><label>Giá L (nghìn)</label><input type="number" id="new-pl" placeholder="50"/></div>
         </div>
         <div class="full"><label>Mô tả</label><textarea id="new-desc" placeholder="Mô tả ngắn..."></textarea></div>
-        <div class="full"><label>Link ảnh Google Drive (share link hoặc thumbnail URL)</label><input type="text" id="new-img" placeholder="https://drive.google.com/file/d/.../view"/></div>
+        <div class="full">
+          <label>Ảnh món</label>
+          <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.6rem">
+            <input type="file" id="new-img-file" accept="image/*" onchange="previewNewImg(this)" style="flex:1;margin:0;padding:.4rem;font-size:.78rem"/>
+          </div>
+          <div id="new-img-preview" style="display:none;margin-bottom:.5rem">
+            <img id="new-img-preview-img" style="width:80px;height:100px;object-fit:cover;border-radius:10px;border:2px solid var(--blue-mid)"/>
+            <button onclick="clearNewImg()" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:.85rem;margin-left:.4rem;vertical-align:top">✕ Xoá</button>
+          </div>
+          <input type="hidden" id="new-img" value=""/>
+        </div>
       </div>
       <button class="btn btn-sm" onclick="addMenuItem()">+ Thêm món</button>
     </div>
@@ -350,6 +360,7 @@ input:checked+.slider::before{transform:translateX(16px)}
 
 <script>
 var API='https://script.google.com/macros/s/AKfycbxs-jt4COAvW__D7UFp1gmeiCbPJE7zNCqn7pEGOKUKDYmbcht1Wm765sxZcWH9gF4A/exec';
+var IMGBB_KEY=''; // Điền ImgBB API key vào đây sau khi đăng ký imgbb.com
 var PWD='',orders=[],menuS=[],soCart=[],soMember=null,soCurItem=null,soCurSize=null,soCurQty=1,autoT=null;
 
 function fmt(n){return Number(n).toLocaleString('vi-VN')+'đ';}
@@ -551,7 +562,7 @@ function renderMenuS(){
   if(!menuS.length){document.getElementById('menu-list').innerHTML='<div class="empty">Chưa có món</div>';return;}
   document.getElementById('menu-list').innerHTML=menuS.map(function(it,i){
     var p='';if(it.price_s)p+=it.price_s+'k ';if(it.price_l)p+='/ '+it.price_l+'k';
-    var thumb=it.image?'<img src="'+it.image+'" style="width:36px;height:36px;object-fit:cover;border-radius:6px;flex-shrink:0;margin-right:.3rem" loading="lazy">':'<div style="width:36px;height:36px;border-radius:6px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;margin-right:.3rem">🍵</div>';
+    var thumb=it.image?'<img src="'+it.image+'" style="width:40px;height:50px;object-fit:cover;border-radius:8px;flex-shrink:0;margin-right:.5rem;cursor:pointer" loading="lazy" onclick="editItemImage('+i+')" title="Đổi ảnh">':'<div style="width:40px;height:50px;border-radius:8px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;margin-right:.5rem;cursor:pointer" onclick="editItemImage('+i+')" title="Thêm ảnh">📷</div>';
     return'<div class="mrow">'+thumb+'<div class="mr-name"><div class="mr-n">'+it.name+'</div><div class="mr-cat">'+it.category+'</div></div>'+
       '<div class="mr-price">'+p+'</div>'+
       '<label class="toggle"><input type="checkbox"'+(it.available?' checked':'')+' onchange="menuS['+i+'].available=this.checked"/><span class="slider"></span></label>'+
@@ -571,12 +582,13 @@ function addMenuItem(){
   var ps=Number(document.getElementById('new-ps').value)||0;
   var pl=Number(document.getElementById('new-pl').value)||0;
   var desc=document.getElementById('new-desc').value.trim();
-  var imgRaw=document.getElementById('new-img').value.trim();
-  var imgUrl='';
-  if(imgRaw){var m=imgRaw.match(/\/d\/([a-zA-Z0-9_-]+)/);imgUrl=m?'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w400':imgRaw;}
+  var imgUrl=document.getElementById('new-img').value||'';
   menuS.push({id:'item_'+Date.now(),name:name,category:cat,price_s:ps,price_l:pl,description:desc,available:true,image:imgUrl});
   renderMenuS();
-  ['new-name','new-ps','new-pl','new-desc','new-img'].forEach(function(id){document.getElementById(id).value='';});
+  ['new-name','new-ps','new-pl','new-desc'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('new-img').value='';
+  document.getElementById('new-img-file').value='';
+  document.getElementById('new-img-preview').style.display='none';
   al('menu-alert','Đã thêm "'+name+'". Nhấn 💾 Lưu để cập nhật.','ok');
 }
 
