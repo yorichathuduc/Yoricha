@@ -151,12 +151,13 @@ function getMenu() {
     if (!data[i][0]) continue;
     var imageRaw = data[i][7] ? String(data[i][7]) : '';
     var imageUrl = '';
-    if (imageRaw) {
-      // Extract file ID from any Drive URL format
-      var match = imageRaw.match(/[-\w]{25,}/);
-      // Use uc?export=view format - works better for cross-origin embedding
-      if (match) {
-        imageUrl = 'https://lh3.googleusercontent.com/d/' + match[1];
+    if (imageRaw && imageRaw.length > 5) {
+      // Extract Drive file ID from any share URL format
+      var idMatch = imageRaw.match(/\/d\/([a-zA-Z0-9_-]{10,})/);
+      if (!idMatch) idMatch = imageRaw.match(/id=([a-zA-Z0-9_-]{10,})/);
+      if (idMatch) {
+        // Use export=view — works for publicly shared files
+        imageUrl = 'https://drive.google.com/uc?export=view&id=' + idMatch[1];
       } else if (imageRaw.indexOf('http') === 0) {
         imageUrl = imageRaw;
       }
