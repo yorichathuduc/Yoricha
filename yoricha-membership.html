@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1"/>
+<meta name="theme-color" content="#3971b8"/>
+<title>Yoricha — Thành viên</title>
+<link href="https://fonts.googleapis.com/css2?family=Merienda:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--blue:#3971b8;--blue-light:#e8f0fb;--blue-mid:#b5d0f0;--green-dark:#343b1b;--cream:#fbfcee;--gold:#f6e6a5;--gold-dark:#d4a017}
+html,body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--green-dark);min-height:100vh;-webkit-tap-highlight-color:transparent}
+.header{background:var(--blue);padding:1rem 1rem 2.5rem;text-align:center;position:relative}
+.header::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:40px;background:var(--cream);clip-path:ellipse(55% 100% at 50% 100%)}
+.logo-btn{display:inline-block;cursor:pointer;background:none;border:none;padding:0}
+.logo-btn img{height:56px;object-fit:contain;border-radius:14px;padding:8px 14px;background:rgba(255,255,255,.15)}
+.header-sub{font-family:'Merienda',cursive;font-size:.75rem;color:#b5d0f0;letter-spacing:2px;text-transform:uppercase;margin-top:.3rem}
+.wrap{max-width:480px;margin:0 auto;padding:.75rem .9rem}
+.card{background:#fff;border:1.5px solid var(--blue-mid);border-radius:16px;padding:1.1rem;margin-bottom:.75rem;box-shadow:0 2px 12px rgba(57,113,184,.07)}
+.card-title{font-family:'Merienda',cursive;color:var(--blue);font-size:.95rem;margin-bottom:.85rem}
+.tab-bar{display:flex;border-bottom:2px solid var(--blue-mid);margin-bottom:1rem}
+.tab{flex:1;padding:.6rem;text-align:center;font-family:'Merienda',cursive;font-size:.85rem;color:#aaa;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+.tab.on{color:var(--blue);border-bottom-color:var(--blue)}
+.tab-panel{display:none}.tab-panel.on{display:block}
+label{display:block;font-size:.75rem;font-weight:700;color:var(--green-dark);margin-bottom:.25rem}
+input{width:100%;border:1.5px solid var(--blue-mid);border-radius:10px;padding:.65rem .9rem;font-family:'Nunito',sans-serif;font-size:.95rem;color:var(--green-dark);background:#fafeff;outline:none;-webkit-appearance:none;margin-bottom:.75rem}
+input:focus{border-color:var(--blue);background:#fff}
+.btn{display:block;width:100%;background:var(--blue);color:#fff;font-family:'Merienda',cursive;font-size:1rem;border:none;border-radius:12px;padding:.8rem;cursor:pointer;text-align:center}
+.btn:active{filter:brightness(.9)}
+.btn:disabled{background:#aaa}
+.alert{border-radius:10px;padding:.6rem .85rem;font-size:.82rem;font-weight:600;margin-bottom:.75rem;display:none}
+.alert.ok{background:#e6f7ed;color:#1a7f3c;border:1px solid #a3d9b1}
+.alert.err{background:#fdecea;color:#b91c1c;border:1px solid #fca5a5}
+/* MEMBER CARD */
+.member-card{background:var(--blue);border-radius:20px;padding:1.5rem;color:#fff;margin-bottom:1rem;text-align:center}
+.mc-avatar{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.2);margin:0 auto .75rem;display:flex;align-items:center;justify-content:center;font-family:'Merienda',cursive;font-size:1.6rem;color:#fff}
+.mc-name{font-family:'Merienda',cursive;font-size:1.2rem;margin-bottom:.2rem}
+.mc-phone{font-size:.78rem;opacity:.7;margin-bottom:1rem}
+.mc-stamps{font-size:.82rem;opacity:.8;margin-bottom:.65rem}
+.sdots{display:flex;gap:4px;justify-content:center;margin-bottom:1rem}
+.sdot{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:.7rem}
+.sdot.on{background:#fff;color:var(--blue)}
+.sdot.ms{border-color:var(--gold-dark)}
+.sdot.ms.on{background:var(--gold-dark);color:#fff;border-color:var(--gold-dark)}
+.reward-box{background:var(--gold);border-radius:12px;padding:.75rem;font-size:.85rem;font-weight:700;color:var(--green-dark);margin-bottom:1rem;display:none}
+/* HISTORY */
+.hist-item{display:flex;justify-content:space-between;align-items:center;padding:.55rem 0;border-bottom:1px dashed var(--blue-mid);font-size:.82rem}
+.hist-item:last-child{border-bottom:none}
+.hi-prod{font-weight:700;color:var(--green-dark)}
+.hi-date{font-size:.7rem;color:#888;margin-top:.1rem}
+.hi-stamp{color:var(--blue);font-weight:700}
+/* ORDER BTN */
+.order-cta{background:linear-gradient(135deg,#3971b8,#27ae60);border-radius:14px;padding:1.1rem 1.25rem;display:flex;align-items:center;gap:.85rem;text-decoration:none;margin-top:.5rem}
+.octa-icon{font-size:1.5rem}
+.octa-text{flex:1}
+.octa-title{font-family:'Merienda',cursive;color:#fff;font-size:.95rem}
+.octa-sub{font-size:.72rem;color:rgba(255,255,255,.75);margin-top:.1rem}
+.octa-arrow{color:rgba(255,255,255,.6);font-size:1.1rem}
+footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
+</style>
+</head>
+<body>
+<div class="header">
+  <button class="logo-btn" onclick="window.location.href='index.html'">
+    <img src="https://drive.google.com/thumbnail?id=1uQD0joy3YQ1PlHSGNZJoy_dFC_oT-miJ&sz=w300" alt="Yoricha"/>
+  </button>
+  <div class="header-sub">Thẻ thành viên</div>
+</div>
+
+<div class="wrap">
+  <div class="card">
+    <div class="tab-bar">
+      <div class="tab on" onclick="swTab(this,'reg')">Đăng ký</div>
+      <div class="tab" onclick="swTab(this,'look')">Tra cứu</div>
+    </div>
+
+    <!-- REGISTER -->
+    <div class="tab-panel on" id="tab-reg">
+      <div id="reg-alert" class="alert"></div>
+      <label>Họ và tên</label>
+      <input type="text" id="reg-name" placeholder="Nguyễn Văn A"/>
+      <label>Số điện thoại (Zalo)</label>
+      <input type="tel" id="reg-phone" placeholder="0901 234 567" inputmode="tel"/>
+      <button class="btn" id="btn-reg" onclick="register()">Tạo tài khoản ✨</button>
+    </div>
+
+    <!-- LOOKUP -->
+    <div class="tab-panel" id="tab-look">
+      <div id="look-alert" class="alert"></div>
+      <label>Số điện thoại</label>
+      <input type="tel" id="look-phone" placeholder="0901 234 567" inputmode="tel"/>
+      <button class="btn" id="btn-look" onclick="lookup()">Tra cứu 🔍</button>
+    </div>
+  </div>
+
+  <!-- MEMBER RESULT -->
+  <div id="member-result" style="display:none">
+    <div class="member-card">
+      <div class="mc-avatar" id="mc-av"></div>
+      <div class="mc-name" id="mc-name"></div>
+      <div class="mc-phone" id="mc-phone"></div>
+      <div class="mc-stamps" id="mc-stamps"></div>
+      <div class="sdots" id="sdots"></div>
+      <div class="reward-box" id="reward-box"></div>
+    </div>
+
+    <!-- ORDER CTA -->
+    <a class="order-cta" id="order-cta" href="#">
+      <div class="octa-icon">🍵</div>
+      <div class="octa-text">
+        <div class="octa-title">Xem menu & đặt hàng</div>
+        <div class="octa-sub">Không cần nhập lại số điện thoại</div>
+      </div>
+      <div class="octa-arrow">›</div>
+    </a>
+
+    <!-- HISTORY -->
+    <div class="card" style="margin-top:.85rem">
+      <div class="card-title">Lịch sử mua hàng</div>
+      <div id="hist-list"></div>
+    </div>
+  </div>
+
+  <!-- BENEFITS -->
+  <div class="card">
+    <div class="card-title">Quyền lợi thành viên</div>
+    <div style="font-size:.83rem;line-height:1.8;color:var(--green-dark)">
+      ☕ Mỗi lần mua nhận <b>1 dấu mốc</b><br/>
+      🎁 <b>Ly thứ 4:</b> Mua 2 ly — ly 2 FREE upsize<br/>
+      💚 <b>Ly thứ 7:</b> Giảm 20% tổng hoá đơn<br/>
+      ⭐ <b>Ly thứ 10:</b> Free 1 ly nước<br/>
+      <span style="font-size:.72rem;color:#aaa;margin-top:.5rem;display:block">Không quy đổi thành tiền mặt · Áp dụng tại Yoricha Thủ Đức</span>
+    </div>
+  </div>
+</div>
+
+<footer><strong style="color:var(--blue)">Yoricha</strong> · 24/10 Đường số 6, khu phố 13, Thủ Đức · 6:30–21:00</footer>
+
+<script>
+var API='https://script.google.com/macros/s/AKfycbxs-jt4COAvW__D7UFp1gmeiCbPJE7zNCqn7pEGOKUKDYmbcht1Wm765sxZcWH9gF4A/exec';
+async function api(p){return(await fetch(API+'?'+new URLSearchParams(p))).json();}
+function al(id,msg,type){var e=document.getElementById(id);e.textContent=msg;e.className='alert '+type;e.style.display='block';setTimeout(function(){e.style.display='none';},5000);}
+function swTab(el,name){
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('on');});
+  el.classList.add('on');document.getElementById('tab-'+name).classList.add('on');
+}
+function showMember(m){
+  document.getElementById('member-result').style.display='block';
+  document.getElementById('mc-av').textContent=m.name.charAt(0).toUpperCase();
+  document.getElementById('mc-name').textContent=m.name;
+  document.getElementById('mc-phone').textContent=m.phone;
+  document.getElementById('mc-stamps').textContent='Dấu mốc: '+m.stamps+'/10';
+  // dots
+  var ms={4:true,7:true,10:true};
+  var icons={4:'🎁',7:'💚',10:'⭐'};
+  var dots='';
+  for(var i=1;i<=10;i++){
+    var cls='sdot'+(ms[i]?' ms':'')+(i<=m.stamps?' on':'');
+    dots+='<div class="'+cls+'">'+(i<=m.stamps?(ms[i]?icons[i]:'✓'):(ms[i]?icons[i]:''))+'</div>';
+  }
+  document.getElementById('sdots').innerHTML=dots;
+  // reward
+  var rewards={4:'🎁 Ly thứ 4 — mua 2 ly, ly 2 FREE UPSIZE!',7:'💚 Ly thứ 7 — GIẢM 20% hôm nay!',10:'⭐ Ly thứ 10 — FREE 1 LY NƯỚC!'};
+  var rb=document.getElementById('reward-box');
+  if(rewards[m.stamps]){rb.textContent=rewards[m.stamps];rb.style.display='block';}
+  else rb.style.display='none';
+  // history
+  var hist=m.history||[];
+  var list=document.getElementById('hist-list');
+  if(!hist.length){list.innerHTML='<div style="color:#aaa;text-align:center;padding:.75rem;font-size:.82rem">Chưa có lịch sử</div>';return;}
+  list.innerHTML=[...hist].reverse().slice(0,8).map(function(h){
+    return'<div class="hist-item"><div><div class="hi-prod">'+h.product+'</div><div class="hi-date">'+h.date+'</div></div><div class="hi-stamp">Mốc #'+h.stamp+'</div></div>';
+  }).join('');
+  // order link with phone pre-filled
+  document.getElementById('order-cta').href='yoricha-order.html?phone='+encodeURIComponent(m.phone)+'&name='+encodeURIComponent(m.name);
+}
+async function register(){
+  var name=document.getElementById('reg-name').value.trim();
+  var phone=document.getElementById('reg-phone').value.trim();
+  if(!name||!phone){al('reg-alert','Vui lòng điền đầy đủ.','err');return;}
+  var btn=document.getElementById('btn-reg');btn.disabled=true;btn.textContent='⏳ Đang tạo...';
+  try{
+    var d=await api({action:'register',name:name,phone:phone});
+    if(!d.ok){al('reg-alert',d.error,'err');return;}
+    // Redirect to order page with phone pre-filled
+    window.location.href='yoricha-order.html?phone='+encodeURIComponent(d.member.phone)+'&name='+encodeURIComponent(d.member.name);
+  }catch(e){al('reg-alert','Lỗi kết nối.','err');}
+  finally{btn.disabled=false;btn.textContent='Tạo tài khoản ✨';}
+}
+async function lookup(){
+  var phone=document.getElementById('look-phone').value.trim();
+  if(!phone){al('look-alert','Nhập số điện thoại.','err');return;}
+  var btn=document.getElementById('btn-look');btn.disabled=true;btn.textContent='⏳';
+  try{
+    var d=await api({action:'lookup',phone:phone});
+    if(!d.ok){al('look-alert',d.error,'err');return;}
+    showMember(d.member);
+  }catch(e){al('look-alert','Lỗi kết nối.','err');}
+  finally{btn.disabled=false;btn.textContent='Tra cứu 🔍';}
+}
+</script>
+</body>
+</html>
