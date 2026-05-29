@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1"/>
+<meta name="theme-color" content="#3971b8"/>
+<title>Yoricha — Order</title>
+<link href="https://fonts.googleapis.com/css2?family=Merienda:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--blue:#3971b8;--blue-light:#e8f0fb;--blue-mid:#b5d0f0;--green-dark:#343b1b;--cream:#fbfcee;--gold:#f6e6a5;--gold-dark:#d4a017;--red:#e74c3c;--green2:#27ae60}
+html,body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--green-dark);min-height:100vh;-webkit-tap-highlight-color:transparent}
+.header{background:var(--blue);padding:1rem 1rem 2.5rem;text-align:center;position:relative}
+.header::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:40px;background:var(--cream);clip-path:ellipse(55% 100% at 50% 100%)}
+.logo-btn{display:inline-block;cursor:pointer;background:none;border:none;padding:0}
+.logo-btn img{height:56px;object-fit:contain;border-radius:14px;padding:8px 14px;background:rgba(255,255,255,.15)}
+.header-sub{font-family:'Merienda',cursive;font-size:.75rem;color:#b5d0f0;letter-spacing:2px;text-transform:uppercase;margin-top:.3rem}
+.wrap{max-width:480px;margin:0 auto;padding:.75rem .9rem}
+.card{background:#fff;border:1.5px solid var(--blue-mid);border-radius:16px;padding:1.1rem;margin-bottom:.75rem;box-shadow:0 2px 12px rgba(57,113,184,.07)}
+.card-title{font-family:'Merienda',cursive;color:var(--blue);font-size:.95rem;margin-bottom:.85rem;display:flex;align-items:center;justify-content:space-between}
+label{display:block;font-size:.75rem;font-weight:700;color:var(--green-dark);margin-bottom:.25rem}
+input,select,textarea{width:100%;border:1.5px solid var(--blue-mid);border-radius:10px;padding:.65rem .9rem;font-family:'Nunito',sans-serif;font-size:.9rem;color:var(--green-dark);background:#fafeff;outline:none;-webkit-appearance:none;margin-bottom:.75rem}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);background:#fff}
+textarea{resize:none;height:56px}
+.btn{display:block;width:100%;background:var(--blue);color:#fff;font-family:'Merienda',cursive;font-size:1rem;border:none;border-radius:12px;padding:.8rem;cursor:pointer;text-align:center}
+.btn:active{filter:brightness(.9)}
+.btn:disabled{background:#aaa}
+.btn-sm{display:inline-block;width:auto;padding:.4rem .9rem;font-size:.8rem;border-radius:9px;border:none;cursor:pointer;font-family:'Merienda',cursive;background:var(--blue);color:#fff}
+.btn-outline{background:transparent;border:2px solid var(--blue);color:var(--blue)}
+/* MEMBER BADGE */
+.mbadge{background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:12px;padding:.75rem;display:flex;align-items:center;gap:.65rem;margin-bottom:.75rem}
+.mbav{width:40px;height:40px;border-radius:50%;background:var(--blue);color:#fff;font-family:'Merienda',cursive;font-size:1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mb-name{font-weight:700;color:var(--blue);font-size:.9rem}
+.mb-stamps{font-size:.75rem;color:#666;margin-top:.15rem}
+.sdots{display:flex;gap:3px;margin-top:.3rem;flex-wrap:wrap}
+.sdot{width:9px;height:9px;border-radius:50%;background:#dde;border:1px solid #bbc}
+.sdot.on{background:var(--blue);border-color:var(--blue)}
+.sdot.ms.on{background:var(--gold-dark);border-color:var(--gold-dark)}
+/* CAT TABS */
+.cat-tabs{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.5rem;margin-bottom:.75rem;scrollbar-width:none}
+.cat-tabs::-webkit-scrollbar{display:none}
+.ctab{background:#fff;border:1.5px solid var(--blue-mid);border-radius:20px;padding:.35rem .9rem;font-size:.8rem;font-weight:700;color:var(--blue);white-space:nowrap;cursor:pointer;flex-shrink:0}
+.ctab.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+/* MENU */
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+.mitem{background:#fff;border:1.5px solid var(--blue-mid);border-radius:16px;overflow:hidden;cursor:pointer;transition:border-color .15s}
+.mitem:active{border-color:var(--blue);box-shadow:0 2px 12px rgba(57,113,184,.15)}
+.mitem.na{opacity:.5;pointer-events:none}
+.mitem-inner{padding:.75rem}
+.mi-img-wrap{width:100%;aspect-ratio:4/5;overflow:hidden;border-radius:0}
+.mi-img{width:100%;height:100%;object-fit:cover;display:block}
+.mi-img-ph{width:100%;aspect-ratio:4/5;background:linear-gradient(135deg,#e8f0fb,#b5d0f0);display:flex;align-items:center;justify-content:center;font-size:2.5rem}
+.mi-info{padding:.65rem .75rem .75rem}
+.mi-name{font-weight:700;font-size:.88rem;line-height:1.3;margin-bottom:.3rem;color:var(--green-dark)}
+.mi-price{font-size:.8rem;color:var(--blue);font-weight:700}
+.mi-desc{font-size:.7rem;color:#888;margin-top:.2rem;line-height:1.4}
+.mi-na{font-size:.65rem;color:var(--red)}
+.szb{display:inline-block;font-size:.62rem;background:var(--blue-light);color:var(--blue);border-radius:5px;padding:.1rem .35rem;margin-right:.2rem;font-weight:700}
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end;justify-content:center}
+.modal{background:#fff;border-radius:20px 20px 0 0;padding:1.25rem 1.1rem calc(1.25rem + env(safe-area-inset-bottom));width:100%;max-width:480px;animation:up .22s ease;max-height:90vh;overflow-y:auto}
+@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-title{font-family:'Merienda',cursive;color:var(--blue);font-size:1rem;margin-bottom:.85rem}
+.sz-grid{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:.85rem}
+.sz-opt{border:2px solid var(--blue-mid);border-radius:12px;padding:.75rem;text-align:center;cursor:pointer}
+.sz-opt.on{border-color:var(--blue);background:var(--blue-light)}
+.sz-lbl{font-weight:700;color:var(--blue);font-size:.9rem}
+.sz-price{font-size:.78rem;color:#666;margin-top:.15rem}
+.opt-group{margin-bottom:.75rem}
+.opt-label{font-size:.75rem;font-weight:700;color:var(--green-dark);margin-bottom:.3rem}
+.opt-chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.chip{border:1.5px solid var(--blue-mid);border-radius:20px;padding:.3rem .75rem;font-size:.75rem;cursor:pointer;background:#fff;color:var(--green-dark);white-space:nowrap}
+.chip.on{border-color:var(--blue);background:var(--blue);color:#fff}
+.qty-row{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem}
+.qty-btn{width:38px;height:38px;border-radius:50%;border:2px solid var(--blue);background:#fff;color:var(--blue);font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
+.qty-n{font-size:1.1rem;font-weight:700;min-width:28px;text-align:center}
+/* CART */
+.cart-bar{position:fixed;bottom:0;left:0;right:0;padding:.75rem .9rem calc(.75rem + env(safe-area-inset-bottom));z-index:100;display:flex;justify-content:center}
+.cbtn{background:var(--blue);color:#fff;border:none;border-radius:14px;padding:.85rem 1.25rem;font-family:'Merienda',cursive;font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:.75rem;width:100%;max-width:480px;box-shadow:0 4px 20px rgba(57,113,184,.35)}
+.cbadge{background:#fff;color:var(--blue);border-radius:20px;padding:.1rem .65rem;font-size:.82rem;font-weight:700}
+.ci{display:flex;align-items:flex-start;gap:.65rem;padding:.65rem 0;border-bottom:1px dashed var(--blue-mid)}
+.ci:last-child{border-bottom:none}
+.ci-rm{background:none;border:none;color:#ccc;cursor:pointer;font-size:1rem;padding:.1rem;flex-shrink:0}
+.ci-name{font-weight:700;font-size:.85rem;flex:1;min-width:0}
+.ci-sub{font-size:.72rem;color:#888;margin-top:.1rem;line-height:1.4}
+.ci-price{font-weight:700;color:var(--blue);font-size:.85rem;white-space:nowrap}
+.total-row{display:flex;justify-content:space-between;align-items:center;padding:.85rem 0 .5rem;font-weight:700;font-size:.95rem;border-top:2px solid var(--blue-mid)}
+.disc-box{background:var(--gold);border-radius:10px;padding:.6rem .85rem;font-size:.8rem;font-weight:700;text-align:center;margin-bottom:.6rem}
+/* DELIVERY */
+.del-opts{display:flex;gap:.5rem;margin-bottom:.85rem}
+.del-opt{flex:1;border:2px solid var(--blue-mid);border-radius:12px;padding:.65rem .4rem;text-align:center;cursor:pointer;font-size:.78rem;font-weight:700;color:var(--green-dark);line-height:1.3}
+.del-opt.on{border-color:var(--blue);background:var(--blue-light);color:var(--blue)}
+.dist-opts{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.75rem}
+.dist-opt{border:2px solid var(--blue-mid);border-radius:12px;padding:.6rem .5rem;text-align:center;cursor:pointer;font-size:.75rem;font-weight:700;color:var(--green-dark);line-height:1.4}
+.dist-opt.on{border-color:var(--blue);background:var(--blue-light);color:var(--blue)}
+.dist-opt .dist-km{font-size:.68rem;color:#888;font-weight:400;margin-top:.1rem}
+.dist-opt.on .dist-km{color:var(--blue);opacity:.8}
+.ship-fee-box{background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:10px;padding:.65rem .9rem;font-size:.85rem;font-weight:700;color:var(--blue);margin-bottom:.75rem;text-align:center}
+/* STATUS */
+.stcard{text-align:center;padding:1.5rem .75rem}
+.st-icon{font-size:3rem;margin-bottom:.5rem}
+.st-id{font-family:'Merienda',cursive;color:var(--blue);font-size:1.1rem;margin-bottom:.35rem}
+.st-pill{display:inline-block;padding:.3rem 1rem;border-radius:20px;font-weight:700;font-size:.82rem;margin-bottom:.85rem}
+.st-pill.new{background:#fff3cd;color:#856404}
+.st-pill.making{background:#cfe2ff;color:#084298}
+.st-pill.done{background:#d1e7dd;color:#0a3622}
+/* MEMBER STATUS CARD */
+.mst-card{background:var(--blue);border-radius:16px;padding:1.1rem;color:#fff;margin-top:.75rem}
+.mst-title{font-family:'Merienda',cursive;font-size:.9rem;margin-bottom:.65rem;opacity:.85}
+.mst-stamps-label{font-size:.78rem;opacity:.7;margin-bottom:.35rem}
+.mst-sdots{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:.5rem}
+.mst-dot{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:.6rem}
+.mst-dot.on{background:#fff;color:var(--blue)}
+.mst-dot.ms.on{background:var(--gold-dark);border-color:var(--gold-dark);color:#fff}
+.mst-hist-title{font-size:.78rem;opacity:.7;margin:.65rem 0 .35rem}
+.mst-hi{display:flex;justify-content:space-between;font-size:.75rem;padding:.35rem 0;border-bottom:1px solid rgba(255,255,255,.15)}
+.mst-hi:last-child{border-bottom:none}
+.alert{border-radius:10px;padding:.6rem .85rem;font-size:.82rem;font-weight:600;margin-bottom:.75rem;display:none}
+.alert.ok{background:#e6f7ed;color:#1a7f3c;border:1px solid #a3d9b1}
+.alert.err{background:#fdecea;color:#b91c1c;border:1px solid #fca5a5}
+.page{display:none}.page.on{display:block}
+footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
+</style>
+</head>
+<body>
+<div class="header">
+  <button class="logo-btn" onclick="window.location.href='index.html'">
+    <img src="https://drive.google.com/thumbnail?id=1uQD0joy3YQ1PlHSGNZJoy_dFC_oT-miJ&sz=w300" alt="Yoricha"/>
+  </button>
+  <div class="header-sub">Order Online · Thủ Đức</div>
+</div>
+
+<div class="wrap">
+<!-- PAGE PHONE -->
+<div class="page on" id="pg-phone">
+  <div class="card">
+    <div class="card-title">👋 Bạn là thành viên?</div>
+    <div id="ph-alert" class="alert"></div>
+    <label>Nhập SĐT để nhận điểm (không bắt buộc)</label>
+    <input type="tel" id="inp-phone" placeholder="0901 234 567" inputmode="tel"/>
+    <div id="member-preview"></div>
+    <button class="btn" onclick="goMenu()">Xem menu & đặt hàng →</button>
+  </div>
+</div>
+
+<!-- PAGE MENU -->
+<div class="page" id="pg-menu">
+  <div class="cat-tabs" id="cat-tabs"></div>
+  <div class="mgrid" id="mgrid"></div>
+  <div style="height:80px"></div>
+</div>
+
+<!-- PAGE CART -->
+<div class="page" id="pg-cart">
+  <button class="btn-sm btn-outline" onclick="show('pg-menu')" style="margin-bottom:.75rem">← Thêm món</button>
+  <div class="card">
+    <div class="card-title">🛒 Giỏ hàng</div>
+    <div id="cart-list"></div>
+    <div class="total-row"><span>Tạm tính</span><span id="cart-subtotal">0đ</span></div>
+  </div>
+  <div id="disc-notice"></div>
+
+  <!-- DELIVERY -->
+  <div class="card">
+    <div class="card-title">🚚 Hình thức nhận hàng</div>
+    <div class="del-opts">
+      <div class="del-opt on" onclick="selDel(this,'pickup')">🏃<br/>Pick-up</div>
+      <div class="del-opt" onclick="selDel(this,'ship')">🛵<br/>Giao hàng</div>
+      <div class="del-opt" onclick="selDel(this,'dine')">🪑<br/>Tại chỗ</div>
+    </div>
+
+    <!-- PICKUP -->
+    <div id="del-pickup">
+      <label>Giờ đến lấy</label>
+      <input type="text" id="inp-pickuptime" placeholder="VD: 14:30" inputmode="numeric"/>
+    </div>
+
+    <!-- SHIP -->
+    <div id="del-ship" style="display:none">
+      <label>Địa chỉ giao hàng</label>
+      <input type="text" id="inp-address" placeholder="Số nhà, tên đường, phường..."/>
+      <label>Khoảng cách từ tiệm</label>
+      <div class="dist-opts" id="dist-opts">
+        <div class="dist-opt" onclick="selDist(this,0,0)">
+          📍 Dưới 1km
+          <div class="dist-km">Miễn phí ship</div>
+        </div>
+        <div class="dist-opt" onclick="selDist(this,1,5000)">
+          📍 1 – 2km
+          <div class="dist-km">Phí ship: 5.000đ</div>
+        </div>
+        <div class="dist-opt" onclick="selDist(this,2,0)">
+          📍 2 – 3km
+          <div class="dist-km" id="dist-fee-2"></div>
+        </div>
+        <div class="dist-opt" onclick="selDist(this,3,0)">
+          📍 Trên 3km
+          <div class="dist-km" id="dist-fee-3"></div>
+        </div>
+      </div>
+      <div class="ship-fee-box" id="ship-fee-box" style="display:none"></div>
+    </div>
+
+    <!-- DINE -->
+    <div id="del-dine" style="display:none">
+      <div style="font-size:.82rem;color:#666;padding:.3rem 0;line-height:1.6">
+        🪑 Uống tại quán<br/>
+        <span style="font-size:.75rem">24/10 Đường số 6, khu phố 13, Thủ Đức</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📝 Thông tin đặt hàng</div>
+    <label>Tên</label>
+    <input type="text" id="inp-name" placeholder="Nguyễn Văn A"/>
+    <label>Ghi chú chung</label>
+    <textarea id="inp-note" placeholder="Ghi chú thêm..."></textarea>
+    <div class="total-row"><span>Tổng cộng</span><span id="cart-total-final">0đ</span></div>
+    <div id="order-alert" class="alert"></div>
+    <button class="btn" id="btn-order" onclick="placeOrder()">Đặt hàng 🍵</button>
+  </div>
+</div>
+
+<!-- PAGE STATUS -->
+<div class="page" id="pg-status">
+  <div class="card stcard">
+    <div class="st-icon" id="st-icon">⏳</div>
+    <div class="st-id" id="st-id"></div>
+    <div class="st-pill new" id="st-pill">Đang chờ xác nhận</div>
+    <div id="st-items" style="font-size:.82rem;color:#555;line-height:1.7;margin-bottom:.5rem"></div>
+    <div id="st-total" style="font-weight:700;color:var(--blue);margin-bottom:1rem"></div>
+    <button class="btn btn-outline" onclick="resetAll()">Đặt thêm</button>
+  </div>
+  <!-- MEMBER STATUS after order -->
+  <div id="mst-wrap" style="display:none">
+    <div class="mst-card">
+      <div class="mst-title">🌿 Dấu mốc của bạn</div>
+      <div class="mst-stamps-label" id="mst-count"></div>
+      <div class="mst-sdots" id="mst-dots"></div>
+      <div id="mst-reward" style="display:none;background:var(--gold-dark);border-radius:10px;padding:.5rem .75rem;font-size:.8rem;font-weight:700;color:#fff;margin-bottom:.5rem"></div>
+      <div class="mst-hist-title">Lịch sử gần nhất</div>
+      <div id="mst-hist"></div>
+    </div>
+  </div>
+</div>
+</div><!-- wrap -->
+
+<!-- MODAL -->
+<div class="overlay" id="modal" style="display:none" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div id="mod-img-wrap" style="margin-bottom:.75rem;display:none"><img id="mod-img" src="" style="width:100%;height:160px;object-fit:cover;border-radius:14px" loading="lazy"/></div>
+    <div class="modal-title" id="mod-title"></div>
+    <!-- SIZE -->
+    <div class="sz-grid" id="sz-grid"></div>
+    <!-- MATCHA OPTIONS -->
+    <div id="matcha-opts" style="display:none">
+      <div class="opt-group">
+        <div class="opt-label">Loại bột matcha</div>
+        <div class="opt-chips" id="chips-bot">
+          <div class="chip on" onclick="selChip(this,'bot')">Kagoshima</div>
+          <div class="chip" onclick="selChip(this,'bot')">MK4 (+15k)</div>
+        </div>
+      </div>
+      <div class="opt-group">
+        <div class="opt-label">Nền sữa</div>
+        <div class="opt-chips" id="chips-sua">
+          <div class="chip on" onclick="selChip(this,'sua')">Sữa Long Thành</div>
+          <div class="chip" onclick="selChip(this,'sua')">Hạt điều bí đỏ (+10k)</div>
+          <div class="chip" onclick="selChip(this,'sua')">Đậu nành mè đen (+10k)</div>
+        </div>
+      </div>
+    </div>
+    <!-- SWEET -->
+    <div class="opt-group">
+      <div class="opt-label">Độ ngọt</div>
+      <div class="opt-chips" id="chips-sweet">
+        <div class="chip" onclick="selChip(this,'sweet')">0%</div>
+        <div class="chip" onclick="selChip(this,'sweet')">30%</div>
+        <div class="chip on" onclick="selChip(this,'sweet')">50%</div>
+        <div class="chip" onclick="selChip(this,'sweet')">70%</div>
+        <div class="chip" onclick="selChip(this,'sweet')">100%</div>
+      </div>
+    </div>
+    <!-- NOTE PER ITEM -->
+    <div class="opt-group">
+      <div class="opt-label">Ghi chú cho ly này</div>
+      <input type="text" id="mod-note" placeholder="VD: ít đá, không đường..." style="margin-bottom:.5rem"/>
+    </div>
+    <!-- QTY -->
+    <div class="qty-row">
+      <button class="qty-btn" onclick="dQty(-1)">−</button>
+      <span class="qty-n" id="qty-n">1</span>
+      <button class="qty-btn" onclick="dQty(1)">+</button>
+      <span style="font-size:.82rem;color:#888;flex:1;margin-left:.4rem">ly</span>
+    </div>
+    <button class="btn" onclick="addCart()">Thêm vào giỏ →</button>
+  </div>
+</div>
+
+<!-- CART BAR -->
+<div class="cart-bar" id="cart-bar" style="display:none">
+  <button class="cbtn" onclick="show('pg-cart');renderCart()">
+    <span>🛒 Xem giỏ hàng <span class="cbadge" id="cart-badge">0</span></span>
+    <span id="cart-bar-total" style="font-size:.85rem;opacity:.9">0đ</span>
+  </button>
+</div>
+
+<footer><strong style="color:var(--blue)">Yoricha</strong> · 24/10 Đường số 6, khu phố 13, Thủ Đức · 6:30–21:00</footer>
+
+<script>
+var API='https://script.google.com/macros/s/AKfycbxs-jt4COAvW__D7UFp1gmeiCbPJE7zNCqn7pEGOKUKDYmbcht1Wm765sxZcWH9gF4A/exec';
+var MAPS_KEY='AIzaSyDKG3-6nsURa-1MT8gtxgLWZR64UuywjMQ';
+var SHOP_ADDR='24/10 Đường số 6, Linh Chiểu, Thủ Đức, TP.HCM';
+var menu=[],cart=[],member=null,curItem=null,curSize=null,curQty=1,pollT=null;
+var delMode='pickup',shipFee=0;
+
+// Pre-fill from URL params (coming from membership page)
+window.addEventListener('DOMContentLoaded',function(){
+  var params=new URLSearchParams(window.location.search);
+  var ph=params.get('phone'),nm=params.get('name');
+  if(ph){
+    document.getElementById('inp-phone').value=ph.replace('84','0');
+    goMenu();
+  }
+});
+
+function fmt(n){return Number(n).toLocaleString('vi-VN')+'đ';}
+async function api(p){return(await fetch(API+'?'+new URLSearchParams(p))).json();}
+function al(id,msg,type){var e=document.getElementById(id);e.textContent=msg;e.className='alert '+type;e.style.display='block';setTimeout(function(){e.style.display='none';},5000);}
+
+function show(id){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('on');});
+  document.getElementById(id).classList.add('on');
+  document.getElementById('cart-bar').style.display=(id==='pg-menu'&&cart.length>0)?'flex':'none';
+  window.scrollTo(0,0);
+}
+
+// ── PHONE ───────────────────────────────────────────────────
+async function goMenu(){
+  var ph=document.getElementById('inp-phone').value.trim();
+  if(ph){var d=await api({action:'lookup',phone:ph});if(d.ok){member=d.member;renderBadge();}}
+  else member=null;
+  await loadMenu();show('pg-menu');
+}
+function renderBadge(){
+  var el=document.getElementById('member-preview');
+  if(!member){el.innerHTML='';return;}
+  var dots='';for(var i=1;i<=10;i++){var c='sdot'+(i===4||i===7||i===10?' ms':'')+(i<=member.stamps?' on':'');dots+='<div class="'+c+'"></div>';}
+  el.innerHTML='<div class="mbadge"><div class="mbav">'+member.name.charAt(0).toUpperCase()+'</div><div><div class="mb-name">Chào, '+member.name+'! 👋</div><div class="mb-stamps">'+member.stamps+'/10 dấu mốc</div><div class="sdots">'+dots+'</div></div></div>';
+}
+
+// ── MENU ────────────────────────────────────────────────────
+async function loadMenu(){
+  var d=await api({action:'getMenu'});if(!d.ok)return;menu=d.menu;
+  var cats=[];menu.forEach(function(it){if(cats.indexOf(it.category)<0)cats.push(it.category);});
+  document.getElementById('cat-tabs').innerHTML=cats.map(function(c,i){return'<div class="ctab'+(i===0?' on':'')+'" onclick="filt(this,\''+c+'\')">'+c+'</div>';}).join('');
+  renderMenu(cats[0]);
+}
+function filt(el,cat){document.querySelectorAll('.ctab').forEach(function(t){t.classList.remove('on');});el.classList.add('on');renderMenu(cat);}
+function renderMenu(cat){
+  var items=menu.filter(function(it){return it.category===cat;});
+  document.getElementById('mgrid').innerHTML=items.map(function(it){
+    var ps='';if(it.price_s)ps+='<span class="szb">S</span>'+fmt(it.price_s*1000)+' ';if(it.price_l)ps+='<span class="szb">L</span>'+fmt(it.price_l*1000);
+    return'<div class="mitem'+(it.available?'':' na')+'" onclick="openMod(\''+it.id+'\')"><div class="mi-name">'+it.name+(it.available?'':' <span style="font-size:.65rem;color:var(--red)">(Hết)</span>')+'</div><div class="mi-price">'+ps+'</div><div class="mi-desc">'+(it.description||'')+'</div></div>';
+  }).join('');
+}
+
+// ── MODAL ────────────────────────────────────────────────────
+function openMod(id){
+  var it=menu.find(function(x){return x.id===id;});if(!it||!it.available)return;
+  curItem=it;curSize=it.price_s?'S':'L';curQty=1;
+  document.getElementById('mod-title').textContent=it.name;
+  var modImgWrap=document.getElementById('mod-img-wrap');
+  if(it.image&&it.image.length>5){
+    var modImg=document.getElementById('mod-img');
+    modImg.src=it.image;
+    modImg.referrerPolicy='no-referrer';
+    modImgWrap.style.display='block';
+  } else {
+    modImgWrap.style.display='none';
+  }
+  var sz='';
+  if(it.price_s)sz+='<div class="sz-opt'+(curSize==='S'?' on':'')+'" onclick="selSz(this,\'S\')"><div class="sz-lbl">Size S</div><div class="sz-price">'+fmt(it.price_s*1000)+'</div></div>';
+  if(it.price_l)sz+='<div class="sz-opt'+(curSize==='L'&&!it.price_s?' on':'')+'" onclick="selSz(this,\'L\')"><div class="sz-lbl">Size L</div><div class="sz-price">'+fmt(it.price_l*1000)+'</div></div>';
+  document.getElementById('sz-grid').innerHTML=sz;
+  // Show matcha options only for matcha category
+  var isMatcha=it.category==='Matcha';
+  document.getElementById('matcha-opts').style.display=isMatcha?'block':'none';
+  // Reset chips
+  document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on');});
+  if(isMatcha){document.querySelector('#chips-bot .chip').classList.add('on');document.querySelector('#chips-sua .chip').classList.add('on');}
+  document.querySelectorAll('#chips-sweet .chip')[2].classList.add('on');
+  document.getElementById('mod-note').value='';
+  document.getElementById('qty-n').textContent=1;
+  document.getElementById('modal').style.display='flex';
+}
+function selSz(el,sz){document.querySelectorAll('.sz-opt').forEach(function(o){o.classList.remove('on');});el.classList.add('on');curSize=sz;}
+function selChip(el,group){document.querySelectorAll('#chips-'+group+' .chip').forEach(function(c){c.classList.remove('on');});el.classList.add('on');}
+function dQty(d){curQty=Math.max(1,curQty+d);document.getElementById('qty-n').textContent=curQty;}
+function closeModal(e){document.getElementById('modal').style.display='none';}
+function getChip(group){var el=document.querySelector('#chips-'+group+' .chip.on');return el?el.textContent:'';}
+function addCart(){
+  var pr=(curSize==='S'?curItem.price_s:curItem.price_l)*1000;
+  var isMatcha=curItem.category==='Matcha';
+  var bot=isMatcha?getChip('bot'):'';
+  var sua=isMatcha?getChip('sua'):'';
+  // Extra price for MK4 and special milk
+  if(bot.includes('MK4'))pr+=15000;
+  if(sua.includes('Hạt điều'))pr+=10000;
+  if(sua.includes('Đậu nành'))pr+=10000;
+  var sweet=getChip('sweet');
+  var note=document.getElementById('mod-note').value.trim();
+  cart.push({id:curItem.id,name:curItem.name,size:curSize,price:pr,qty:curQty,sweet:sweet,bot:bot,sua:sua,note:note,isMatcha:isMatcha});
+  document.getElementById('modal').style.display='none';
+  updBar();
+}
+
+// ── CART ────────────────────────────────────────────────────
+function updBar(){
+  var cnt=cart.reduce(function(s,i){return s+i.qty;},0);
+  var tot=cart.reduce(function(s,i){return s+i.price*i.qty;},0);
+  document.getElementById('cart-badge').textContent=cnt;
+  document.getElementById('cart-bar-total').textContent=fmt(tot);
+  document.getElementById('cart-bar').style.display=cnt>0&&document.getElementById('pg-menu').classList.contains('on')?'flex':'none';
+  updDistLabels();
+}
+function rmCart(i){cart.splice(i,1);updBar();renderCart();if(!cart.length)show('pg-menu');}
+function renderCart(){
+  var sub=cart.reduce(function(s,i){return s+i.price*i.qty;},0);
+  var totalQty=cart.reduce(function(s,i){return s+i.qty;},0);
+  document.getElementById('cart-list').innerHTML=cart.map(function(it,i){
+    var subs=[];
+    if(it.size)subs.push('Size '+it.size);
+    if(it.bot)subs.push(it.bot);
+    if(it.sua)subs.push(it.sua);
+    if(it.sweet)subs.push('Ngọt '+it.sweet);
+    if(it.note)subs.push('📝 '+it.note);
+    subs.push('x'+it.qty);
+    return'<div class="ci"><button class="ci-rm" onclick="rmCart('+i+')">✕</button><div class="ci-name">'+it.name+'<div class="ci-sub">'+subs.join(' · ')+'</div></div><div class="ci-price">'+fmt(it.price*it.qty)+'</div></div>';
+  }).join('');
+  // Discount
+  var disc='';
+  if(member){
+    var s=member.stamps;
+    if(s===4)disc='<div class="disc-box">🎁 Ly thứ 4 — mua 2 ly, ly 2 FREE UPSIZE!</div>';
+    if(s===7)disc='<div class="disc-box">💚 Ly thứ 7 — GIẢM 20%! '+fmt(sub)+' → '+fmt(sub*.8)+'</div>';
+    if(s===10)disc='<div class="disc-box">⭐ Ly thứ 10 — FREE 1 LY NƯỚC!</div>';
+  }
+  document.getElementById('disc-notice').innerHTML=disc;
+  document.getElementById('cart-subtotal').textContent=fmt(sub);
+  calcTotal();
+  if(member&&!document.getElementById('inp-name').value)document.getElementById('inp-name').value=member.name;
+}
+function calcTotal(){
+  var sub=cart.reduce(function(s,i){return s+i.price*i.qty;},0);
+  var total=sub+shipFee;
+  var sfx=shipFee>0?' + ship '+fmt(shipFee):'';
+  document.getElementById('cart-total-final').textContent=fmt(total)+(sfx?' ('+sfx+')':'');
+}
+
+// ── DELIVERY ────────────────────────────────────────────────
+function selDel(el,mode){
+  document.querySelectorAll('.del-opt').forEach(function(o){o.classList.remove('on');});
+  el.classList.add('on');delMode=mode;shipFee=0;
+  document.getElementById('del-pickup').style.display=mode==='pickup'?'block':'none';
+  document.getElementById('del-ship').style.display=mode==='ship'?'block':'none';
+  document.getElementById('del-dine').style.display=mode==='dine'?'block':'none';
+  document.getElementById('ship-fee-box').style.display='none';
+  document.querySelectorAll('.dist-opt').forEach(function(o){o.classList.remove('on');});
+  updDistLabels();
+  calcTotal();
+}
+function updDistLabels(){
+  var qty=cart.reduce(function(s,i){return s+i.qty;},0);
+  var f2=qty>=3?'5.000đ':'10.000đ';
+  var f3=qty>=3?'10.000đ':'20.000đ';
+  var el2=document.getElementById('dist-fee-2');
+  var el3=document.getElementById('dist-fee-3');
+  if(el2)el2.textContent='Phí ship: '+f2;
+  if(el3)el3.textContent='Phí ship: '+f3;
+}
+function selDist(el,range,fee){
+  var qty=cart.reduce(function(s,i){return s+i.qty;},0);
+  if(range===2)fee=qty>=3?5000:10000;
+  if(range===3)fee=qty>=3?10000:20000;
+  shipFee=fee;
+  document.querySelectorAll('.dist-opt').forEach(function(o){o.classList.remove('on');});
+  el.classList.add('on');
+  var box=document.getElementById('ship-fee-box');
+  box.innerHTML='🛵 Phí ship: <strong>'+(fee===0?'Miễn phí':fmt(fee))+'</strong>';
+  box.style.display='block';
+  calcTotal();
+}
+
+// ── ORDER ────────────────────────────────────────────────────
+async function placeOrder(){
+  if(!cart.length){al('order-alert','Giỏ hàng trống!','err');return;}
+  var name=document.getElementById('inp-name').value.trim();
+  if(!name){al('order-alert','Vui lòng nhập tên.','err');return;}
+  if(delMode==='pickup'&&!document.getElementById('inp-pickuptime').value.trim()){al('order-alert','Nhập giờ đến lấy.','err');return;}
+  if(delMode==='ship'&&!document.getElementById('inp-address').value.trim()){al('order-alert','Nhập địa chỉ giao hàng.','err');return;}
+  if(delMode==='ship'&&!document.querySelector('.dist-opt.on')){al('order-alert','Chọn khoảng cách để tính phí ship.','err');return;}
+  var note=document.getElementById('inp-note').value.trim();
+  if(delMode==='pickup')note='[Pick-up lúc '+document.getElementById('inp-pickuptime').value+'] '+note;
+  if(delMode==='ship')note='[Ship đến: '+document.getElementById('inp-address').value+' | Phí: '+(shipFee===0?'Miễn phí':fmt(shipFee))+'] '+note;
+  if(delMode==='dine')note='[Uống tại chỗ] '+note;
+  var sub=cart.reduce(function(s,i){return s+i.price*i.qty;},0);
+  var total=sub+shipFee;
+  var btn=document.getElementById('btn-order');btn.disabled=true;btn.textContent='⏳ Đang gửi...';
+  try{
+    var d=await api({action:'placeOrder',phone:member?member.phone:(document.getElementById('inp-phone').value.trim()||''),name:name,note:note,items:JSON.stringify(cart),total:total});
+    if(!d.ok){al('order-alert',d.error,'err');return;}
+    showStatus(d.orderID,cart,total);
+    cart=[];updBar();
+  }catch(e){al('order-alert','Lỗi kết nối, thử lại!','err');}
+  finally{btn.disabled=false;btn.textContent='Đặt hàng 🍵';}
+}
+
+// ── STATUS ────────────────────────────────────────────────────
+function showStatus(oid,items,total){
+  document.getElementById('st-id').textContent='Đơn #'+oid;
+  document.getElementById('st-items').innerHTML=items.map(function(it){return'• '+it.name+' ('+it.size+') x'+it.qty;}).join('<br/>');
+  document.getElementById('st-total').textContent='Tổng: '+fmt(total);
+  show('pg-status');
+  if(pollT)clearInterval(pollT);
+  pollT=setInterval(function(){pollStatus(oid);},10000);
+  // Show member info
+  if(member){
+    api({action:'lookup',phone:member.phone}).then(function(d){if(d.ok){member=d.member;renderMemberStatus();}});
+  }
+}
+function renderMemberStatus(){
+  var wrap=document.getElementById('mst-wrap');wrap.style.display='block';
+  document.getElementById('mst-count').textContent='Bạn có '+member.stamps+'/10 dấu mốc';
+  var icons={4:'🎁',7:'💚',10:'⭐'};
+  var dots='';for(var i=1;i<=10;i++){var c='mst-dot'+(i===4||i===7||i===10?' ms':'')+(i<=member.stamps?' on':'');dots+='<div class="'+c+'">'+(i<=member.stamps?(icons[i]||'✓'):(icons[i]||''))+'</div>';}
+  document.getElementById('mst-dots').innerHTML=dots;
+  var rewards={4:'🎁 Ly tiếp theo được FREE UPSIZE!',7:'💚 Đơn tiếp được GIẢM 20%!',10:'⭐ Lần tới FREE 1 ly!'};
+  var rv=document.getElementById('mst-reward');
+  if(rewards[member.stamps]){rv.textContent=rewards[member.stamps];rv.style.display='block';}
+  var hist=(member.history||[]);
+  document.getElementById('mst-hist').innerHTML=[...hist].reverse().slice(0,5).map(function(h){
+    return'<div class="mst-hi"><span>'+h.product+'</span><span style="opacity:.7">Mốc #'+h.stamp+'</span></div>';
+  }).join('');
+}
+async function pollStatus(oid){
+  try{var d=await api({action:'getOrderStatus',orderID:oid});
+    if(d.ok){
+      var icons={'Mới':'⏳','Đang làm':'🍵','Xong':'✅'};
+      var labels={'Mới':'Đang chờ xác nhận','Đang làm':'Đang pha chế...','Xong':'Sẵn sàng rồi!'};
+      var cls={'Mới':'new','Đang làm':'making','Xong':'done'};
+      document.getElementById('st-icon').textContent=icons[d.status]||'⏳';
+      var pill=document.getElementById('st-pill');pill.textContent=labels[d.status]||d.status;pill.className='st-pill '+(cls[d.status]||'new');
+      if(d.status==='Xong'){clearInterval(pollT);if(member)api({action:'lookup',phone:member.phone}).then(function(r){if(r.ok){member=r.member;renderMemberStatus();}});}
+    }
+  }catch(e){}
+}
+function resetAll(){if(pollT)clearInterval(pollT);member=null;shipFee=0;document.getElementById('inp-phone').value='';document.getElementById('inp-name').value='';document.getElementById('inp-note').value='';document.getElementById('member-preview').innerHTML='';document.getElementById('mst-wrap').style.display='none';show('pg-phone');}
+</script>
+</body>
+</html>
