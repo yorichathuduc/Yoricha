@@ -150,13 +150,14 @@ function getMenu() {
   for (var i = 1; i < data.length; i++) {
     if (!data[i][0]) continue;
     var imageRaw = data[i][7] ? String(data[i][7]) : '';
-    // Convert Drive share link to thumbnail if needed
     var imageUrl = '';
     if (imageRaw) {
-      var match = imageRaw.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      // Extract file ID from any Drive URL format
+      var match = imageRaw.match(/[-\w]{25,}/);
+      // Use uc?export=view format - works better for cross-origin embedding
       if (match) {
-        imageUrl = 'https://drive.google.com/thumbnail?id=' + match[1] + '&sz=w400';
-      } else {
+        imageUrl = 'https://lh3.googleusercontent.com/d/' + match[1];
+      } else if (imageRaw.indexOf('http') === 0) {
         imageUrl = imageRaw;
       }
     }
