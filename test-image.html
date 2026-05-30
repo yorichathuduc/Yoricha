@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Test Image Upload</title>
+<style>
+body{font-family:sans-serif;padding:1.5rem;max-width:480px;margin:0 auto;background:#f5f5f5}
+h2{color:#3971b8;margin-bottom:1rem}
+.card{background:#fff;border-radius:12px;padding:1rem;margin-bottom:1rem;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+label{font-weight:700;font-size:.85rem;display:block;margin-bottom:.4rem}
+input[type=file]{width:100%;margin-bottom:.75rem;font-size:.85rem}
+button{background:#3971b8;color:#fff;border:none;border-radius:8px;padding:.65rem 1.2rem;font-size:.9rem;cursor:pointer;width:100%;margin-bottom:.5rem}
+button:disabled{background:#aaa}
+.log{background:#1a1a2e;color:#00ff88;border-radius:8px;padding:1rem;font-family:monospace;font-size:.75rem;min-height:120px;overflow-y:auto;white-space:pre-wrap;word-break:break-all}
+img.preview{width:100%;border-radius:8px;margin-top:.5rem;display:none}
+.status{padding:.5rem .75rem;border-radius:8px;font-size:.82rem;font-weight:700;margin-bottom:.5rem;display:none}
+.ok{background:#e6f7ed;color:#1a7f3c}.err{background:#fdecea;color:#b91c1c}
+</style>
+</head>
+<body>
+<h2>🔧 Yoricha Image Test</h2>
+
+<div class="card">
+  <label>Bước 1: Test upload ảnh lên ImgBB</label>
+  <input type="file" id="img-file" accept="image/*"/>
+  <button onclick="testUpload()" id="btn-upload">Upload ảnh lên ImgBB</button>
+  <div class="status" id="upload-status"></div>
+  <img class="preview" id="img-preview"/>
+</div>
+
+<div class="card">
+  <label>Bước 2: Test lưu link vào Apps Script (saveMenu)</label>
+  <div style="font-size:.78rem;color:#888;margin-bottom:.5rem">Link ảnh từ bước 1 sẽ tự điền vào đây</div>
+  <input type="text" id="img-url" placeholder="https://i.ibb.co/..." style="width:100%;padding:.5rem;border:1px solid #ddd;border-radius:6px;margin-bottom:.5rem;font-size:.8rem"/>
+  <button onclick="testSaveMenu()" id="btn-save">Lưu vào Sheet (test Matcha Latte)</button>
+  <div class="status" id="save-status"></div>
+</div>
+
+<div class="card">
+  <label>Bước 3: Test getMenu — xem ảnh có trả về không</label>
+  <button onclick="testGetMenu()">Load Menu từ Sheet</button>
+  <div class="status" id="get-status"></div>
+  <div id="menu-result" style="margin-top:.5rem;font-size:.78rem"></div>
+</div>
+
+<div class="card">
+  <label>📋 Log</label>
+  <div class="log" id="log">Sẵn sàng...\n</div>
+</div>
+
+<script>
+var API='https://script.google.com/macros/s/AKfycbxs-jt4COAvW__D7UFp1gmeiCbPJE7zNCqn7pEGOKUKDYmbcht1Wm765sxZcWH9gF4A/exec';
+var IMGBB='a0f2439e546f124d0aaa005c639c351b';
+
+function log(msg){
+  var el=document.getElementById('log');
+  el.textContent+=new Date().toLocaleTimeString()+' '+msg+'\n';
+  el.scrollTop=el.scrollHeight;
+}
+function setStatus(id,msg,type){
+  var el=document.getElementById(id);el.textContent=msg;el.className='status '+type;el.style.display='block';
+}
+
+async function apiPost(p){
+  log('POST: action='+p.action);
+  var res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});
+  var d=await res.json();
+  log('Response: '+JSON.stringify(d).substring(0,200));
+  return d;
+}
+async function apiGet(p){
+  log('GET: '+JSON.stringify(p));
+  var res=await fetch(API+'?'+new URLSearchParams(p));
+  var d=await res.json();
+  log('Response: '+JSON.stringify(d).substring(0,200));
+  return d;
+}
+
+async function testUpload(){
+  var file=document.getElementById('img-file').files[0];
+  if(!file){alert('Chọn ảnh trước!');return;}
+  var btn=document.getElementById('btn-upload');
+  btn.disabled=true;btn.textContent='⏳ Uploading...';
+  log('Uploading to ImgBB... file size: '+file.size+' bytes');
+  try{
+    var fd=new FormData();fd.append('image',file);
+    var res=await fetch('https://api.imgbb.com/1/upload?key='+IMGBB,{method:'POST',body:fd});
+    var d=await res.json();
+    log('ImgBB response: '+JSON.stringify(d).substring(0,300));
+    if(d.success){
+      var url=d.data.url;
+      document.getElementById('img-url').value=url;
+      document.getElementById('img-preview').src=url;
+      document.getElementById('img-preview').style.display='block';
+      setStatus('upload-status','✅ Upload thành công! URL: '+url,'ok');
+      log('✅ ImgBB URL: '+url);
+    } else {
+      setStatus('upload-status','❌ Lỗi ImgBB: '+JSON.stringify(d.error),'err');
+    }
+  }catch(e){
+    log('❌ Error: '+e.message);
+    setStatus('upload-status','❌ Exception: '+e.message,'err');
+  }
+  btn.disabled=false;btn.textContent='Upload ảnh lên ImgBB';
+}
+
+async function testSaveMenu(){
+  var imgUrl=document.getElementById('img-url').value.trim();
+  if(!imgUrl){alert('Cần URL ảnh từ bước 1!');return;}
+  var btn=document.getElementById('btn-save');
+  btn.disabled=true;btn.textContent='⏳ Saving...';
+  log('Saving menu with image URL length: '+imgUrl.length);
+  try{
+    // First get current menu
+    var menuData=await apiGet({action:'getMenu'});
+    if(!menuData.ok){setStatus('save-status','❌ getMenu failed: '+menuData.error,'err');return;}
+    var items=menuData.menu;
+    log('Menu items count: '+items.length);
+    // Set image on first item (Matcha Latte)
+    if(items.length>0){
+      items[0].image=imgUrl;
+      log('Setting image on: '+items[0].name+' = '+imgUrl.substring(0,50)+'...');
+    }
+    var saveRes=await apiPost({action:'saveMenu',password:'1234',items:JSON.stringify(items)});
+    if(saveRes.ok){
+      setStatus('save-status','✅ Lưu thành công! Kiểm tra Sheet cột H hàng 2','ok');
+    } else {
+      setStatus('save-status','❌ Save failed: '+saveRes.error,'err');
+    }
+  }catch(e){
+    log('❌ Error: '+e.message);
+    setStatus('save-status','❌ Exception: '+e.message,'err');
+  }
+  btn.disabled=false;btn.textContent='Lưu vào Sheet (test Matcha Latte)';
+}
+
+async function testGetMenu(){
+  log('Getting menu...');
+  try{
+    var d=await apiGet({action:'getMenu'});
+    if(!d.ok){setStatus('get-status','❌ '+d.error,'err');return;}
+    var hasImg=d.menu.filter(function(it){return it.image&&it.image.length>5;});
+    setStatus('get-status','✅ Menu loaded: '+d.menu.length+' món, '+hasImg.length+' món có ảnh','ok');
+    document.getElementById('menu-result').innerHTML=d.menu.map(function(it){
+      return '<div style="padding:.3rem 0;border-bottom:1px solid #eee">'+
+        '<strong>'+it.name+'</strong>: '+
+        (it.image?'<span style="color:green">✅ có ảnh</span> <a href="'+it.image+'" target="_blank" style="font-size:.7rem">xem</a>':'<span style="color:#aaa">❌ chưa có ảnh</span>')+
+        '</div>';
+    }).join('');
+  }catch(e){
+    setStatus('get-status','❌ '+e.message,'err');
+  }
+}
+</script>
+</body>
+</html>
