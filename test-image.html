@@ -63,8 +63,14 @@ function setStatus(id,msg,type){
 }
 
 async function apiPost(p){
-  log('POST: action='+p.action);
-  var res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});
+  log('GET(json-encoded): action='+p.action);
+  var params=new URLSearchParams();
+  for(var k in p){
+    var v=p[k];
+    if(typeof v==='object')params.set(k,JSON.stringify(v));
+    else params.set(k,String(v));
+  }
+  var res=await fetch(API+'?'+params.toString());
   var d=await res.json();
   log('Response: '+JSON.stringify(d).substring(0,200));
   return d;
