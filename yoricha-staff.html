@@ -592,6 +592,57 @@ function addMenuItem(){
   al('menu-alert','Đã thêm "'+name+'". Nhấn 💾 Lưu để cập nhật.','ok');
 }
 
+// ── IMAGE UPLOAD ─────────────────────────────────────────────
+function previewNewImg(input){
+  if(!input.files||!input.files[0])return;
+  var file=input.files[0];
+  var reader=new FileReader();
+  reader.onload=function(e){
+    document.getElementById('new-img-preview-img').src=e.target.result;
+    document.getElementById('new-img-preview').style.display='block';
+    al('menu-alert','⏳ Đang upload ảnh...','ok');
+    uploadToImgBB(file,function(url){
+      document.getElementById('new-img').value=url;
+      al('menu-alert','✅ Ảnh đã upload! Nhấn + Thêm món để lưu.','ok');
+    });
+  };
+  reader.readAsDataURL(file);
+}
+function clearNewImg(){
+  document.getElementById('new-img').value='';
+  document.getElementById('new-img-file').value='';
+  document.getElementById('new-img-preview').style.display='none';
+}
+function uploadToImgBB(file,cb){
+  var fd=new FormData();
+  fd.append('image',file);
+  fetch('https://api.imgbb.com/1/upload?key='+IMGBB_KEY,{method:'POST',body:fd})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.success){cb(d.data.url);}
+      else{al('menu-alert','Lỗi upload: '+(d.error?d.error.message:'unknown'),'err');}
+    })
+    .catch(function(e){al('menu-alert','Lỗi kết nối ImgBB: '+e.message,'err');});
+}
+function editItemImage(i){
+  var input=document.createElement('input');
+  input.type='file';input.accept='image/*';
+  input.onchange=function(){
+    if(!input.files[0])return;
+    al('menu-alert','⏳ Đang upload ảnh...','ok');
+    uploadToImgBB(input.files[0],function(url){
+      menuS[i].image=url;
+      renderMenuS();
+      // Tự động lưu lên Sheet ngay
+      api({action:'saveMenu',password:PWD,items:JSON.stringify(menuS)}).then(function(d){
+        if(d.ok){al('menu-alert','✅ Ảnh đã lưu cho "'+menuS[i].name+'"!','ok');}
+        else{al('menu-alert','Upload OK nhưng lưu Sheet lỗi: '+d.error,'err');}
+      });
+    });
+  };
+  input.click();
+}
+
 // Inject logo
 var logoSrc='https://drive.google.com/thumbnail?id=1uQD0joy3YQ1PlHSGNZJoy_dFC_oT-miJ&sz=w300';
 document.getElementById('logo-login').src=logoSrc;
