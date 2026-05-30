@@ -371,8 +371,20 @@ function filt(el,cat){document.querySelectorAll('.ctab').forEach(function(t){t.c
 function renderMenu(cat){
   var items=menu.filter(function(it){return it.category===cat;});
   document.getElementById('mgrid').innerHTML=items.map(function(it){
-    var ps='';if(it.price_s)ps+='<span class="szb">S</span>'+fmt(it.price_s*1000)+' ';if(it.price_l)ps+='<span class="szb">L</span>'+fmt(it.price_l*1000);
-    return'<div class="mitem'+(it.available?'':' na')+'" onclick="openMod(\''+it.id+'\')"><div class="mi-name">'+it.name+(it.available?'':' <span style="font-size:.65rem;color:var(--red)">(Hết)</span>')+'</div><div class="mi-price">'+ps+'</div><div class="mi-desc">'+(it.description||'')+'</div></div>';
+    var ps='';
+    if(it.price_s)ps+='<span class="szb">S</span>'+fmt(it.price_s*1000)+' ';
+    if(it.price_l)ps+='<span class="szb">L</span>'+fmt(it.price_l*1000);
+    var naLabel=it.available?'':' <span style="font-size:.65rem;color:var(--red)">(Hết)</span>';
+    var imgBlock=it.image&&it.image.length>5
+      ?'<div class="mi-img-wrap"><img class="mi-img" src="'+it.image+'" loading="lazy"/></div>'
+      :'<div class="mi-img-ph">🍵</div>';
+    return'<div class="mitem'+(it.available?'':' na')+'" onclick="openMod(\''+it.id+'\')">'
+      +imgBlock
+      +'<div class="mi-info">'
+      +'<div class="mi-name">'+it.name+naLabel+'</div>'
+      +'<div class="mi-price">'+ps+'</div>'
+      +'<div class="mi-desc">'+(it.description||'')+'</div>'
+      +'</div></div>';
   }).join('');
 }
 
