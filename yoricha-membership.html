@@ -2,6 +2,9 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1"/>
 <meta name="theme-color" content="#3971b8"/>
 <title>Yoricha — Thành viên</title>
@@ -139,12 +142,15 @@ footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
 <script>
 var API='https://script.google.com/macros/s/AKfycbxs-jt4COAvW__D7UFp1gmeiCbPJE7zNCqn7pEGOKUKDYmbcht1Wm765sxZcWH9gF4A/exec';
 async function api(p){
-  try{
-    var res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});
-    return res.json();
-  }catch(e){
-    return(await fetch(API+'?'+new URLSearchParams(p))).json();
+  // Encode params - complex values (arrays/objects) as JSON strings
+  var params=new URLSearchParams();
+  for(var k in p){
+    var v=p[k];
+    if(typeof v==='object')params.set(k,JSON.stringify(v));
+    else params.set(k,String(v));
   }
+  var res=await fetch(API+'?'+params.toString());
+  return res.json();
 }
 function al(id,msg,type){var e=document.getElementById(id);e.textContent=msg;e.className='alert '+type;e.style.display='block';setTimeout(function(){e.style.display='none';},5000);}
 function swTab(el,name){
