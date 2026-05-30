@@ -296,15 +296,11 @@ input:checked+.slider::before{transform:translateX(16px)}
         </div>
         <div class="full"><label>Mô tả</label><textarea id="new-desc" placeholder="Mô tả ngắn..."></textarea></div>
         <div class="full">
-          <label>Ảnh món</label>
-          <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.6rem">
-            <input type="file" id="new-img-file" accept="image/*" onchange="previewNewImg(this)" style="flex:1;margin:0;padding:.4rem;font-size:.78rem"/>
+          <label>Link ảnh ImgBB</label>
+          <input type="text" id="new-img" placeholder="https://i.ibb.co/..."/>
+          <div style="font-size:.72rem;color:#888;margin-top:-.4rem;margin-bottom:.5rem">
+            Upload ảnh tại <a href="https://imgbb.com" target="_blank" style="color:var(--blue)">imgbb.com</a> → copy "Direct link" → paste vào đây
           </div>
-          <div id="new-img-preview" style="display:none;margin-bottom:.5rem">
-            <img id="new-img-preview-img" style="width:80px;height:100px;object-fit:cover;border-radius:10px;border:2px solid var(--blue-mid)"/>
-            <button onclick="clearNewImg()" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:.85rem;margin-left:.4rem;vertical-align:top">✕ Xoá</button>
-          </div>
-          <input type="hidden" id="new-img" value=""/>
         </div>
       </div>
       <button class="btn btn-sm" onclick="addMenuItem()">+ Thêm món</button>
@@ -572,7 +568,7 @@ function renderMenuS(){
   if(!menuS.length){document.getElementById('menu-list').innerHTML='<div class="empty">Chưa có món</div>';return;}
   document.getElementById('menu-list').innerHTML=menuS.map(function(it,i){
     var p='';if(it.price_s)p+=it.price_s+'k ';if(it.price_l)p+='/ '+it.price_l+'k';
-    var thumb=it.image?'<img src="'+it.image+'" style="width:40px;height:50px;object-fit:cover;border-radius:8px;flex-shrink:0;margin-right:.5rem;cursor:pointer" loading="lazy" onclick="editItemImage('+i+')" title="Đổi ảnh">':'<div style="width:40px;height:50px;border-radius:8px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;margin-right:.5rem;cursor:pointer" onclick="editItemImage('+i+')" title="Thêm ảnh">📷</div>';
+    var thumb=it.image?'<img src="'+it.image+'" style="width:40px;height:50px;object-fit:cover;border-radius:8px;flex-shrink:0;margin-right:.5rem;cursor:pointer" loading="lazy" onclick="editItemImage('+i+')" title="Đổi ảnh — nhấn để đổi link">':'<div style="width:40px;height:50px;border-radius:8px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;margin-right:.5rem;cursor:pointer" onclick="editItemImage('+i+')" title="Thêm ảnh">📷</div>';
     return'<div class="mrow">'+thumb+'<div class="mr-name"><div class="mr-n">'+it.name+'</div><div class="mr-cat">'+it.category+'</div></div>'+
       '<div class="mr-price">'+p+'</div>'+
       '<label class="toggle"><input type="checkbox"'+(it.available?' checked':'')+' onchange="menuS['+i+'].available=this.checked"/><span class="slider"></span></label>'+
@@ -582,7 +578,18 @@ function renderMenuS(){
 }
 function delItem(i){if(confirm('Xoá "'+menuS[i].name+'"?')){menuS.splice(i,1);renderMenuS();}}
 async function saveMenu(){
-  var d=await api({action:'saveMenu',password:PWD,items:JSON.stringify(menuS)});
+  al('menu-alert','⏳ Đang lưu menu...','ok');
+  // Lưu từng ảnh riêng lẻ trước (updateItemImage)
+  for(var i=0;i<menuS.length;i++){
+    if(menuS[i].image){
+      await api({action:'updateItemImage',password:PWD,itemId:menuS[i].id,imageUrl:menuS[i].image});
+    }
+  }
+  // Lưu toàn bộ menu (không ảnh, URL ngắn hơn)
+  var itemsNoImg=menuS.map(function(it){
+    return {id:it.id,name:it.name,category:it.category,price_s:it.price_s,price_l:it.price_l,description:it.description,available:it.available,image:it.image||''};
+  });
+  var d=await api({action:'saveMenu',password:PWD,items:JSON.stringify(itemsNoImg)});
   al('menu-alert',d.ok?'✅ Đã lưu menu!':'Lỗi: '+d.error,d.ok?'ok':'err');
 }
 function addMenuItem(){
@@ -635,32 +642,21 @@ function uploadToImgBB(file,cb){
     .catch(function(e){al('menu-alert','Lỗi kết nối ImgBB: '+e.message,'err');});
 }
 function editItemImage(i){
-  var input=document.createElement('input');
-  input.type='file';input.accept='image/*';
-  input.onchange=function(){
-    if(!input.files[0])return;
-    al('menu-alert','⏳ Đang upload ảnh...','ok');
-    uploadToImgBB(input.files[0],function(url){
-      // Lưu thẳng vào Sheet chỉ với itemId + imageUrl (URL ngắn, không bị lỗi)
-      api({
-        action:'updateItemImage',
-        password:PWD,
-        itemId:menuS[i].id,
-        imageUrl:url
-      }).then(function(d){
-        if(d.ok){
-          menuS[i].image=url;
-          renderMenuS();
-          al('menu-alert','✅ Ảnh đã lưu cho "'+d.name+'"!','ok');
-        } else {
-          al('menu-alert','Lỗi lưu ảnh: '+d.error,'err');
-        }
-      }).catch(function(e){
-        al('menu-alert','Lỗi kết nối: '+e.message,'err');
-      });
-    });
-  };
-  input.click();
+  var current=menuS[i].image||'';
+  var url=prompt('Paste link ảnh ImgBB cho "'+menuS[i].name+'":\n(Upload tại imgbb.com → copy Direct link)\n\nLink hiện tại: '+(current||'chưa có'),current);
+  if(url===null)return; // cancelled
+  url=url.trim();
+  if(!url){
+    if(confirm('Xoá ảnh của "'+menuS[i].name+'"?')){
+      menuS[i].image='';
+      renderMenuS();
+      al('menu-alert','Đã xoá ảnh. Nhấn 💾 Lưu để cập nhật.','ok');
+    }
+    return;
+  }
+  menuS[i].image=url;
+  renderMenuS();
+  al('menu-alert','✅ Đã cập nhật ảnh cho "'+menuS[i].name+'". Nhấn 💾 Lưu để lưu vào Sheet.','ok');
 }
 
 // Inject logo
