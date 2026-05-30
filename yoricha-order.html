@@ -327,12 +327,15 @@ window.addEventListener('DOMContentLoaded',function(){
 
 function fmt(n){return Number(n).toLocaleString('vi-VN')+'đ';}
 async function api(p){
-  try{
-    var res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});
-    return res.json();
-  }catch(e){
-    return(await fetch(API+'?'+new URLSearchParams(p))).json();
+  // Encode params - complex values (arrays/objects) as JSON strings
+  var params=new URLSearchParams();
+  for(var k in p){
+    var v=p[k];
+    if(typeof v==='object')params.set(k,JSON.stringify(v));
+    else params.set(k,String(v));
   }
+  var res=await fetch(API+'?'+params.toString());
+  return res.json();
 }
 function al(id,msg,type){var e=document.getElementById(id);e.textContent=msg;e.className='alert '+type;e.style.display='block';setTimeout(function(){e.style.display='none';},5000);}
 
