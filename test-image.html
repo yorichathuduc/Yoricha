@@ -116,21 +116,23 @@ async function testSaveMenu(){
   if(!imgUrl){alert('Cần URL ảnh từ bước 1!');return;}
   var btn=document.getElementById('btn-save');
   btn.disabled=true;btn.textContent='⏳ Saving...';
-  log('Saving menu with image URL length: '+imgUrl.length);
+  log('Testing updateItemImage with URL: '+imgUrl.substring(0,60)+'...');
   try{
-    // First get current menu
+    // Get first item ID
     var menuData=await apiGet({action:'getMenu'});
     if(!menuData.ok){setStatus('save-status','❌ getMenu failed: '+menuData.error,'err');return;}
-    var items=menuData.menu;
-    log('Menu items count: '+items.length);
-    // Set image on first item (Matcha Latte)
-    if(items.length>0){
-      items[0].image=imgUrl;
-      log('Setting image on: '+items[0].name+' = '+imgUrl.substring(0,50)+'...');
-    }
-    var saveRes=await apiPost({action:'saveMenu',password:'1234',items:JSON.stringify(items)});
+    var firstItem=menuData.menu[0];
+    log('Updating image for: '+firstItem.name+' ('+firstItem.id+')');
+    // Use new updateItemImage action - short URL, no CORS issue
+    var saveRes=await apiGet({
+      action:'updateItemImage',
+      password:'1234',
+      itemId:firstItem.id,
+      imageUrl:imgUrl
+    });
+    log('Save result: '+JSON.stringify(saveRes));
     if(saveRes.ok){
-      setStatus('save-status','✅ Lưu thành công! Kiểm tra Sheet cột H hàng 2','ok');
+      setStatus('save-status','✅ Lưu thành công cho "'+saveRes.name+'"! Kiểm tra Sheet cột H','ok');
     } else {
       setStatus('save-status','❌ Save failed: '+saveRes.error,'err');
     }
