@@ -326,7 +326,14 @@ window.addEventListener('DOMContentLoaded',function(){
 });
 
 function fmt(n){return Number(n).toLocaleString('vi-VN')+'đ';}
-async function api(p){return(await fetch(API+'?'+new URLSearchParams(p))).json();}
+async function api(p){
+  try{
+    var res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});
+    return res.json();
+  }catch(e){
+    return(await fetch(API+'?'+new URLSearchParams(p))).json();
+  }
+}
 function al(id,msg,type){var e=document.getElementById(id);e.textContent=msg;e.className='alert '+type;e.style.display='block';setTimeout(function(){e.style.display='none';},5000);}
 
 function show(id){
