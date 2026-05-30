@@ -641,12 +641,22 @@ function editItemImage(i){
     if(!input.files[0])return;
     al('menu-alert','⏳ Đang upload ảnh...','ok');
     uploadToImgBB(input.files[0],function(url){
-      menuS[i].image=url;
-      renderMenuS();
-      // Tự động lưu lên Sheet ngay
-      api({action:'saveMenu',password:PWD,items:JSON.stringify(menuS)}).then(function(d){
-        if(d.ok){al('menu-alert','✅ Ảnh đã lưu cho "'+menuS[i].name+'"!','ok');}
-        else{al('menu-alert','Upload OK nhưng lưu Sheet lỗi: '+d.error,'err');}
+      // Lưu thẳng vào Sheet chỉ với itemId + imageUrl (URL ngắn, không bị lỗi)
+      api({
+        action:'updateItemImage',
+        password:PWD,
+        itemId:menuS[i].id,
+        imageUrl:url
+      }).then(function(d){
+        if(d.ok){
+          menuS[i].image=url;
+          renderMenuS();
+          al('menu-alert','✅ Ảnh đã lưu cho "'+d.name+'"!','ok');
+        } else {
+          al('menu-alert','Lỗi lưu ảnh: '+d.error,'err');
+        }
+      }).catch(function(e){
+        al('menu-alert','Lỗi kết nối: '+e.message,'err');
       });
     });
   };
