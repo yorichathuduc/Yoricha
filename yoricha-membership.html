@@ -138,7 +138,14 @@ footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
 
 <script>
 var API='https://script.google.com/macros/s/AKfycbxs-jt4COAvW__D7UFp1gmeiCbPJE7zNCqn7pEGOKUKDYmbcht1Wm765sxZcWH9gF4A/exec';
-async function api(p){return(await fetch(API+'?'+new URLSearchParams(p))).json();}
+async function api(p){
+  try{
+    var res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});
+    return res.json();
+  }catch(e){
+    return(await fetch(API+'?'+new URLSearchParams(p))).json();
+  }
+}
 function al(id,msg,type){var e=document.getElementById(id);e.textContent=msg;e.className='alert '+type;e.style.display='block';setTimeout(function(){e.style.display='none';},5000);}
 function swTab(el,name){
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
