@@ -364,7 +364,14 @@ var IMGBB_KEY='a0f2439e546f124d0aaa005c639c351b';
 var PWD='',orders=[],menuS=[],soCart=[],soMember=null,soCurItem=null,soCurSize=null,soCurQty=1,autoT=null;
 
 function fmt(n){return Number(n).toLocaleString('vi-VN')+'đ';}
-async function api(p){return(await fetch(API+'?'+new URLSearchParams(p))).json();}
+async function api(p){
+  try{
+    var res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});
+    return res.json();
+  }catch(e){
+    return(await fetch(API+'?'+new URLSearchParams(p))).json();
+  }
+}
 function al(id,msg,type){var e=document.getElementById(id);e.textContent=msg;e.className='alert '+type;e.style.display='block';setTimeout(function(){e.style.display='none';},5000);}
 
 // ── LOGIN ─────────────────────────────────────────────────
