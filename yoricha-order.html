@@ -213,12 +213,33 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
     </div>
   </div>
 
-  <!-- PAYMENT -->
   <div class="card">
-    <div class="card-title">💳 Hình thức thanh toán</div>
+    <div class="card-title">📝 Thông tin đặt hàng</div>
+    <label>Tên</label>
+    <input type="text" id="inp-name" placeholder="Nguyễn Văn A" oninput="if(payMode==='transfer')updateQR()"/>
+    <div id="cphone-wrap" style="display:none">
+    <label>Số điện thoại <span style="color:var(--red)">*</span></label>
+    <input type="tel" id="inp-cphone" placeholder="0901 234 567" inputmode="tel"/>
+    </div>
+    <label>Ghi chú chung</label>
+    <textarea id="inp-note" placeholder="Ghi chú thêm..."></textarea>
+    <div class="total-row"><span>Tổng cộng</span><span id="cart-total-final">0đ</span></div>
+  </div>
+
+  <!-- PAYMENT - cuối cùng sau khi thấy tổng tiền -->
+  <div class="card">
+    <div class="card-title">💳 Thanh toán</div>
     <div class="pay-opts">
-      <div class="pay-opt on" onclick="selPay(this,'cash')">💵<br/>Tiền mặt</div>
-      <div class="pay-opt" onclick="selPay(this,'transfer')">📱<br/>Chuyển khoản</div>
+      <div class="pay-opt on" onclick="selPay(this,'cash')">
+        <div style="font-size:1.5rem;margin-bottom:.3rem">💵</div>
+        <div>Tiền mặt</div>
+        <div style="font-size:.68rem;color:#888;font-weight:400;margin-top:.15rem">Thanh toán tại quán</div>
+      </div>
+      <div class="pay-opt" onclick="selPay(this,'transfer')">
+        <div style="font-size:1.5rem;margin-bottom:.3rem">📱</div>
+        <div>Chuyển khoản</div>
+        <div style="font-size:.68rem;color:#888;font-weight:400;margin-top:.15rem">Quét QR ngay bên dưới</div>
+      </div>
     </div>
     <div id="pay-qr" style="display:none">
       <div class="qr-wrap">
@@ -231,23 +252,13 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
         <div class="qr-note">Nội dung: <strong id="qr-desc"></strong></div>
         <button class="qr-copy" onclick="copyDesc()">📋 Copy nội dung CK</button>
       </div>
-      <div style="font-size:.75rem;color:#888;text-align:center;margin-bottom:.5rem">
-        Quét QR bằng app ngân hàng hoặc ví điện tử · Số tiền & nội dung đã điền sẵn
+      <div style="font-size:.72rem;color:#888;text-align:center;margin-bottom:.5rem">
+        Quét QR bằng app ngân hàng · Số tiền & nội dung đã điền sẵn
       </div>
     </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">📝 Thông tin đặt hàng</div>
-    <label>Tên</label>
-    <input type="text" id="inp-name" placeholder="Nguyễn Văn A" oninput="if(payMode==='transfer')updateQR()"/>
-    <label>Số điện thoại <span style="color:var(--red)">*</span></label>
-    <input type="tel" id="inp-cphone" placeholder="0901 234 567" inputmode="tel"/>
-    <label>Ghi chú chung</label>
-    <textarea id="inp-note" placeholder="Ghi chú thêm..."></textarea>
-    <div class="total-row"><span>Tổng cộng</span><span id="cart-total-final">0đ</span></div>
     <div id="order-alert" class="alert"></div>
     <button class="btn" id="btn-order" onclick="placeOrder()">Đặt hàng 🍵</button>
+  </div>
   </div>
 </div>
 
@@ -523,6 +534,8 @@ function selDel(el,mode){
   document.getElementById('del-dine').style.display=mode==='dine'?'block':'none';
   document.getElementById('ship-fee-box').style.display='none';
   document.querySelectorAll('.dist-opt').forEach(function(o){o.classList.remove('on');});
+  // Chỉ hiện ô SĐT khi pick-up hoặc ship
+  document.getElementById('cphone-wrap').style.display=(mode==='pickup'||mode==='ship')?'block':'none';
   updDistLabels();
   calcTotal();
 }
@@ -591,7 +604,7 @@ async function placeOrder(){
   var name=document.getElementById('inp-name').value.trim();
   if(!name){al('order-alert','Vui lòng nhập tên.','err');return;}
   var cphone=document.getElementById('inp-cphone').value.trim();
-  if(!cphone&&delMode!=='dine'){al('order-alert','Vui lòng nhập số điện thoại.','err');return;}
+  if(!cphone&&(delMode==='pickup'||delMode==='ship')){al('order-alert','Vui lòng nhập số điện thoại để tiện liên hệ.','err');return;}
   if(delMode==='pickup'&&!document.getElementById('inp-pickuptime').value.trim()){al('order-alert','Nhập giờ đến lấy.','err');return;}
   if(delMode==='ship'&&!document.getElementById('inp-address').value.trim()){al('order-alert','Nhập địa chỉ giao hàng.','err');return;}
   if(delMode==='ship'&&!document.querySelector('.dist-opt.on')){al('order-alert','Chọn khoảng cách để tính phí ship.','err');return;}
