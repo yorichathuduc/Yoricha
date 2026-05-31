@@ -213,10 +213,36 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
     </div>
   </div>
 
+  <!-- PAYMENT -->
+  <div class="card">
+    <div class="card-title">💳 Hình thức thanh toán</div>
+    <div class="pay-opts">
+      <div class="pay-opt on" onclick="selPay(this,'cash')">💵<br/>Tiền mặt</div>
+      <div class="pay-opt" onclick="selPay(this,'transfer')">📱<br/>Chuyển khoản</div>
+    </div>
+    <div id="pay-qr" style="display:none">
+      <div class="qr-wrap">
+        <img id="qr-img" src="" alt="QR Chuyển khoản"/>
+        <div class="qr-bank">
+          <strong>Vietcombank</strong> · 1043660648<br/>
+          VO NGUYEN THANH PHUONG
+        </div>
+        <div class="qr-amount" id="qr-amount"></div>
+        <div class="qr-note">Nội dung: <strong id="qr-desc"></strong></div>
+        <button class="qr-copy" onclick="copyDesc()">📋 Copy nội dung CK</button>
+      </div>
+      <div style="font-size:.75rem;color:#888;text-align:center;margin-bottom:.5rem">
+        Quét QR bằng app ngân hàng hoặc ví điện tử · Số tiền & nội dung đã điền sẵn
+      </div>
+    </div>
+  </div>
+
   <div class="card">
     <div class="card-title">📝 Thông tin đặt hàng</div>
     <label>Tên</label>
-    <input type="text" id="inp-name" placeholder="Nguyễn Văn A"/>
+    <input type="text" id="inp-name" placeholder="Nguyễn Văn A" oninput="if(payMode==='transfer')updateQR()"/>
+    <label>Số điện thoại <span style="color:var(--red)">*</span></label>
+    <input type="tel" id="inp-cphone" placeholder="0901 234 567" inputmode="tel"/>
     <label>Ghi chú chung</label>
     <textarea id="inp-note" placeholder="Ghi chú thêm..."></textarea>
     <div class="total-row"><span>Tổng cộng</span><span id="cart-total-final">0đ</span></div>
@@ -314,6 +340,9 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
 <script>
 var API='https://script.google.com/macros/s/AKfycbxs-jt4COAvW__D7UFp1gmeiCbPJE7zNCqn7pEGOKUKDYmbcht1Wm765sxZcWH9gF4A/exec';
 var MAPS_KEY='AIzaSyDKG3-6nsURa-1MT8gtxgLWZR64UuywjMQ';
+var BANK_ID='VCB';           // Vietcombank
+var BANK_ACCOUNT='1043660648';
+var BANK_NAME='VO NGUYEN THANH PHUONG';
 var SHOP_ADDR='24/10 Đường số 6, Linh Chiểu, Thủ Đức, TP.HCM';
 var menu=[],cart=[],member=null,curItem=null,curSize=null,curQty=1,pollT=null;
 var delMode='pickup',shipFee=0;
@@ -476,6 +505,7 @@ function renderCart(){
   document.getElementById('cart-subtotal').textContent=fmt(sub);
   calcTotal();
   if(member&&!document.getElementById('inp-name').value)document.getElementById('inp-name').value=member.name;
+  if(member&&!document.getElementById('inp-cphone').value)document.getElementById('inp-cphone').value=member.phone.replace(/^84/,'0');
 }
 function calcTotal(){
   var sub=cart.reduce(function(s,i){return s+i.price*i.qty;},0);
@@ -518,15 +548,58 @@ function selDist(el,range,fee){
   calcTotal();
 }
 
+// ── PAYMENT ──────────────────────────────────────────────────
+var payMode='cash';
+function selPay(el,mode){
+  document.querySelectorAll('.pay-opt').forEach(function(o){o.classList.remove('on');});
+  el.classList.add('on');
+  payMode=mode;
+  if(mode==='transfer'){
+    updateQR();
+    document.getElementById('pay-qr').style.display='block';
+  } else {
+    document.getElementById('pay-qr').style.display='none';
+  }
+}
+function updateQR(){
+  var total=cart.reduce(function(s,i){return s+i.price*i.qty;},0)+shipFee;
+  var name=document.getElementById('inp-name').value.trim()||'Khach';
+  var desc='Yoricha '+name;
+  document.getElementById('qr-amount').textContent=fmt(total);
+  document.getElementById('qr-desc').textContent=desc;
+  // VietQR API - tạo QR tự động với số tiền và nội dung
+  var qrUrl='https://img.vietqr.io/image/'+BANK_ID+'-'+BANK_ACCOUNT+'-compact2.png'
+    +'?amount='+total
+    +'&addInfo='+encodeURIComponent(desc)
+    +'&accountName='+encodeURIComponent(BANK_NAME);
+  document.getElementById('qr-img').src=qrUrl;
+}
+function copyDesc(){
+  var desc=document.getElementById('qr-desc').textContent;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(desc).then(function(){
+      alert('✅ Đã copy: '+desc);
+    });
+  } else {
+    prompt('Copy nội dung này:',desc);
+  }
+}
+
 // ── ORDER ────────────────────────────────────────────────────
 async function placeOrder(){
   if(!cart.length){al('order-alert','Giỏ hàng trống!','err');return;}
   var name=document.getElementById('inp-name').value.trim();
   if(!name){al('order-alert','Vui lòng nhập tên.','err');return;}
+  var cphone=document.getElementById('inp-cphone').value.trim();
+  if(!cphone&&delMode!=='dine'){al('order-alert','Vui lòng nhập số điện thoại.','err');return;}
   if(delMode==='pickup'&&!document.getElementById('inp-pickuptime').value.trim()){al('order-alert','Nhập giờ đến lấy.','err');return;}
   if(delMode==='ship'&&!document.getElementById('inp-address').value.trim()){al('order-alert','Nhập địa chỉ giao hàng.','err');return;}
   if(delMode==='ship'&&!document.querySelector('.dist-opt.on')){al('order-alert','Chọn khoảng cách để tính phí ship.','err');return;}
   var note=document.getElementById('inp-note').value.trim();
+  var cphone=document.getElementById('inp-cphone').value.trim();
+  var payLabel=payMode==='transfer'?'[Chuyển khoản]':'[Tiền mặt]';
+  var phoneLabel=cphone?'[SĐT:'+cphone+']':'';
+  note=payLabel+' '+phoneLabel+' '+note;
   if(delMode==='pickup')note='[Pick-up lúc '+document.getElementById('inp-pickuptime').value+'] '+note;
   if(delMode==='ship')note='[Ship đến: '+document.getElementById('inp-address').value+' | Phí: '+(shipFee===0?'Miễn phí':fmt(shipFee))+'] '+note;
   if(delMode==='dine')note='[Uống tại chỗ] '+note;
@@ -581,7 +654,7 @@ async function pollStatus(oid){
     }
   }catch(e){}
 }
-function resetAll(){if(pollT)clearInterval(pollT);member=null;shipFee=0;document.getElementById('inp-phone').value='';document.getElementById('inp-name').value='';document.getElementById('inp-note').value='';document.getElementById('member-preview').innerHTML='';document.getElementById('mst-wrap').style.display='none';show('pg-phone');}
+function resetAll(){if(pollT)clearInterval(pollT);member=null;shipFee=0;document.getElementById('inp-phone').value='';document.getElementById('inp-name').value='';document.getElementById('inp-cphone').value='';document.getElementById('inp-note').value='';document.getElementById('member-preview').innerHTML='';document.getElementById('mst-wrap').style.display='none';show('pg-phone');}
 </script>
 </body>
 </html>
