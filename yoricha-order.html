@@ -229,17 +229,9 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
   <!-- PAYMENT - cuối cùng sau khi thấy tổng tiền -->
   <div class="card">
     <div class="card-title">💳 Thanh toán</div>
-    <div class="pay-opts">
-      <div class="pay-opt on" onclick="selPay(this,'cash')">
-        <div style="font-size:1.5rem;margin-bottom:.3rem">💵</div>
-        <div>Tiền mặt</div>
-        <div style="font-size:.68rem;color:#888;font-weight:400;margin-top:.15rem">Thanh toán tại quán</div>
-      </div>
-      <div class="pay-opt" onclick="selPay(this,'transfer')">
-        <div style="font-size:1.5rem;margin-bottom:.3rem">📱</div>
-        <div>Chuyển khoản</div>
-        <div style="font-size:.68rem;color:#888;font-weight:400;margin-top:.15rem">Quét QR ngay bên dưới</div>
-      </div>
+    <div class="del-opts">
+      <div class="del-opt on" onclick="selPay(this,'cash')">💵<br/>Tiền mặt</div>
+      <div class="del-opt" onclick="selPay(this,'transfer')">📱<br/>Chuyển khoản</div>
     </div>
     <div id="pay-qr" style="display:none">
       <div class="qr-wrap">
@@ -564,7 +556,7 @@ function selDist(el,range,fee){
 // ── PAYMENT ──────────────────────────────────────────────────
 var payMode='cash';
 function selPay(el,mode){
-  document.querySelectorAll('.pay-opt').forEach(function(o){o.classList.remove('on');});
+  el.parentNode.querySelectorAll('.del-opt').forEach(function(o){o.classList.remove('on');});
   el.classList.add('on');
   payMode=mode;
   if(mode==='transfer'){
