@@ -414,13 +414,25 @@ function renderOrders(){
   document.getElementById('orders-list').innerHTML=list.map(function(o){
     var cls=cm[o.status]||'';
     var mem=o.phone?'<span class="mbadge">TV</span>':'';
-    var note=o.note&&o.note!='undefined'&&o.note!='null'?'<div class="onote">📝 '+o.note+'</div>':'';
+    // Extract phone from note [SĐT:xxx]
+    var phoneMatch=o.note?o.note.match(/\[SĐT:([^\]]+)\]/):null;
+    var phoneDisplay=phoneMatch?'<span style="color:var(--green2);font-size:.72rem;font-weight:700;margin-left:.4rem">📞 '+phoneMatch[1]+'</span>':'';
+    // Extract payment method
+    var payMatch=o.note?o.note.match(/\[(Tiền mặt|Chuyển khoản)\]/):null;
+    var payDisplay=payMatch?'<span style="font-size:.68rem;font-weight:700;padding:.1rem .45rem;border-radius:6px;margin-left:.3rem;'+(payMatch[1]==='Chuyển khoản'?'background:#e8f0fb;color:#3971b8':'background:#e6f7ed;color:#1a7f3c')+'">'+payMatch[1]+'</span>':'';
+    // Clean note for display
+    var cleanNote=o.note?o.note.replace(/\[(Tiền mặt|Chuyển khoản)\]/,'').replace(/\[SĐT:[^\]]+\]/,'').replace(/\[Pick-up[^\]]*\]/,'').replace(/\[Ship[^\]]*\]/,'').replace(/\[Tại quầy[^\]]*\]/,'').replace(/\[Uống tại chỗ[^\]]*\]/,'').trim():'';
+    var note=cleanNote?'<div class="onote">📝 '+cleanNote+'</div>':'';
+
     var btns='';
     if(o.status==='Mới')btns='<button class="btn btn-sm btn-orange" onclick="updOrd(\''+o.orderID+'\',\'Đang làm\')">▶ Bắt đầu làm</button>';
     if(o.status==='Đang làm')btns='<button class="btn btn-sm btn-green" onclick="updOrd(\''+o.orderID+'\',\'Xong\')">✅ Xong rồi</button>';
     return'<div class="ocard '+cls+'"><div class="ohead"><div class="oid">#'+o.orderID+'</div><div class="otime">'+o.createdAt+'</div></div>'+
-      '<div class="oname">'+o.name+mem+'</div>'+
-      '<div class="oitems">'+o.items+'</div>'+note+
+      '<div class="oname">'+o.name+mem+phoneDisplay+payDisplay+'</div>'+
+      '<div style="font-size:.72rem;color:#666;margin-bottom:.2rem">'+
+      (o.note&&o.note.indexOf('Pick-up')>-1?'🏃 Pick-up':o.note&&o.note.indexOf('Ship đến')>-1?'🛵 Giao hàng':o.note&&o.note.indexOf('Tại quầy')>-1?'🪑 Tại quầy':'')+
+      '</div>'+
+    '<div class="oitems">'+o.items+'</div>'+note+
       '<div class="ofoot"><div class="oprice">'+fmt(o.total)+'</div><span class="opill '+cls+'">'+o.status+'</span></div>'+
       (o.status!=='Xong'?'<div class="row-btns">'+btns+'</div>':'')+
       '</div>';
