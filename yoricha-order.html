@@ -237,35 +237,17 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
       <div class="qr-wrap">
         <img id="qr-img" src="" alt="QR Chuyển khoản"/>
         <div class="qr-bank">
-          <strong>Vietcombank</strong> · 1043660648<br/>
-          VO NGUYEN THANH PHUONG
+          <strong>Vietcombank</strong> 
+          STK: 1043660648<br/> <button class="1043660648-copy" onclick="copy1043660648()">📋 Copy</button></div>
+          Chủ tài khoản: VO NGUYEN THANH PHUONG
         </div>
         <div class="qr-amount" id="qr-amount"></div>
-        <div class="qr-note">Nội dung: <strong id="qr-desc"></strong> <button class="qr-copy" onclick="copyDesc()">📋 Copy</button></div>
-      </div>
+        <div class="qr-note">Nội dung: <strong id="qr-desc"></strong> 
       <div class="qr-hint">
-        📷 <strong>Cách 1:</strong> Mở app ngân hàng → Quét QR ở trên<br/>
-        📱 <strong>Cách 2:</strong> Nhấn nút app bên dưới để mở thẳng
+        📷 <strong>Cách 1:</strong> Tải QR về máy → Mở app ngân hàng → Upload QR thanh toán<br/>
+        📱 <strong>Cách 2:</strong> Mở camera → Quét QR thanh toán tại tiệm
       </div>
-      <!-- DEEP LINK BUTTONS -->
-      <div class="app-btns" id="app-btns">
-        <a class="app-btn" id="btn-vcb" href="#" onclick="openBank('vcb');return false;">
-          <span style="font-size:1.1rem">🏦</span>
-          <span>VCB Digibank</span>
-        </a>
-        <a class="app-btn" id="btn-momo" href="#" onclick="openBank('momo');return false;">
-          <span style="font-size:1.1rem">💜</span>
-          <span>Momo</span>
-        </a>
-        <a class="app-btn" id="btn-zalopay" href="#" onclick="openBank('zalopay');return false;">
-          <span style="font-size:1.1rem">💙</span>
-          <span>ZaloPay</span>
-        </a>
-        <a class="app-btn app-btn-full" id="btn-vcbpay" href="#" onclick="openBank('vcbpay');return false;">
-          <span style="font-size:1.1rem">🔗</span>
-          <span>Mở VietQR (app bất kỳ)</span>
-        </a>
-      </div>
+      
     </div>
     <div id="order-alert" class="alert"></div>
     <button class="btn" id="btn-order" onclick="placeOrder()">Đặt hàng 🍵</button>
