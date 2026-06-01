@@ -241,11 +241,30 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
           VO NGUYEN THANH PHUONG
         </div>
         <div class="qr-amount" id="qr-amount"></div>
-        <div class="qr-note">Nội dung: <strong id="qr-desc"></strong></div>
-        <button class="qr-copy" onclick="copyDesc()">📋 Copy nội dung CK</button>
+        <div class="qr-note">Nội dung: <strong id="qr-desc"></strong> <button class="qr-copy" onclick="copyDesc()">📋 Copy</button></div>
       </div>
-      <div style="font-size:.72rem;color:#888;text-align:center;margin-bottom:.5rem">
-        Quét QR bằng app ngân hàng · Số tiền & nội dung đã điền sẵn
+      <div class="qr-hint">
+        📷 <strong>Cách 1:</strong> Mở app ngân hàng → Quét QR ở trên<br/>
+        📱 <strong>Cách 2:</strong> Nhấn nút app bên dưới để mở thẳng
+      </div>
+      <!-- DEEP LINK BUTTONS -->
+      <div class="app-btns" id="app-btns">
+        <a class="app-btn" id="btn-vcb" href="#" onclick="openBank('vcb');return false;">
+          <span style="font-size:1.1rem">🏦</span>
+          <span>VCB Digibank</span>
+        </a>
+        <a class="app-btn" id="btn-momo" href="#" onclick="openBank('momo');return false;">
+          <span style="font-size:1.1rem">💜</span>
+          <span>Momo</span>
+        </a>
+        <a class="app-btn" id="btn-zalopay" href="#" onclick="openBank('zalopay');return false;">
+          <span style="font-size:1.1rem">💙</span>
+          <span>ZaloPay</span>
+        </a>
+        <a class="app-btn app-btn-full" id="btn-vcbpay" href="#" onclick="openBank('vcbpay');return false;">
+          <span style="font-size:1.1rem">🔗</span>
+          <span>Mở VietQR (app bất kỳ)</span>
+        </a>
       </div>
     </div>
     <div id="order-alert" class="alert"></div>
@@ -572,12 +591,65 @@ function updateQR(){
   var desc='Yoricha '+name;
   document.getElementById('qr-amount').textContent=fmt(total);
   document.getElementById('qr-desc').textContent=desc;
-  // VietQR API - tạo QR tự động với số tiền và nội dung
-  var qrUrl='https://img.vietqr.io/image/'+BANK_ID+'-'+BANK_ACCOUNT+'-compact2.png'
+  // VietQR API - QR to, rõ
+  var qrUrl='https://img.vietqr.io/image/'+BANK_ID+'-'+BANK_ACCOUNT+'-print.png'
     +'?amount='+total
     +'&addInfo='+encodeURIComponent(desc)
     +'&accountName='+encodeURIComponent(BANK_NAME);
   document.getElementById('qr-img').src=qrUrl;
+  // Update deep links
+  updateDeepLinks(total, desc);
+}
+
+function updateDeepLinks(total, desc){
+  var acc=BANK_ACCOUNT;
+  var encDesc=encodeURIComponent(desc);
+  // Momo deeplink
+  var momoLink='momo://app?action=payWithATM'
+    +'&bankCode=VCB&accountNumber='+acc
+    +'&amount='+total+'&description='+encDesc;
+  document.getElementById('btn-momo').href=momoLink;
+  // ZaloPay deeplink
+  var zaloLink='zalopay://transfer?bankCode=VCB&bankAccount='+acc
+    +'&amount='+total+'&description='+encDesc;
+  document.getElementById('btn-zalopay').href=zaloLink;
+  // VCB Digibank deeplink
+  var vcbLink='vcb://transfer?toAccount='+acc+'&amount='+total+'&description='+encDesc;
+  document.getElementById('btn-vcb').href=vcbLink;
+  // Generic bank transfer (VietQR intent)
+  var genericLink='https://dl.vietqr.io/pay?app=vcb&ba='+acc
+    +'&amount='+total+'&tn='+encDesc+'&mc=970436';
+  document.getElementById('btn-vcbpay').href=genericLink;
+}
+
+function openBank(app){
+  var total=cart.reduce(function(s,i){return s+i.price*i.qty;},0)+shipFee;
+  var name=document.getElementById('inp-name').value.trim()||'Khach';
+  var desc='Yoricha '+name;
+  var acc=BANK_ACCOUNT;
+  var encDesc=encodeURIComponent(desc);
+  var links={
+    vcb:    'vcb://transfer?toAccount='+acc+'&amount='+total+'&description='+encDesc,
+    momo:   'momo://app?action=payWithATM&bankCode=VCB&accountNumber='+acc+'&amount='+total+'&description='+encDesc,
+    zalopay:'zalopay://transfer?bankCode=VCB&bankAccount='+acc+'&amount='+total+'&description='+encDesc,
+    vcbpay: 'https://dl.vietqr.io/pay?app=vcb&ba='+acc+'&amount='+total+'&tn='+encDesc+'&mc=970436'
+  };
+  var url=links[app];
+  if(!url)return;
+  // Try deep link first, fallback to store if app not installed
+  var fallbacks={
+    vcb:    'https://apps.apple.com/vn/app/vcb-digibank/id1400898748',
+    momo:   'https://momo.vn/download',
+    zalopay:'https://zalopay.vn/tong-quan-zalopay',
+    vcbpay: url
+  };
+  window.location.href=url;
+  // If deep link fails after 2s, open fallback
+  setTimeout(function(){
+    if(document.visibilityState!=='hidden'){
+      window.open(fallbacks[app],'_blank');
+    }
+  },2000);
 }
 function copyDesc(){
   var desc=document.getElementById('qr-desc').textContent;
