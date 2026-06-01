@@ -674,10 +674,246 @@ function editItemImage(i){
   al('menu-alert','✅ Đã cập nhật ảnh cho "'+menuS[i].name+'". Nhấn 💾 Lưu để lưu vào Sheet.','ok');
 }
 
-// Inject logo
+// ── NOTIFICATION ─────────────────────────────────────────────
+var lastOrderIDs=[];
+var notifEnabled=false;
+
+// Xin quyền browser notification khi đăng nhập
+function requestNotifPermission(){
+  if('Notification' in window && Notification.permission==='default'){
+    Notification.requestPermission();
+  }
+}
+
+function playBeep(){
+  try{
+    var ctx=new(window.AudioContext||window.webkitAudioContext)();
+    [[880,0,0.12],[1046,0.18,0.12],[1318,0.36,0.25]].forEach(function(b){
+      var o=ctx.createOscillator();var g=ctx.createGain();
+      o.connect(g);g.connect(ctx.destination);
+      o.frequency.value=b[0];o.type='sine';
+      g.gain.setValueAtTime(0,ctx.currentTime+b[1]);
+      g.gain.linearRampToValueAtTime(0.5,ctx.currentTime+b[1]+0.04);
+      g.gain.linearRampToValueAtTime(0,ctx.currentTime+b[1]+b[2]);
+      o.start(ctx.currentTime+b[1]);
+      o.stop(ctx.currentTime+b[1]+b[2]+0.05);
+    });
+  }catch(e){}
+}
+
+function speak(text){
+  if(!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(text);
+  // Ưu tiên giọng Việt
+  var voices=window.speechSynthesis.getVoices();
+  var viVoice=voices.find(function(v){return v.lang.indexOf('vi')>-1;});
+  if(viVoice)u.voice=viVoice;
+  u.lang='vi-VN';u.rate=0.85;u.pitch=1.1;u.volume=1;
+  window.speechSynthesis.speak(u);
+}
+
+function showBrowserNotif(count){
+  if(!('Notification' in window)||Notification.permission!=='granted')return;
+  new Notification('🍵 Yoricha — Có đơn mới!',{
+    body:'Bạn có '+count+' đơn mới cần xử lý',
+    icon:'https://drive.google.com/thumbnail?id=1uQD0joy3YQ1PlHSGNZJoy_dFC_oT-miJ&sz=w64',
+    badge:'https://drive.google.com/thumbnail?id=1uQD0joy3YQ1PlHSGNZJoy_dFC_oT-miJ&sz=w64',
+    requireInteraction:true
+  });
+}
+
+function checkNewOrders(newOrders){
+  if(!lastOrderIDs.length){
+    lastOrderIDs=newOrders.map(function(o){return o.orderID;});
+    return;
+  }
+  var newOnes=newOrders.filter(function(o){
+    return o.status==='Mới'&&lastOrderIDs.indexOf(o.orderID)<0;
+  });
+  if(newOnes.length>0){
+    playBeep();
+    setTimeout(function(){speak('Shop ơi có đơn mới, đơn mới');},600);
+    showBrowserNotif(newOnes.length);
+    // Flash tab title
+    var origTitle=document.title;
+    var flashCount=0;
+    var flashTimer=setInterval(function(){
+      document.title=flashCount%2===0?'🔴 '+newOnes.length+' ĐƠN MỚI!':origTitle;
+      flashCount++;if(flashCount>10)clearInterval(flashTimer);
+    },600);
+  }
+  lastOrderIDs=newOrders.map(function(o){return o.orderID;});
+}
+
+// Override loadOrders để check đơn mới
+var _baseLoadOrders=loadOrders;
+loadOrders=async function(){
+  var d=await api({action:'getOrders',password:PWD});
+  if(d.ok){
+    checkNewOrders(d.orders);
+    orders=d.orders;
+    renderOrders();
+  }
+};
+
+// ── DASHBOARD ─────────────────────────────────────────────────
+var dashPeriod='today';
+
+function selPeriod(el,period){
+  document.querySelectorAll('.ptab').forEach(function(t){t.classList.remove('on');});
+  el.classList.add('on');
+  dashPeriod=period;
+  renderDash();
+}
+
+function parseVNDate(str){
+  if(!str||str==='undefined')return null;
+  try{
+    // Format: dd/mm/yyyy, HH:MM:SS
+    var p=str.split(', ');
+    if(p.length<2)return null;
+    var dp=p[0].split('/');
+    var tp=p[1].split(':');
+    if(dp.length<3)return null;
+    return new Date(Number(dp[2]),Number(dp[1])-1,Number(dp[0]),Number(tp[0]||0),Number(tp[1]||0));
+  }catch(e){return null;}
+}
+
+function isSameDay(a,b){
+  return a.getDate()===b.getDate()&&a.getMonth()===b.getMonth()&&a.getFullYear()===b.getFullYear();
+}
+
+function filterOrders(list,period){
+  var now=new Date();
+  // Dashboard hiện tất cả đơn (kể cả đang xử lý để xem doanh thu dự kiến)
+  // Chỉ lọc đơn Xong cho doanh thu thực
+  return list.filter(function(o){
+    if(period==='all')return o.status==='Xong';
+    var d=parseVNDate(o.createdAt);
+    if(!d)return false;
+    if(period==='today')return isSameDay(d,now)&&o.status==='Xong';
+    if(period==='week'){var w=new Date(now);w.setDate(w.getDate()-7);return d>=w&&o.status==='Xong';}
+    if(period==='month')return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear()&&o.status==='Xong';
+    return false;
+  });
+}
+
+function filterAllStatus(list,period){
+  // Tất cả đơn trong kỳ (kể cả đang xử lý)
+  var now=new Date();
+  return list.filter(function(o){
+    if(period==='all')return true;
+    var d=parseVNDate(o.createdAt);
+    if(!d)return false;
+    if(period==='today')return isSameDay(d,now);
+    if(period==='week'){var w=new Date(now);w.setDate(w.getDate()-7);return d>=w;}
+    if(period==='month')return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();
+    return false;
+  });
+}
+
+function renderDash(){
+  var done=filterOrders(orders,dashPeriod);
+  var all=filterAllStatus(orders,dashPeriod);
+  var revenue=done.reduce(function(s,o){return s+Number(o.total||0);},0);
+  var avg=done.length?Math.round(revenue/done.length):0;
+  var pending=all.filter(function(o){return o.status==='Mới'||o.status==='Đang làm';}).length;
+
+  document.getElementById('d-revenue').textContent=fmt(revenue);
+  document.getElementById('d-orders').textContent=all.length+(pending?' ('+pending+' đang làm)':'');
+  document.getElementById('d-done').textContent=done.length;
+  document.getElementById('d-avg').textContent=done.length?fmt(avg):'--';
+
+  // Top items
+  var itemMap={};
+  done.forEach(function(o){
+    var parts=(o.items||'').split(' | ');
+    parts.forEach(function(p){
+      var name=p.split(' (')[0].trim();
+      if(name)itemMap[name]=(itemMap[name]||0)+1;
+    });
+  });
+  var topItems=Object.keys(itemMap)
+    .map(function(k){return{name:k,count:itemMap[k]};})
+    .sort(function(a,b){return b.count-a.count;})
+    .slice(0,5);
+  var rankCls=['gold','silver','bronze','',''];
+  document.getElementById('d-top-items').innerHTML=topItems.length
+    ?topItems.map(function(it,i){
+      return'<div class="top-item">'
+        +'<div style="display:flex;align-items:center"><div class="top-rank '+(rankCls[i]||'')+'">'+(i+1)+'</div>'+it.name+'</div>'
+        +'<div style="font-weight:700;color:var(--blue)">'+it.count+' ly</div></div>';
+    }).join('')
+    :'<div class="empty">Chưa có đơn hoàn thành'+(dashPeriod==='today'?' hôm nay':'')+'</div>';
+
+  // Top customers
+  var custMap={};
+  done.forEach(function(o){
+    var key=o.name&&o.name!=='Khách lẻ'&&o.name!=='Khach'?o.name:'';
+    if(!key)return;
+    if(!custMap[key])custMap[key]={name:key,orders:0,revenue:0};
+    custMap[key].orders++;custMap[key].revenue+=Number(o.total||0);
+  });
+  var topCust=Object.values(custMap)
+    .sort(function(a,b){return b.revenue-a.revenue;})
+    .slice(0,5);
+  document.getElementById('d-top-customers').innerHTML=topCust.length
+    ?topCust.map(function(c,i){
+      return'<div class="top-item">'
+        +'<div style="display:flex;align-items:center"><div class="top-rank '+(rankCls[i]||'')+'">'+(i+1)+'</div>'+c.name+'</div>'
+        +'<div style="text-align:right"><div style="font-weight:700;color:var(--blue)">'+fmt(c.revenue)+'</div>'
+        +'<div style="font-size:.68rem;color:#888">'+c.orders+' đơn</div></div></div>';
+    }).join('')
+    :'<div class="empty">Chưa có dữ liệu</div>';
+
+  // By day - 7 ngày gần nhất
+  var dayMap={};
+  var week=filterAllStatus(orders,'week').filter(function(o){return o.status==='Xong';});
+  week.forEach(function(o){
+    var d=parseVNDate(o.createdAt);if(!d)return;
+    var key=('0'+d.getDate()).slice(-2)+'/'+(('0'+(d.getMonth()+1)).slice(-2));
+    if(!dayMap[key])dayMap[key]={rev:0,cnt:0};
+    dayMap[key].rev+=Number(o.total||0);dayMap[key].cnt++;
+  });
+  var dayKeys=Object.keys(dayMap).sort();
+  var maxRev=Math.max.apply(null,Object.values(dayMap).map(function(v){return v.rev;}).concat([1]));
+  document.getElementById('d-by-day').innerHTML=dayKeys.length
+    ?dayKeys.map(function(day){
+      var v=dayMap[day];var pct=Math.round(v.rev/maxRev*100);
+      return'<div style="margin-bottom:.65rem">'
+        +'<div style="display:flex;justify-content:space-between;font-size:.75rem;margin-bottom:.25rem">'
+        +'<span style="font-weight:700">'+day+'</span>'
+        +'<span style="color:var(--blue);font-weight:700">'+fmt(v.rev)+' · '+v.cnt+' đơn</span></div>'
+        +'<div style="height:10px;background:#eee;border-radius:5px">'
+        +'<div style="height:100%;width:'+pct+'%;background:var(--blue);border-radius:5px;transition:width .4s"></div></div></div>';
+    }).join('')
+    :'<div class="empty">Chưa có đơn hoàn thành 7 ngày gần nhất</div>';
+}
+
+// Override swTab
+swTab=function(el,name){
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('on');});
+  el.classList.add('on');
+  document.getElementById('tab-'+name).classList.add('on');
+  if(name==='members')loadMembers();
+  if(name==='menu')loadMenuS();
+  if(name==='dashboard'){loadOrders().then(renderDash);}
+  if(name==='neworder')soRenderMenu();
+};
+
+// ── INJECT LOGO ───────────────────────────────────────────────
 var logoSrc='https://drive.google.com/thumbnail?id=1uQD0joy3YQ1PlHSGNZJoy_dFC_oT-miJ&sz=w300';
 document.getElementById('logo-login').src=logoSrc;
 document.getElementById('logo-main').src=logoSrc;
+
+// Request notification permission on page load
+if('Notification' in window && Notification.permission==='default'){
+  document.addEventListener('click',function(){
+    Notification.requestPermission();
+  },{once:true});
+}
 </script>
 </body>
 </html>
