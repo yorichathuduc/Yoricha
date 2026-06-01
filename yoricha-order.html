@@ -237,16 +237,15 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
       <div class="qr-wrap">
         <img id="qr-img" src="" alt="QR Chuyển khoản"/>
         <div class="qr-bank">
-          <strong>Vietcombank</strong> · 1043660648<br/> <button class="1043660648-copy" onclick=>📋 Copy</button>
-        </div>
+          <strong>Vietcombank</strong> · 1043660648<br/>
           VO NGUYEN THANH PHUONG
         </div>
         <div class="qr-amount" id="qr-amount"></div>
-      
-    </div>
+        <div class="qr-note">Nội dung: <strong id="qr-desc"></strong> <button class="qr-copy" onclick="copyDesc()">📋 Copy</button></div>
+      </div>
       <div class="qr-hint">
-        📷 <strong>Cách 1:</strong> Tải QR về điện thoại → Mở app ngân hàng → Tải QR vào app ngân hàng<br/>
-        📱 <strong>Cách 2:</strong> Mở Camera → Quét mã thanh toán của tiệm
+        📷 <strong>Cách 1:</strong> Mở app ngân hàng → Quét QR ở trên<br/>
+        📱 <strong>Cách 2:</strong> Nhấn nút app bên dưới để mở thẳng
       </div>
       <!-- DEEP LINK BUTTONS -->
       <div class="app-btns" id="app-btns">
