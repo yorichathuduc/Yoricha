@@ -431,27 +431,22 @@ var payConfirmed={};
 function parseVNDate2(str){
   if(!str||str==='undefined'||str==='null')return null;
   try{
-    // Thử nhiều format: "DD/MM/YYYY, HH:MM" hoặc "DD/MM/YYYY HH:MM" hoặc "M/D/YYYY, H:MM:SS AM/PM"
     var s=str.trim();
-    // Format VN: "02/06/2026, 10:30" hoặc "2/6/2026, 10:30"
-    var m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-    if(m){
-      var d1=Number(m[1]),d2=Number(m[2]),yr=Number(m[3]);
-      // Nếu d1 <= 12 và d2 > 12 → d1 là tháng (US format M/D/Y)
-      // Nếu d2 <= 12 → ambiguous, nhưng Google Sheets VN thường là DD/MM/YYYY
-      // Heuristic: nếu d1 > 12 thì chắc là ngày (DD/MM)
-      var day,mon;
-      if(d1>12){day=d1;mon=d2;}       // DD/MM/YYYY rõ ràng
-      else if(d2>12){day=d2;mon=d1;}  // MM/DD/YYYY (US)
-      else{day=d1;mon=d2;}             // mặc định DD/MM (VN)
-      var timePart=s.match(/(\d{1,2}):(\d{2})/);
-      var hr=timePart?Number(timePart[1]):0,mn=timePart?Number(timePart[2]):0;
-      // Handle AM/PM
-      if(/PM/i.test(s)&&hr<12)hr+=12;
-      if(/AM/i.test(s)&&hr===12)hr=0;
+    // Format thực tế từ GG Sheets: "10:52:51 2/6/2026" (HH:MM:SS D/M/YYYY)
+    var m1=s.match(/^(\d{1,2}):(\d{2})(?::\d{2})?\s+(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if(m1){
+      var hr=Number(m1[1]),mn=Number(m1[2]);
+      var day=Number(m1[3]),mon=Number(m1[4]),yr=Number(m1[5]);
       return new Date(yr,mon-1,day,hr,mn);
     }
-    // Fallback: thử native parse
+    // Format VN chuẩn: "DD/MM/YYYY, HH:MM" hoặc "D/M/YYYY, H:MM"
+    var m2=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})[,\s]+(\d{1,2}):(\d{2})/);
+    if(m2){
+      var day=Number(m2[1]),mon=Number(m2[2]),yr=Number(m2[3]);
+      var hr=Number(m2[4]),mn=Number(m2[5]);
+      return new Date(yr,mon-1,day,hr,mn);
+    }
+    // Fallback native parse
     var nd=new Date(s);if(!isNaN(nd))return nd;
     return null;
   }catch(e){return null;}
