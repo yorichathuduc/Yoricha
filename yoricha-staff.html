@@ -428,14 +428,39 @@ async function loadOrders(){
 // Payment confirmed state (in-memory per session)
 var payConfirmed={};
 
+function parseVNDate2(str){
+  if(!str||str==='undefined'||str==='null')return null;
+  try{
+    // Thử nhiều format: "DD/MM/YYYY, HH:MM" hoặc "DD/MM/YYYY HH:MM" hoặc "M/D/YYYY, H:MM:SS AM/PM"
+    var s=str.trim();
+    // Format VN: "02/06/2026, 10:30" hoặc "2/6/2026, 10:30"
+    var m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+    if(m){
+      var d1=Number(m[1]),d2=Number(m[2]),yr=Number(m[3]);
+      // Nếu d1 <= 12 và d2 > 12 → d1 là tháng (US format M/D/Y)
+      // Nếu d2 <= 12 → ambiguous, nhưng Google Sheets VN thường là DD/MM/YYYY
+      // Heuristic: nếu d1 > 12 thì chắc là ngày (DD/MM)
+      var day,mon;
+      if(d1>12){day=d1;mon=d2;}       // DD/MM/YYYY rõ ràng
+      else if(d2>12){day=d2;mon=d1;}  // MM/DD/YYYY (US)
+      else{day=d1;mon=d2;}             // mặc định DD/MM (VN)
+      var timePart=s.match(/(\d{1,2}):(\d{2})/);
+      var hr=timePart?Number(timePart[1]):0,mn=timePart?Number(timePart[2]):0;
+      // Handle AM/PM
+      if(/PM/i.test(s)&&hr<12)hr+=12;
+      if(/AM/i.test(s)&&hr===12)hr=0;
+      return new Date(yr,mon-1,day,hr,mn);
+    }
+    // Fallback: thử native parse
+    var nd=new Date(s);if(!isNaN(nd))return nd;
+    return null;
+  }catch(e){return null;}
+}
+
 function isToday(dateStr){
-  var d=parseVNDate2(dateStr);if(!d)return false;
+  var d=parseVNDate2(dateStr);if(!d||isNaN(d))return false;
   var n=new Date();
   return d.getDate()===n.getDate()&&d.getMonth()===n.getMonth()&&d.getFullYear()===n.getFullYear();
-}
-function parseVNDate2(str){
-  if(!str)return null;
-  try{var p=str.split(', ');if(p.length<2)return null;var dp=p[0].split('/');var tp=p[1].split(':');if(dp.length<3)return null;return new Date(Number(dp[2]),Number(dp[1])-1,Number(dp[0]),Number(tp[0]||0),Number(tp[1]||0));}catch(e){return null;}
 }
 
 function renderOrders(){
@@ -474,7 +499,7 @@ function renderOrders(){
       payBox='<div class="pay-box"><div class="pay-title">💵 Thanh toán tiền mặt — Cần thu: <b>'+fmt(o.total)+'</b></div>'
         +(confirmed
           ?'<span style="color:var(--green2);font-size:.78rem;font-weight:700">✅ Đã nhận tiền · Thối: '+fmt(confirmed.change)+'</span>'
-          :'<div class="pay-cash-row"><input type="number" id="'+recId+'" placeholder="Tiền khách đưa" inputmode="numeric" oninput="calcChange(\''+o.orderID+'\','+o.total+')" style="font-size:.8rem"/><button class="pay-confirm-btn" onclick="confirmCash(\''+o.orderID+'\','+o.total+')">✔ Xác nhận</button></div>'
+          :'<div class="pay-cash-row"><input type="number" id="'+recId+'" placeholder="VD: 100 = 100.000đ" inputmode="numeric" oninput="calcChange(\''+o.orderID+'\','+o.total+')" style="font-size:.8rem"/><button class="pay-confirm-btn" onclick="confirmCash(\''+o.orderID+'\','+o.total+')">✔ Xác nhận</button></div>'
           +'<div class="pay-change" id="'+chgId+'"></div>')
         +'</div>';
     } else if(!payMethod){
@@ -499,26 +524,36 @@ function renderOrders(){
   }).join('');
 }
 
-function calcChange(oid, total){
-  var recEl=document.getElementById('rec-'+oid);
-  var chgEl=document.getElementById('chg-'+oid);
-  if(!recEl||!chgEl)return;
-  var received=Number(recEl.value)||0;
-  var change=received-total;
-  chgEl.textContent=received?'Tiền thối: '+(change>=0?fmt(change):'Thiếu '+fmt(-change)):'';
-  chgEl.style.color=change>=0?'var(--blue)':'var(--red)';
-}
-
 function confirmPay(oid){
   payConfirmed[oid]={done:true};
   renderOrders();
 }
 
+function parseCashInput(val){
+  // Nếu nhập 100 → hiểu là 100.000đ (x1000)
+  // Nếu nhập số lớn hơn 10000 → giữ nguyên (đã nhập đủ đồng)
+  var n=Number(String(val).replace(/[^0-9]/g,''))||0;
+  return n>0&&n<10000?n*1000:n;
+}
+
+function calcChange(oid, total){
+  var recEl=document.getElementById('rec-'+oid);
+  var chgEl=document.getElementById('chg-'+oid);
+  if(!recEl||!chgEl)return;
+  var raw=recEl.value;
+  var received=parseCashInput(raw);
+  var change=received-total;
+  if(!raw){chgEl.textContent='';return;}
+  var recFmt=received>=1000?fmt(received):received+'đ';
+  chgEl.innerHTML='<span style="color:#888;font-size:.72rem">Nhận: '+recFmt+'</span> · '
+    +(change>=0?'<b style="color:var(--blue)">Thối: '+fmt(change)+'</b>':'<b style="color:var(--red)">Thiếu: '+fmt(-change)+'</b>');
+}
+
 function confirmCash(oid, total){
   var recEl=document.getElementById('rec-'+oid);
   if(!recEl)return;
-  var received=Number(recEl.value)||0;
-  if(!received){alert('Nhập số tiền khách đưa!');return;}
+  var received=parseCashInput(recEl.value);
+  if(!received){alert('Nhập số tiền khách đưa! (VD: 100 = 100.000đ)');return;}
   var change=received-total;
   payConfirmed[oid]={done:true,received:received,change:Math.max(0,change)};
   renderOrders();
@@ -838,6 +873,8 @@ loadOrders=async function(){
   if(d.ok){
     checkNewOrders(d.orders);
     orders=d.orders;
+    // Debug: log createdAt format của đơn đầu tiên để kiểm tra
+    if(d.orders&&d.orders.length){console.log('[Yoricha] createdAt sample:',d.orders[0].createdAt);}
     try{localStorage.setItem('yoricha_orders_'+PWD,JSON.stringify(d.orders));}catch(e){}
     renderOrders();
   }
@@ -848,15 +885,8 @@ var dashFrom=null; // Date object
 var dashTo=null;   // Date object
 
 function parseVNDate(str){
-  if(!str||str==='undefined'||str==='null')return null;
-  try{
-    var p=str.split(', ');
-    if(p.length<2)return null;
-    var dp=p[0].split('/');
-    var tp=p[1].split(':');
-    if(dp.length<3)return null;
-    return new Date(Number(dp[2]),Number(dp[1])-1,Number(dp[0]),Number(tp[0]||0),Number(tp[1]||0));
-  }catch(e){return null;}
+  // Dùng chung parseVNDate2 đã robust
+  return parseVNDate2(str);
 }
 
 function isSameDay(a,b){
