@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<link rel="preconnect" href="https://script.google.com"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1"/>
@@ -80,7 +82,13 @@ textarea{resize:none;height:52px}
 .slider::before{content:'';position:absolute;width:14px;height:14px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.25s}
 input:checked+.slider{background:var(--blue)}
 input:checked+.slider::before{transform:translateX(16px)}
-.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
+.pay-box{background:#f8fbff;border:1.5px solid var(--blue-mid);border-radius:10px;padding:.6rem .75rem;margin-top:.55rem}
+.pay-box .pay-title{font-size:.72rem;font-weight:700;color:var(--green-dark);margin-bottom:.45rem}
+.pay-confirm-btn{background:var(--green2);color:#fff;border:none;border-radius:9px;padding:.4rem .85rem;font-size:.75rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif}
+.pay-confirm-btn.done{background:#aaa;cursor:default}
+.pay-cash-row{display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem;flex-wrap:wrap}
+.pay-cash-row input{margin:0;width:120px;padding:.35rem .6rem;font-size:.8rem}
+.pay-change{font-size:.8rem;font-weight:700;color:var(--blue);margin-top:.25rem}
 .fgrid .full{grid-column:1/-1}
 /* MODAL ORDER */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end;justify-content:center}
@@ -179,7 +187,8 @@ input:checked+.slider::before{transform:translateX(16px)}
       <span style="font-family:'Merienda',cursive;color:var(--blue);font-size:.88rem">Đơn hàng</span>
       <div style="display:flex;gap:.4rem;align-items:center">
         <select id="ofilter" onchange="renderOrders()" style="margin:0;width:auto;padding:.3rem .55rem;font-size:.73rem">
-          <option value="Mới" selected>Mới</option>
+          <option value="today" selected>📅 Hôm nay</option>
+          <option value="Mới">Mới</option>
           <option value="Đang làm">Đang làm</option>
           <option value="Xong">Xong</option>
           <option value="all">Tất cả</option>
@@ -416,37 +425,103 @@ async function loadOrders(){
   var d=await api({action:'getOrders',password:PWD});
   if(d.ok){orders=d.orders;renderOrders();}
 }
+// Payment confirmed state (in-memory per session)
+var payConfirmed={};
+
+function isToday(dateStr){
+  var d=parseVNDate2(dateStr);if(!d)return false;
+  var n=new Date();
+  return d.getDate()===n.getDate()&&d.getMonth()===n.getMonth()&&d.getFullYear()===n.getFullYear();
+}
+function parseVNDate2(str){
+  if(!str)return null;
+  try{var p=str.split(', ');if(p.length<2)return null;var dp=p[0].split('/');var tp=p[1].split(':');if(dp.length<3)return null;return new Date(Number(dp[2]),Number(dp[1])-1,Number(dp[0]),Number(tp[0]||0),Number(tp[1]||0));}catch(e){return null;}
+}
+
 function renderOrders(){
   var f=document.getElementById('ofilter').value;
-  var list=f==='all'?orders:orders.filter(function(o){return o.status===f;});
+  var list;
+  if(f==='today'){list=orders.filter(function(o){return isToday(o.createdAt);});}
+  else if(f==='all'){list=orders;}
+  else{list=orders.filter(function(o){return o.status===f;});}
   if(!list.length){document.getElementById('orders-list').innerHTML='<div class="empty">Không có đơn nào 🍵</div>';return;}
   var cm={'Mới':'new','Đang làm':'making','Xong':'done'};
   document.getElementById('orders-list').innerHTML=list.map(function(o){
     var cls=cm[o.status]||'';
     var mem=o.phone?'<span class="mbadge">TV</span>':'';
-    // Extract phone from note [SĐT:xxx]
     var phoneMatch=o.note?o.note.match(/\[SĐT:([^\]]+)\]/):null;
     var phoneDisplay=phoneMatch?'<span style="color:var(--green2);font-size:.72rem;font-weight:700;margin-left:.4rem">📞 '+phoneMatch[1]+'</span>':'';
-    // Extract payment method
     var payMatch=o.note?o.note.match(/\[(Tiền mặt|Chuyển khoản)\]/):null;
-    var payDisplay=payMatch?'<span style="font-size:.68rem;font-weight:700;padding:.1rem .45rem;border-radius:6px;margin-left:.3rem;'+(payMatch[1]==='Chuyển khoản'?'background:#e8f0fb;color:#3971b8':'background:#e6f7ed;color:#1a7f3c')+'">'+payMatch[1]+'</span>':'';
-    // Clean note for display
+    var payMethod=payMatch?payMatch[1]:'';
+    var payDisplay=payMethod?'<span style="font-size:.68rem;font-weight:700;padding:.1rem .45rem;border-radius:6px;margin-left:.3rem;'+(payMethod==='Chuyển khoản'?'background:#e8f0fb;color:#3971b8':'background:#e6f7ed;color:#1a7f3c')+'">'+payMethod+'</span>':'';
     var cleanNote=o.note?o.note.replace(/\[(Tiền mặt|Chuyển khoản)\]/,'').replace(/\[SĐT:[^\]]+\]/,'').replace(/\[Pick-up[^\]]*\]/,'').replace(/\[Ship[^\]]*\]/,'').replace(/\[Tại quầy[^\]]*\]/,'').replace(/\[Uống tại chỗ[^\]]*\]/,'').trim():'';
     var note=cleanNote?'<div class="onote">📝 '+cleanNote+'</div>':'';
-
     var btns='';
     if(o.status==='Mới')btns='<button class="btn btn-sm btn-orange" onclick="updOrd(\''+o.orderID+'\',\'Đang làm\')">▶ Bắt đầu làm</button>';
     if(o.status==='Đang làm')btns='<button class="btn btn-sm btn-green" onclick="updOrd(\''+o.orderID+'\',\'Xong\')">✅ Xong rồi</button>';
+
+    // Payment box
+    var payBox='';
+    var confirmed=payConfirmed[o.orderID];
+    if(payMethod==='Chuyển khoản'){
+      payBox='<div class="pay-box"><div class="pay-title">💳 Thanh toán chuyển khoản</div>'
+        +(confirmed
+          ?'<span style="color:var(--green2);font-size:.78rem;font-weight:700">✅ Đã xác nhận nhận tiền</span>'
+          :'<button class="pay-confirm-btn" onclick="confirmPay(\''+o.orderID+'\')">✔ Đã check hình giao dịch</button>')
+        +'</div>';
+    } else if(payMethod==='Tiền mặt'){
+      var recId='rec-'+o.orderID;var chgId='chg-'+o.orderID;
+      payBox='<div class="pay-box"><div class="pay-title">💵 Thanh toán tiền mặt — Cần thu: <b>'+fmt(o.total)+'</b></div>'
+        +(confirmed
+          ?'<span style="color:var(--green2);font-size:.78rem;font-weight:700">✅ Đã nhận tiền · Thối: '+fmt(confirmed.change)+'</span>'
+          :'<div class="pay-cash-row"><input type="number" id="'+recId+'" placeholder="Tiền khách đưa" inputmode="numeric" oninput="calcChange(\''+o.orderID+'\','+o.total+')" style="font-size:.8rem"/><button class="pay-confirm-btn" onclick="confirmCash(\''+o.orderID+'\','+o.total+')">✔ Xác nhận</button></div>'
+          +'<div class="pay-change" id="'+chgId+'"></div>')
+        +'</div>';
+    } else if(!payMethod){
+      // No payment method recorded — show generic confirm
+      payBox='<div class="pay-box"><div class="pay-title">💰 Thu tiền</div>'
+        +(confirmed
+          ?'<span style="color:var(--green2);font-size:.78rem;font-weight:700">✅ Đã nhận tiền</span>'
+          :'<button class="pay-confirm-btn" onclick="confirmPay(\''+o.orderID+'\')">✔ Đã thu tiền</button>')
+        +'</div>';
+    }
+
     return'<div class="ocard '+cls+'"><div class="ohead"><div class="oid">#'+o.orderID+'</div><div class="otime">'+o.createdAt+'</div></div>'+
       '<div class="oname">'+o.name+mem+phoneDisplay+payDisplay+'</div>'+
       '<div style="font-size:.72rem;color:#666;margin-bottom:.2rem">'+
       (o.note&&o.note.indexOf('Pick-up')>-1?'🏃 Pick-up':o.note&&o.note.indexOf('Ship đến')>-1?'🛵 Giao hàng':o.note&&o.note.indexOf('Tại quầy')>-1?'🪑 Tại quầy':'')+
       '</div>'+
-    '<div class="oitems">'+o.items+'</div>'+note+
+      '<div class="oitems">'+o.items+'</div>'+note+
       '<div class="ofoot"><div class="oprice">'+fmt(o.total)+'</div><span class="opill '+cls+'">'+o.status+'</span></div>'+
+      payBox+
       (o.status!=='Xong'?'<div class="row-btns">'+btns+'</div>':'')+
       '</div>';
   }).join('');
+}
+
+function calcChange(oid, total){
+  var recEl=document.getElementById('rec-'+oid);
+  var chgEl=document.getElementById('chg-'+oid);
+  if(!recEl||!chgEl)return;
+  var received=Number(recEl.value)||0;
+  var change=received-total;
+  chgEl.textContent=received?'Tiền thối: '+(change>=0?fmt(change):'Thiếu '+fmt(-change)):'';
+  chgEl.style.color=change>=0?'var(--blue)':'var(--red)';
+}
+
+function confirmPay(oid){
+  payConfirmed[oid]={done:true};
+  renderOrders();
+}
+
+function confirmCash(oid, total){
+  var recEl=document.getElementById('rec-'+oid);
+  if(!recEl)return;
+  var received=Number(recEl.value)||0;
+  if(!received){alert('Nhập số tiền khách đưa!');return;}
+  var change=received-total;
+  payConfirmed[oid]={done:true,received:received,change:Math.max(0,change)};
+  renderOrders();
 }
 async function updOrd(oid,status){
   var d=await api({action:'updateOrder',password:PWD,orderID:oid,status:status});
@@ -763,6 +838,7 @@ loadOrders=async function(){
   if(d.ok){
     checkNewOrders(d.orders);
     orders=d.orders;
+    try{localStorage.setItem('yoricha_orders_'+PWD,JSON.stringify(d.orders));}catch(e){}
     renderOrders();
   }
 };
@@ -896,7 +972,7 @@ function renderDash(){
         +'<div style="display:flex;align-items:center"><div class="top-rank '+(rankCls[i]||'')+'">'+(i+1)+'</div>'+it.name+'</div>'
         +'<div style="font-weight:700;color:var(--blue)">'+it.count+' ly</div></div>';
     }).join('')
-    :'<div class="empty">Chưa có đơn hoàn thành'+(dashPeriod==='today'?' hôm nay':'')+'</div>';
+    :'<div class="empty">Chưa có đơn hoàn thành hôm nay</div>';
 
   // Top customers
   var custMap={};
@@ -952,8 +1028,7 @@ swTab=function(el,name){
   if(name==='menu')loadMenuS();
   if(name==='dashboard'){
     loadOrders().then(function(){
-      if(!dashFrom){selQuick(document.querySelector('.ptab'),'today');}
-      else renderDash();
+      selQuick(document.querySelector('.ptab'),'today');
     });
   }
   if(name==='neworder')soRenderMenu();
