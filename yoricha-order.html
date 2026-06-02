@@ -234,37 +234,31 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
       <div class="del-opt" onclick="selPay(this,'transfer')">📱<br/>Chuyển khoản</div>
     </div>
     <div id="pay-qr" style="display:none">
-      <div class="qr-wrap">
-        <img id="qr-img" src="" alt="QR Chuyển khoản"/>
-        <div class="qr-bank">
-          <strong>Vietcombank</strong> · 1043660648<br/>
-          VO NGUYEN THANH PHUONG
+      <!-- Cách 1: Thông tin chuyển khoản -->
+      <div style="margin-bottom:1rem">
+        <div style="font-size:.8rem;font-weight:700;color:var(--green-dark);margin-bottom:.6rem">Cách 1: Điền thông tin chuyển khoản</div>
+        <div style="background:var(--cream);border:1.5px solid var(--blue-mid);border-radius:12px;padding:.85rem 1rem;line-height:2">
+          <div style="display:flex;justify-content:space-between;font-size:.85rem">
+            <span style="color:#888">Ngân hàng</span>
+            <span style="font-weight:700;color:var(--green-dark)">Vietcombank</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:.85rem">
+            <span style="color:#888">Chủ tài khoản</span>
+            <span style="font-weight:700;color:var(--green-dark);text-align:right;max-width:60%">VO NGUYEN THANH PHUONG</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:.85rem">
+            <span style="color:#888">Số tài khoản</span>
+            <div style="display:flex;align-items:center;gap:.5rem">
+              <span style="font-weight:700;color:var(--blue);font-size:1rem;letter-spacing:.5px">1043660648</span>
+              <button onclick="copySTK()" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:.3rem .65rem;font-size:.72rem;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent">Copy</button>
+            </div>
+          </div>
         </div>
-        <div class="qr-amount" id="qr-amount"></div>
-        <div class="qr-note">Nội dung: <strong id="qr-desc"></strong> <button class="qr-copy" onclick="copyDesc()">📋 Copy</button></div>
       </div>
-      <div class="qr-hint">
-        📷 <strong>Cách 1:</strong> Mở app ngân hàng → Quét QR ở trên<br/>
-        📱 <strong>Cách 2:</strong> Nhấn nút app bên dưới để mở thẳng
-      </div>
-      <!-- DEEP LINK BUTTONS -->
-      <div class="app-btns" id="app-btns">
-        <a class="app-btn" id="btn-vcb" href="#" onclick="openBank('vcb');return false;">
-          <span style="font-size:1.1rem">🏦</span>
-          <span>VCB Digibank</span>
-        </a>
-        <a class="app-btn" id="btn-momo" href="#" onclick="openBank('momo');return false;">
-          <span style="font-size:1.1rem">💜</span>
-          <span>Momo</span>
-        </a>
-        <a class="app-btn" id="btn-zalopay" href="#" onclick="openBank('zalopay');return false;">
-          <span style="font-size:1.1rem">💙</span>
-          <span>ZaloPay</span>
-        </a>
-        <a class="app-btn app-btn-full" id="btn-vcbpay" href="#" onclick="openBank('vcbpay');return false;">
-          <span style="font-size:1.1rem">🔗</span>
-          <span>Mở VietQR (app bất kỳ)</span>
-        </a>
+      <!-- Cách 2: QR tại cửa hàng -->
+      <div style="background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:12px;padding:.85rem 1rem;text-align:center">
+        <div style="font-size:.8rem;font-weight:700;color:var(--green-dark);margin-bottom:.3rem">Cách 2: Quét mã thanh toán tại cửa hàng</div>
+        <div style="font-size:.75rem;color:#888">Nhân viên sẽ xuất mã QR khi bạn đến lấy hàng</div>
       </div>
     </div>
     <div id="order-alert" class="alert"></div>
@@ -363,8 +357,6 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
 var API='https://script.google.com/macros/s/AKfycbxs-jt4COAvW__D7UFp1gmeiCbPJE7zNCqn7pEGOKUKDYmbcht1Wm765sxZcWH9gF4A/exec';
 var MAPS_KEY='AIzaSyDKG3-6nsURa-1MT8gtxgLWZR64UuywjMQ';
 var BANK_ID='VCB';           // Vietcombank
-var BANK_ACCOUNT='1043660648';
-var BANK_NAME='VO NGUYEN THANH PHUONG';
 var SHOP_ADDR='24/10 Đường số 6, Linh Chiểu, Thủ Đức, TP.HCM';
 var menu=[],cart=[],member=null,curItem=null,curSize=null,curQty=1,pollT=null;
 var delMode='pickup',shipFee=0;
@@ -586,79 +578,22 @@ function selPay(el,mode){
   }
 }
 function updateQR(){
-  var total=cart.reduce(function(s,i){return s+i.price*i.qty;},0)+shipFee;
-  var name=document.getElementById('inp-name').value.trim()||'Khach';
-  var desc='Yoricha '+name;
-  document.getElementById('qr-amount').textContent=fmt(total);
-  document.getElementById('qr-desc').textContent=desc;
-  // VietQR API - QR to, rõ
-  var qrUrl='https://img.vietqr.io/image/'+BANK_ID+'-'+BANK_ACCOUNT+'-print.png'
-    +'?amount='+total
-    +'&addInfo='+encodeURIComponent(desc)
-    +'&accountName='+encodeURIComponent(BANK_NAME);
-  document.getElementById('qr-img').src=qrUrl;
-  // Update deep links
-  updateDeepLinks(total, desc);
+  // No QR image needed - just show bank info
 }
 
-function updateDeepLinks(total, desc){
-  var acc=BANK_ACCOUNT;
-  var encDesc=encodeURIComponent(desc);
-  // Momo deeplink
-  var momoLink='momo://app?action=payWithATM'
-    +'&bankCode=VCB&accountNumber='+acc
-    +'&amount='+total+'&description='+encDesc;
-  document.getElementById('btn-momo').href=momoLink;
-  // ZaloPay deeplink
-  var zaloLink='zalopay://transfer?bankCode=VCB&bankAccount='+acc
-    +'&amount='+total+'&description='+encDesc;
-  document.getElementById('btn-zalopay').href=zaloLink;
-  // VCB Digibank deeplink
-  var vcbLink='vcb://transfer?toAccount='+acc+'&amount='+total+'&description='+encDesc;
-  document.getElementById('btn-vcb').href=vcbLink;
-  // Generic bank transfer (VietQR intent)
-  var genericLink='https://dl.vietqr.io/pay?app=vcb&ba='+acc
-    +'&amount='+total+'&tn='+encDesc+'&mc=970436';
-  document.getElementById('btn-vcbpay').href=genericLink;
-}
 
-function openBank(app){
-  var total=cart.reduce(function(s,i){return s+i.price*i.qty;},0)+shipFee;
-  var name=document.getElementById('inp-name').value.trim()||'Khach';
-  var desc='Yoricha '+name;
-  var acc=BANK_ACCOUNT;
-  var encDesc=encodeURIComponent(desc);
-  var links={
-    vcb:    'vcb://transfer?toAccount='+acc+'&amount='+total+'&description='+encDesc,
-    momo:   'momo://app?action=payWithATM&bankCode=VCB&accountNumber='+acc+'&amount='+total+'&description='+encDesc,
-    zalopay:'zalopay://transfer?bankCode=VCB&bankAccount='+acc+'&amount='+total+'&description='+encDesc,
-    vcbpay: 'https://dl.vietqr.io/pay?app=vcb&ba='+acc+'&amount='+total+'&tn='+encDesc+'&mc=970436'
-  };
-  var url=links[app];
-  if(!url)return;
-  // Try deep link first, fallback to store if app not installed
-  var fallbacks={
-    vcb:    'https://apps.apple.com/vn/app/vcb-digibank/id1400898748',
-    momo:   'https://momo.vn/download',
-    zalopay:'https://zalopay.vn/tong-quan-zalopay',
-    vcbpay: url
-  };
-  window.location.href=url;
-  // If deep link fails after 2s, open fallback
-  setTimeout(function(){
-    if(document.visibilityState!=='hidden'){
-      window.open(fallbacks[app],'_blank');
-    }
   },2000);
 }
-function copyDesc(){
-  var desc=document.getElementById('qr-desc').textContent;
+function copySTK(){
+  var stk='1043660648';
   if(navigator.clipboard){
-    navigator.clipboard.writeText(desc).then(function(){
-      alert('✅ Đã copy: '+desc);
+    navigator.clipboard.writeText(stk).then(function(){
+      alert('✅ Đã copy số tài khoản: '+stk);
+    }).catch(function(){
+      prompt('Copy số tài khoản:',stk);
     });
   } else {
-    prompt('Copy nội dung này:',desc);
+    prompt('Copy số tài khoản:',stk);
   }
 }
 
