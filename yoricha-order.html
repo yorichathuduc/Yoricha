@@ -261,6 +261,14 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
         <div style="font-size:.75rem;color:#888">Nhân viên sẽ xuất mã QR khi bạn đến lấy hàng</div>
       </div>
     </div>
+    <!-- Transfer warning - only show when transfer selected -->
+    <div id="transfer-warning" style="display:none;background:#fff8e1;border:1.5px solid #f6c90e;border-radius:12px;padding:.85rem 1rem;margin-bottom:.75rem">
+      <div style="font-size:.88rem;font-weight:700;color:#856404;margin-bottom:.3rem">📸 Lưu ý quan trọng!</div>
+      <div style="font-size:.82rem;color:#856404;line-height:1.6">
+        Sau khi chuyển khoản, vui lòng <strong>chụp màn hình xác nhận giao dịch</strong> và xuất trình cho nhân viên khi nhận hàng.<br/>
+        <span style="color:#c0392b;font-weight:700">⚠️ Không có ảnh giao dịch, nhân viên không thể giao món.</span>
+      </div>
+    </div>
     <div id="order-alert" class="alert"></div>
     <button class="btn" id="btn-order" onclick="placeOrder()">Đặt hàng 🍵</button>
   </div>
@@ -275,6 +283,10 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
     <div class="st-pill new" id="st-pill">Đang chờ xác nhận</div>
     <div id="st-items" style="font-size:.82rem;color:#555;line-height:1.7;margin-bottom:.5rem"></div>
     <div id="st-total" style="font-weight:700;color:var(--blue);margin-bottom:1rem"></div>
+    <div id="st-transfer-reminder" style="display:none;background:#fff8e1;border:1.5px solid #f6c90e;border-radius:12px;padding:.85rem;margin-bottom:1rem;text-align:left">
+      <div style="font-size:.85rem;font-weight:700;color:#856404;margin-bottom:.3rem">📸 Nhớ chụp màn hình!</div>
+      <div style="font-size:.8rem;color:#856404;line-height:1.6">Chụp màn hình xác nhận chuyển khoản và xuất trình cho nhân viên khi nhận hàng.<br/><strong style="color:#c0392b">Không có ảnh = không nhận được món.</strong></div>
+    </div>
     <button class="btn btn-outline" onclick="resetAll()">Đặt thêm</button>
   </div>
   <!-- MEMBER STATUS after order -->
@@ -568,6 +580,7 @@ function selDist(el,range,fee){
 var payMode='cash';
 function selPay(el,mode){
   el.parentNode.querySelectorAll('.del-opt').forEach(function(o){o.classList.remove('on');});
+  document.getElementById('transfer-warning').style.display=mode==='transfer'?'block':'none';
   el.classList.add('on');
   payMode=mode;
   if(mode==='transfer'){
@@ -621,17 +634,19 @@ async function placeOrder(){
   try{
     var d=await api({action:'placeOrder',phone:member?member.phone:(document.getElementById('inp-phone').value.trim()||''),name:name,note:note,items:JSON.stringify(cart),total:total});
     if(!d.ok){al('order-alert',d.error,'err');return;}
-    showStatus(d.orderID,cart,total);
+    var isTransfer=payMode==='transfer';
+    showStatus(d.orderID,cart,total,isTransfer);
     cart=[];updBar();
   }catch(e){al('order-alert','Lỗi kết nối, thử lại!','err');}
   finally{btn.disabled=false;btn.textContent='Đặt hàng 🍵';}
 }
 
 // ── STATUS ────────────────────────────────────────────────────
-function showStatus(oid,items,total){
+function showStatus(oid,items,total,isTransfer){
   document.getElementById('st-id').textContent='Đơn #'+oid;
   document.getElementById('st-items').innerHTML=items.map(function(it){return'• '+it.name+' ('+it.size+') x'+it.qty;}).join('<br/>');
   document.getElementById('st-total').textContent='Tổng: '+fmt(total);
+  document.getElementById('st-transfer-reminder').style.display=isTransfer?'block':'none';
   show('pg-status');
   if(pollT)clearInterval(pollT);
   pollT=setInterval(function(){pollStatus(oid);},10000);
