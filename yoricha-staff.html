@@ -253,11 +253,21 @@ input:checked+.slider::before{transform:translateX(16px)}
 
   <!-- DASHBOARD TAB -->
   <div class="tab-panel" id="tab-dashboard">
-    <div class="period-tabs">
-      <div class="ptab on" onclick="selPeriod(this,'today')">Hôm nay</div>
-      <div class="ptab" onclick="selPeriod(this,'week')">Tuần này</div>
-      <div class="ptab" onclick="selPeriod(this,'month')">Tháng này</div>
-      <div class="ptab" onclick="selPeriod(this,'all')">Tất cả</div>
+    <!-- DATE PICKER -->
+    <div style="margin-bottom:.85rem">
+      <div class="period-tabs" style="margin-bottom:.65rem">
+        <div class="ptab on" onclick="selQuick(this,'today')">Hôm nay</div>
+        <div class="ptab" onclick="selQuick(this,'week')">7 ngày</div>
+        <div class="ptab" onclick="selQuick(this,'month')">Tháng này</div>
+        <div class="ptab" onclick="selQuick(this,'all')">Tất cả</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+        <div style="font-size:.75rem;font-weight:700;color:var(--green-dark);white-space:nowrap">Hoặc chọn ngày:</div>
+        <input type="date" id="date-from" style="flex:1;min-width:120px;margin:0;padding:.4rem .6rem;font-size:.8rem;border-radius:8px;border:1.5px solid var(--blue-mid)" onchange="selCustomDate()"/>
+        <div style="font-size:.75rem;color:#888">đến</div>
+        <input type="date" id="date-to" style="flex:1;min-width:120px;margin:0;padding:.4rem .6rem;font-size:.8rem;border-radius:8px;border:1.5px solid var(--blue-mid)" onchange="selCustomDate()"/>
+      </div>
+      <div id="dash-range-label" style="font-size:.75rem;color:var(--blue);font-weight:700;margin-top:.4rem;text-align:center"></div>
     </div>
     <div class="dash-grid" id="dash-stats">
       <div class="dash-card"><div class="dash-label">Doanh thu</div><div class="dash-num" id="d-revenue">--</div></div>
@@ -758,19 +768,12 @@ loadOrders=async function(){
 };
 
 // ── DASHBOARD ─────────────────────────────────────────────────
-var dashPeriod='today';
-
-function selPeriod(el,period){
-  document.querySelectorAll('.ptab').forEach(function(t){t.classList.remove('on');});
-  el.classList.add('on');
-  dashPeriod=period;
-  renderDash();
-}
+var dashFrom=null; // Date object
+var dashTo=null;   // Date object
 
 function parseVNDate(str){
-  if(!str||str==='undefined')return null;
+  if(!str||str==='undefined'||str==='null')return null;
   try{
-    // Format: dd/mm/yyyy, HH:MM:SS
     var p=str.split(', ');
     if(p.length<2)return null;
     var dp=p[0].split('/');
@@ -784,38 +787,86 @@ function isSameDay(a,b){
   return a.getDate()===b.getDate()&&a.getMonth()===b.getMonth()&&a.getFullYear()===b.getFullYear();
 }
 
-function filterOrders(list,period){
+function toDateOnly(d){
+  return new Date(d.getFullYear(),d.getMonth(),d.getDate());
+}
+
+function setDateInputs(from,to){
+  var pad=function(n){return ('0'+n).slice(-2);};
+  var fmt=function(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());};
+  document.getElementById('date-from').value=fmt(from);
+  document.getElementById('date-to').value=fmt(to);
+  dashFrom=toDateOnly(from);
+  dashTo=toDateOnly(to);
+  dashTo.setHours(23,59,59);
+}
+
+function selQuick(el,period){
+  document.querySelectorAll('.ptab').forEach(function(t){t.classList.remove('on');});
+  el.classList.add('on');
   var now=new Date();
-  // Dashboard hiện tất cả đơn (kể cả đang xử lý để xem doanh thu dự kiến)
-  // Chỉ lọc đơn Xong cho doanh thu thực
+  var from,to;
+  if(period==='today'){from=new Date(now);to=new Date(now);}
+  else if(period==='week'){from=new Date(now);from.setDate(from.getDate()-6);to=new Date(now);}
+  else if(period==='month'){from=new Date(now.getFullYear(),now.getMonth(),1);to=new Date(now);}
+  else{from=new Date(2020,0,1);to=new Date(now);}
+  setDateInputs(from,to);
+  updateRangeLabel();
+  renderDash();
+}
+
+function selCustomDate(){
+  var fromVal=document.getElementById('date-from').value;
+  var toVal=document.getElementById('date-to').value;
+  if(!fromVal)return;
+  if(!toVal)toVal=fromVal;
+  var from=new Date(fromVal+'T00:00:00');
+  var to=new Date(toVal+'T23:59:59');
+  if(from>to){to=new Date(from);to.setHours(23,59,59);}
+  dashFrom=from;dashTo=to;
+  // Deselect quick tabs
+  document.querySelectorAll('.ptab').forEach(function(t){t.classList.remove('on');});
+  updateRangeLabel();
+  renderDash();
+}
+
+function updateRangeLabel(){
+  var pad=function(n){return ('0'+n).slice(-2);};
+  var fmtD=function(d){return pad(d.getDate())+'/'+pad(d.getMonth()+1)+'/'+d.getFullYear();};
+  var el=document.getElementById('dash-range-label');
+  if(!dashFrom){el.textContent='';return;}
+  if(isSameDay(dashFrom,dashTo)){
+    el.textContent='📅 Ngày '+fmtD(dashFrom);
+  } else {
+    el.textContent='📅 Từ '+fmtD(dashFrom)+' đến '+fmtD(dashTo);
+  }
+}
+
+function inRange(d){
+  if(!d)return false;
+  if(!dashFrom)return true;
+  var day=toDateOnly(d);
+  return day>=toDateOnly(dashFrom)&&day<=toDateOnly(dashTo);
+}
+
+function filterDone(list){
   return list.filter(function(o){
-    if(period==='all')return o.status==='Xong';
-    var d=parseVNDate(o.createdAt);
-    if(!d)return false;
-    if(period==='today')return isSameDay(d,now)&&o.status==='Xong';
-    if(period==='week'){var w=new Date(now);w.setDate(w.getDate()-7);return d>=w&&o.status==='Xong';}
-    if(period==='month')return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear()&&o.status==='Xong';
-    return false;
+    if(o.status!=='Xong')return false;
+    if(!dashFrom)return true;
+    return inRange(parseVNDate(o.createdAt));
   });
 }
 
-function filterAllStatus(list,period){
-  // Tất cả đơn trong kỳ (kể cả đang xử lý)
-  var now=new Date();
+function filterAll(list){
   return list.filter(function(o){
-    if(period==='all')return true;
-    var d=parseVNDate(o.createdAt);
-    if(!d)return false;
-    if(period==='today')return isSameDay(d,now);
-    if(period==='week'){var w=new Date(now);w.setDate(w.getDate()-7);return d>=w;}
-    if(period==='month')return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();
-    return false;
+    if(!dashFrom)return true;
+    return inRange(parseVNDate(o.createdAt));
   });
 }
 
 function renderDash(){
-  var done=filterOrders(orders,dashPeriod);
-  var all=filterAllStatus(orders,dashPeriod);
+  var done=filterDone(orders);
+  var all=filterAll(orders);
   var revenue=done.reduce(function(s,o){return s+Number(o.total||0);},0);
   var avg=done.length?Math.round(revenue/done.length):0;
   var pending=all.filter(function(o){return o.status==='Mới'||o.status==='Đang làm';}).length;
@@ -867,9 +918,9 @@ function renderDash(){
     }).join('')
     :'<div class="empty">Chưa có dữ liệu</div>';
 
-  // By day - 7 ngày gần nhất
+  // By day - trong khoảng đã chọn
   var dayMap={};
-  var week=filterAllStatus(orders,'week').filter(function(o){return o.status==='Xong';});
+  var week=filterDone(orders);
   week.forEach(function(o){
     var d=parseVNDate(o.createdAt);if(!d)return;
     var key=('0'+d.getDate()).slice(-2)+'/'+(('0'+(d.getMonth()+1)).slice(-2));
@@ -899,7 +950,12 @@ swTab=function(el,name){
   document.getElementById('tab-'+name).classList.add('on');
   if(name==='members')loadMembers();
   if(name==='menu')loadMenuS();
-  if(name==='dashboard'){loadOrders().then(renderDash);}
+  if(name==='dashboard'){
+    loadOrders().then(function(){
+      if(!dashFrom){selQuick(document.querySelector('.ptab'),'today');}
+      else renderDash();
+    });
+  }
   if(name==='neworder')soRenderMenu();
 };
 
