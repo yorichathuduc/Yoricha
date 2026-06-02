@@ -407,9 +407,12 @@ function show(id){
 // ── PHONE ───────────────────────────────────────────────────
 async function goMenu(){
   var ph=document.getElementById('inp-phone').value.trim();
-  if(ph){var d=await api({action:'lookup',phone:ph});if(d.ok){member=d.member;renderBadge();}}
-  else member=null;
-  await loadMenu();show('pg-menu');
+  if(ph){
+    try{var d=await api({action:'lookup',phone:ph});if(d.ok){member=d.member;renderBadge();}}
+    catch(e){}
+  } else member=null;
+  try{await loadMenu();}catch(e){}
+  show('pg-menu');
 }
 function renderBadge(){
   var el=document.getElementById('member-preview');
@@ -420,10 +423,19 @@ function renderBadge(){
 
 // ── MENU ────────────────────────────────────────────────────
 async function loadMenu(){
-  var d=await api({action:'getMenu'});if(!d.ok)return;menu=d.menu;
-  var cats=[];menu.forEach(function(it){if(cats.indexOf(it.category)<0)cats.push(it.category);});
-  document.getElementById('cat-tabs').innerHTML=cats.map(function(c,i){return'<div class="ctab'+(i===0?' on':'')+'" onclick="filt(this,\''+c+'\')">'+c+'</div>';}).join('');
-  renderMenu(cats[0]);
+  try{
+    var d=await api({action:'getMenu'});
+    if(!d.ok||!d.menu||!d.menu.length){
+      document.getElementById('mgrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#aaa;font-size:.85rem">⚠️ Không tải được menu. Vui lòng thử lại.</div>';
+      return;
+    }
+    menu=d.menu;
+    var cats=[];menu.forEach(function(it){if(cats.indexOf(it.category)<0)cats.push(it.category);});
+    document.getElementById('cat-tabs').innerHTML=cats.map(function(c,i){return'<div class="ctab'+(i===0?' on':'')+'" onclick="filt(this,\''+c+'\')">'+c+'</div>';}).join('');
+    renderMenu(cats[0]);
+  }catch(e){
+    document.getElementById('mgrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#aaa;font-size:.85rem">⚠️ Lỗi kết nối. Vui lòng thử lại.<br/><button onclick="loadMenu()" style="margin-top:.5rem;background:var(--blue);color:#fff;border:none;border-radius:8px;padding:.5rem 1rem;cursor:pointer;font-size:.82rem">Thử lại</button></div>';
+  }
 }
 function filt(el,cat){document.querySelectorAll('.ctab').forEach(function(t){t.classList.remove('on');});el.classList.add('on');renderMenu(cat);}
 function renderMenu(cat){
