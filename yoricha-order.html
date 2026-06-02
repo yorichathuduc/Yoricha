@@ -235,7 +235,7 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
     </div>
     <div id="pay-qr" style="display:none">
       <!-- Cách 1: Thông tin chuyển khoản -->
-      <div style="margin-bottom:1rem">
+      <div style="background:var(--green-light);border:1.5px solid var(--green-mid);border-radius:12px;padding:.85rem 1rem;text-align:center">
         <div style="font-size:.8rem;font-weight:700;color:var(--green-dark);margin-bottom:.6rem">Cách 1: Điền thông tin chuyển khoản</div>
         <div style="background:var(--cream);border:1.5px solid var(--blue-mid);border-radius:12px;padding:.85rem 1rem;line-height:2">
           <div style="display:flex;justify-content:space-between;font-size:.85rem">
@@ -258,7 +258,7 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
       <!-- Cách 2: QR tại cửa hàng -->
       <div style="background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:12px;padding:.85rem 1rem;text-align:center">
         <div style="font-size:.8rem;font-weight:700;color:var(--green-dark);margin-bottom:.3rem">Cách 2: Quét mã thanh toán tại cửa hàng</div>
-        <div style="font-size:.75rem;color:#888">Nhân viên sẽ xuất mã QR khi bạn đến lấy hàng</div>
+        <div style="font-size:.75rem;color:#888">Áp dụng cho khách pick-up hoặc uống tại chỗ</div>
       </div>
     </div>
     <!-- Transfer warning - only show when transfer selected -->
@@ -407,12 +407,14 @@ function show(id){
 // ── PHONE ───────────────────────────────────────────────────
 async function goMenu(){
   var ph=document.getElementById('inp-phone').value.trim();
+  // Navigate immediately, load data in background
+  show('pg-menu');
+  document.getElementById('mgrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:2rem"><div style="font-size:1.5rem;animation:spin 1s linear infinite;display:inline-block">🍵</div><div style="font-size:.82rem;color:#aaa;margin-top:.5rem">Đang tải menu...</div></div>';
   if(ph){
     try{var d=await api({action:'lookup',phone:ph});if(d.ok){member=d.member;renderBadge();}}
     catch(e){}
   } else member=null;
   try{await loadMenu();}catch(e){}
-  show('pg-menu');
 }
 function renderBadge(){
   var el=document.getElementById('member-preview');
