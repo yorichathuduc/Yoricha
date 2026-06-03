@@ -161,6 +161,15 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
     <div id="cart-list"></div>
     <div class="total-row"><span>Tạm tính</span><span id="cart-subtotal">0đ</span></div>
   </div>
+  <!-- COUPON -->
+  <div class="card">
+    <div class="card-title">🎟️ Mã giảm giá</div>
+    <div class="coupon-row">
+      <input type="text" id="inp-coupon" placeholder="Nhập mã..." style="text-transform:uppercase"/>
+      <button class="btn-sm" onclick="applyCoupon()" id="btn-coupon">Áp dụng</button>
+    </div>
+    <div class="coupon-result" id="coupon-result"></div>
+  </div>
   <div id="disc-notice"></div>
 
   <!-- DELIVERY -->
@@ -235,7 +244,7 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
     </div>
     <div id="pay-qr" style="display:none">
       <!-- Cách 1: Thông tin chuyển khoản -->
-      <div style="background:var(--green-light);border:1.5px solid var(--green-mid);border-radius:12px;padding:.85rem 1rem;text-align:center">
+      <div style="margin-bottom:1rem">
         <div style="font-size:.8rem;font-weight:700;color:var(--green-dark);margin-bottom:.6rem">Cách 1: Điền thông tin chuyển khoản</div>
         <div style="background:var(--cream);border:1.5px solid var(--blue-mid);border-radius:12px;padding:.85rem 1rem;line-height:2">
           <div style="display:flex;justify-content:space-between;font-size:.85rem">
@@ -258,7 +267,7 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
       <!-- Cách 2: QR tại cửa hàng -->
       <div style="background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:12px;padding:.85rem 1rem;text-align:center">
         <div style="font-size:.8rem;font-weight:700;color:var(--green-dark);margin-bottom:.3rem">Cách 2: Quét mã thanh toán tại cửa hàng</div>
-        <div style="font-size:.75rem;color:#888">Áp dụng cho khách pick-up hoặc uống tại chỗ</div>
+        <div style="font-size:.75rem;color:#888">Nhân viên sẽ xuất mã QR khi bạn đến lấy hàng</div>
       </div>
     </div>
     <!-- Transfer warning - only show when transfer selected -->
@@ -371,7 +380,7 @@ var MAPS_KEY='AIzaSyDKG3-6nsURa-1MT8gtxgLWZR64UuywjMQ';
 var BANK_ID='VCB';           // Vietcombank
 var SHOP_ADDR='24/10 Đường số 6, Linh Chiểu, Thủ Đức, TP.HCM';
 var menu=[],cart=[],member=null,curItem=null,curSize=null,curQty=1,pollT=null;
-var delMode='pickup',shipFee=0;
+var delMode='pickup',shipFee=0,couponData=null;
 
 // Pre-fill from URL params (coming from membership page)
 window.addEventListener('DOMContentLoaded',function(){
@@ -549,9 +558,16 @@ function renderCart(){
 }
 function calcTotal(){
   var sub=cart.reduce(function(s,i){return s+i.price*i.qty;},0);
-  var total=sub+shipFee;
-  var sfx=shipFee>0?' + ship '+fmt(shipFee):'';
-  document.getElementById('cart-total-final').textContent=fmt(total)+(sfx?' ('+sfx+')':'');
+  var discount=0;
+  if(couponData){
+    if(couponData.type==='percent')discount=Math.round(sub*Number(couponData.value)/100);
+    if(couponData.type==='fixed')discount=Number(couponData.value);
+  }
+  var total=Math.max(0,sub-discount)+shipFee;
+  var parts=[];
+  if(shipFee>0)parts.push('ship '+fmt(shipFee));
+  if(discount>0)parts.push('giảm '+fmt(discount));
+  document.getElementById('cart-total-final').textContent=fmt(total)+(parts.length?' ('+parts.join(', ')+')':'');
 }
 
 // ── DELIVERY ────────────────────────────────────────────────
@@ -620,6 +636,44 @@ function copySTK(){
   }
 }
 
+// ── COUPON ───────────────────────────────────────────────────
+async function applyCoupon(){
+  var code=document.getElementById('inp-coupon').value.trim().toUpperCase();
+  var res_el=document.getElementById('coupon-result');
+  if(!code){res_el.textContent='Nhập mã trước!';res_el.className='coupon-result err';res_el.style.display='block';return;}
+  var btn=document.getElementById('btn-coupon');
+  btn.disabled=true;btn.textContent='⏳';
+  var phone=member?member.phone:(document.getElementById('inp-phone').value.trim()||'');
+  try{
+    var d=await api({action:'validateCoupon',code:code,phone:phone});
+    if(!d.ok){
+      couponData=null;
+      res_el.textContent='❌ '+d.error;
+      res_el.className='coupon-result err';
+      res_el.style.display='block';
+    } else {
+      couponData=d.coupon;
+      var msg='✅ '+d.coupon.description;
+      if(d.coupon.type==='free_upsize')msg='✅ '+d.coupon.description+' — nhân viên sẽ áp dụng khi bạn đến lấy';
+      if(d.coupon.type==='free_drink')msg='✅ '+d.coupon.description+' — nhân viên sẽ tặng thêm 1 ly';
+      if(d.coupon.type==='free_item')msg='✅ '+d.coupon.description+' — nhân viên sẽ tặng kèm';
+      res_el.textContent=msg;
+      res_el.className='coupon-result ok';
+      res_el.style.display='block';
+      calcTotal();
+    }
+  }catch(e){
+    res_el.textContent='❌ Lỗi kết nối';res_el.className='coupon-result err';res_el.style.display='block';
+  }
+  btn.disabled=false;btn.textContent='Áp dụng';
+}
+function removeCoupon(){
+  couponData=null;
+  document.getElementById('inp-coupon').value='';
+  document.getElementById('coupon-result').style.display='none';
+  calcTotal();
+}
+
 // ── ORDER ────────────────────────────────────────────────────
 async function placeOrder(){
   if(!cart.length){al('order-alert','Giỏ hàng trống!','err');return;}
@@ -633,8 +687,9 @@ async function placeOrder(){
   var note=document.getElementById('inp-note').value.trim();
   var cphone=document.getElementById('inp-cphone').value.trim();
   var payLabel=payMode==='transfer'?'[Chuyển khoản]':'[Tiền mặt]';
+  var couponLabel=couponData?'[Mã: '+couponData.code+' - '+couponData.description+']':'';
   var phoneLabel=cphone?'[SĐT:'+cphone+']':'';
-  note=payLabel+' '+phoneLabel+' '+note;
+  note=payLabel+' '+phoneLabel+' '+couponLabel+' '+note;
   if(delMode==='pickup')note='[Pick-up lúc '+document.getElementById('inp-pickuptime').value+'] '+note;
   if(delMode==='ship')note='[Ship đến: '+document.getElementById('inp-address').value+' | Phí: '+(shipFee===0?'Miễn phí':fmt(shipFee))+'] '+note;
   if(delMode==='dine')note='[Uống tại chỗ] '+note;
@@ -645,6 +700,11 @@ async function placeOrder(){
     var d=await api({action:'placeOrder',phone:member?member.phone:(document.getElementById('inp-phone').value.trim()||''),name:name,note:note,items:JSON.stringify(cart),total:total});
     if(!d.ok){al('order-alert',d.error,'err');return;}
     var isTransfer=payMode==='transfer';
+    // Mark coupon as used
+    if(couponData){
+      api({action:'useCoupon',code:couponData.code,phone:member?member.phone:(document.getElementById('inp-phone').value.trim()||'')});
+      couponData=null;
+    }
     showStatus(d.orderID,cart,total,isTransfer);
     cart=[];updBar();
   }catch(e){al('order-alert','Lỗi kết nối, thử lại!','err');}
@@ -691,7 +751,7 @@ async function pollStatus(oid){
     }
   }catch(e){}
 }
-function resetAll(){if(pollT)clearInterval(pollT);member=null;shipFee=0;document.getElementById('inp-phone').value='';document.getElementById('inp-name').value='';document.getElementById('inp-cphone').value='';document.getElementById('inp-note').value='';document.getElementById('member-preview').innerHTML='';document.getElementById('mst-wrap').style.display='none';show('pg-phone');}
+function resetAll(){if(pollT)clearInterval(pollT);member=null;shipFee=0;couponData=null;try{document.getElementById('inp-coupon').value='';document.getElementById('coupon-result').style.display='none';}catch(e){}document.getElementById('inp-phone').value='';document.getElementById('inp-name').value='';document.getElementById('inp-cphone').value='';document.getElementById('inp-note').value='';document.getElementById('member-preview').innerHTML='';document.getElementById('mst-wrap').style.display='none';show('pg-phone');}
 </script>
 </body>
 </html>
