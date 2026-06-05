@@ -1029,22 +1029,7 @@ function editItemImage(i){
 // ── DASHBOARD ─────────────────────────────────────────────────
 function parseVNDate(str){
   if(!str||str==='undefined'||str==='null')return null;
-  try{
-    // Format 1: "DD/MM/YYYY, HH:mm" (dấu phẩy ngăn cách)
-    var p=str.split(', ');
-    if(p.length>=2){
-      var dp=p[0].split('/');var tp=p[1].split(':');
-      if(dp.length>=3)return new Date(Number(dp[2]),Number(dp[1])-1,Number(dp[0]),Number(tp[0]||0),Number(tp[1]||0));
-    }
-    // Format 2: "HH:mm:ss DD/MM/YYYY" (giờ trước ngày sau, cách nhau bởi khoảng trắng)
-    var parts=str.trim().split(' ');
-    if(parts.length>=2){
-      var timePart=parts[0];var datePart=parts[1];
-      var dp2=datePart.split('/');var tp2=timePart.split(':');
-      if(dp2.length>=3)return new Date(Number(dp2[2]),Number(dp2[1])-1,Number(dp2[0]),Number(tp2[0]||0),Number(tp2[1]||0));
-    }
-    return null;
-  }catch(e){return null;}
+  try{var p=str.split(', ');if(p.length<2)return null;var dp=p[0].split('/');var tp=p[1].split(':');if(dp.length<3)return null;return new Date(Number(dp[2]),Number(dp[1])-1,Number(dp[0]),Number(tp[0]||0),Number(tp[1]||0));}catch(e){return null;}
 }
 function isSameDay(a,b){return a.getDate()===b.getDate()&&a.getMonth()===b.getMonth()&&a.getFullYear()===b.getFullYear();}
 function toDateOnly(d){return new Date(d.getFullYear(),d.getMonth(),d.getDate());}
