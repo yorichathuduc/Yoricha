@@ -2,63 +2,111 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8"/>
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
-<meta http-equiv="Pragma" content="no-cache"/>
-<meta http-equiv="Expires" content="0"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1"/>
 <meta name="theme-color" content="#3971b8"/>
-<title>Yoricha — Thành viên</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<link rel="preconnect" href="https://script.google.com"/>
+<title>Yoricha — Thẻ thành viên</title>
 <link href="https://fonts.googleapis.com/css2?family=Merienda:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--blue:#3971b8;--blue-light:#e8f0fb;--blue-mid:#b5d0f0;--green-dark:#343b1b;--cream:#fbfcee;--gold:#f6e6a5;--gold-dark:#d4a017}
+:root{--blue:#3971b8;--blue-light:#e8f0fb;--blue-mid:#b5d0f0;--green-dark:#343b1b;--cream:#fbfcee;--gold:#f6e6a5;--gold-dark:#d4a017;--red:#e74c3c;--green2:#27ae60;--vip:#7c3aed;--vip-light:#f3f0ff;--sub:#0369a1;--sub-light:#e0f2fe}
 html,body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--green-dark);min-height:100vh;-webkit-tap-highlight-color:transparent}
+
+/* HEADER */
 .header{background:var(--blue);padding:1rem 1rem 2.5rem;text-align:center;position:relative}
 .header::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:40px;background:var(--cream);clip-path:ellipse(55% 100% at 50% 100%)}
-.logo-btn{display:inline-block;cursor:pointer;background:none;border:none;padding:0}
+.logo-btn{background:none;border:none;padding:0;cursor:pointer;display:inline-block}
 .logo-btn img{height:56px;object-fit:contain;border-radius:14px;padding:8px 14px;background:rgba(255,255,255,.15)}
 .header-sub{font-family:'Merienda',cursive;font-size:.75rem;color:#b5d0f0;letter-spacing:2px;text-transform:uppercase;margin-top:.3rem}
+
+/* WRAP */
 .wrap{max-width:480px;margin:0 auto;padding:.75rem .9rem}
 .card{background:#fff;border:1.5px solid var(--blue-mid);border-radius:16px;padding:1.1rem;margin-bottom:.75rem;box-shadow:0 2px 12px rgba(57,113,184,.07)}
 .card-title{font-family:'Merienda',cursive;color:var(--blue);font-size:.95rem;margin-bottom:.85rem}
+
+/* TABS */
 .tab-bar{display:flex;border-bottom:2px solid var(--blue-mid);margin-bottom:1rem}
 .tab{flex:1;padding:.6rem;text-align:center;font-family:'Merienda',cursive;font-size:.85rem;color:#aaa;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
 .tab.on{color:var(--blue);border-bottom-color:var(--blue)}
 .tab-panel{display:none}.tab-panel.on{display:block}
+
+/* FORM */
 label{display:block;font-size:.75rem;font-weight:700;color:var(--green-dark);margin-bottom:.25rem}
 input{width:100%;border:1.5px solid var(--blue-mid);border-radius:10px;padding:.65rem .9rem;font-family:'Nunito',sans-serif;font-size:.95rem;color:var(--green-dark);background:#fafeff;outline:none;-webkit-appearance:none;margin-bottom:.75rem}
 input:focus{border-color:var(--blue);background:#fff}
 .btn{display:block;width:100%;background:var(--blue);color:#fff;font-family:'Merienda',cursive;font-size:1rem;border:none;border-radius:12px;padding:.8rem;cursor:pointer;text-align:center}
 .btn:active{filter:brightness(.9)}
 .btn:disabled{background:#aaa}
+
+/* TIER BADGE */
+.tier-badge{display:inline-flex;align-items:center;gap:.4rem;padding:.3rem .85rem;border-radius:20px;font-size:.78rem;font-weight:700}
+.tier-tapsu{background:#f0fdf4;color:#15803d;border:1.5px solid #86efac}
+.tier-vip{background:var(--vip-light);color:var(--vip);border:1.5px solid #c4b5fd}
+.tier-sub{background:var(--sub-light);color:var(--sub);border:1.5px solid #7dd3fc}
+
+/* MEMBER CARD */
+.member-card{border-radius:20px;padding:1.4rem;color:#fff;margin-bottom:.85rem;position:relative;overflow:hidden}
+.mc-tapsu{background:linear-gradient(135deg,#3971b8,#27ae60)}
+.mc-vip{background:linear-gradient(135deg,#7c3aed,#db2777)}
+.mc-sub{background:linear-gradient(135deg,#0369a1,#0891b2)}
+.mc-deco{position:absolute;right:-20px;top:-20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.08)}
+.mc-deco2{position:absolute;right:20px;bottom:-30px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.06)}
+.mc-av{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.25);margin-bottom:.65rem;display:flex;align-items:center;justify-content:center;font-family:'Merienda',cursive;font-size:1.4rem}
+.mc-name{font-family:'Merienda',cursive;font-size:1.2rem;margin-bottom:.15rem}
+.mc-phone{font-size:.75rem;opacity:.75;margin-bottom:.75rem}
+.mc-tier-label{font-size:.7rem;opacity:.8;margin-bottom:.25rem}
+.mc-tier-name{font-family:'Merienda',cursive;font-size:.95rem;margin-bottom:.85rem}
+
+/* STAMPS */
+.stamps-wrap{background:rgba(255,255,255,.15);border-radius:12px;padding:.75rem}
+.stamps-label{font-size:.72rem;opacity:.8;margin-bottom:.5rem}
+.sdots{display:flex;gap:5px;flex-wrap:wrap}
+.sdot{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:.7rem;position:relative}
+.sdot.on{background:#fff;color:var(--blue)}
+.sdot.vip-on{background:var(--gold-dark);border-color:var(--gold-dark);color:#fff}
+.sdot.milestone{border-color:rgba(255,220,100,.7)}
+.sdot.milestone.on{background:var(--gold-dark);border-color:var(--gold-dark);color:#fff}
+
+/* PRIVILEGES */
+.priv-card{border-radius:12px;padding:.85rem;margin-bottom:.6rem}
+.priv-tapsu{background:#f0fdf4;border:1.5px solid #86efac}
+.priv-vip{background:var(--vip-light);border:1.5px solid #c4b5fd}
+.priv-sub{background:var(--sub-light);border:1.5px solid #7dd3fc}
+.priv-title{font-weight:700;font-size:.85rem;margin-bottom:.4rem}
+.priv-tapsu .priv-title{color:#15803d}
+.priv-vip .priv-title{color:var(--vip)}
+.priv-sub .priv-title{color:var(--sub)}
+.priv-item{font-size:.78rem;line-height:1.8;color:var(--green-dark)}
+.priv-active{background:#dcfce7;border:1.5px solid #86efac;border-radius:10px;padding:.5rem .75rem;font-size:.8rem;font-weight:700;color:#15803d;margin-bottom:.5rem}
+.priv-inactive{opacity:.5}
+
+/* SUB CARD */
+.sub-cta{background:linear-gradient(135deg,#0369a1,#0891b2);border-radius:16px;padding:1.1rem;color:#fff;margin-bottom:.75rem;cursor:pointer;border:none;width:100%;text-align:left}
+.sub-price{font-family:'Merienda',cursive;font-size:1.4rem;margin-bottom:.2rem}
+.sub-desc{font-size:.78rem;opacity:.85;line-height:1.6}
+.sub-btn{background:#fff;color:var(--sub);font-family:'Merienda',cursive;font-size:.85rem;border:none;border-radius:10px;padding:.5rem 1.1rem;cursor:pointer;margin-top:.65rem;display:inline-block}
+
+/* HISTORY */
+.hist-item{display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px dashed var(--blue-mid);font-size:.82rem}
+.hist-item:last-child{border-bottom:none}
+
+/* ORDER CTA */
+.order-cta{background:linear-gradient(135deg,var(--blue),var(--green2));border-radius:14px;padding:1rem 1.2rem;display:flex;align-items:center;gap:.85rem;text-decoration:none;margin-top:.5rem}
+.octa-icon{font-size:1.4rem}
+.octa-title{font-family:'Merienda',cursive;color:#fff;font-size:.95rem}
+.octa-sub{font-size:.72rem;color:rgba(255,255,255,.75);margin-top:.1rem}
+.octa-arrow{color:rgba(255,255,255,.6);font-size:1.1rem;margin-left:auto}
+
+/* ALERT */
 .alert{border-radius:10px;padding:.6rem .85rem;font-size:.82rem;font-weight:600;margin-bottom:.75rem;display:none}
 .alert.ok{background:#e6f7ed;color:#1a7f3c;border:1px solid #a3d9b1}
 .alert.err{background:#fdecea;color:#b91c1c;border:1px solid #fca5a5}
-/* MEMBER CARD */
-.member-card{background:var(--blue);border-radius:20px;padding:1.5rem;color:#fff;margin-bottom:1rem;text-align:center}
-.mc-avatar{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.2);margin:0 auto .75rem;display:flex;align-items:center;justify-content:center;font-family:'Merienda',cursive;font-size:1.6rem;color:#fff}
-.mc-name{font-family:'Merienda',cursive;font-size:1.2rem;margin-bottom:.2rem}
-.mc-phone{font-size:.78rem;opacity:.7;margin-bottom:1rem}
-.mc-stamps{font-size:.82rem;opacity:.8;margin-bottom:.65rem}
-.sdots{display:flex;gap:4px;justify-content:center;margin-bottom:1rem}
-.sdot{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:.7rem}
-.sdot.on{background:#fff;color:var(--blue)}
-.sdot.ms{border-color:var(--gold-dark)}
-.sdot.ms.on{background:var(--gold-dark);color:#fff;border-color:var(--gold-dark)}
-.reward-box{background:var(--gold);border-radius:12px;padding:.75rem;font-size:.85rem;font-weight:700;color:var(--green-dark);margin-bottom:1rem;display:none}
-/* HISTORY */
-.hist-item{display:flex;justify-content:space-between;align-items:center;padding:.55rem 0;border-bottom:1px dashed var(--blue-mid);font-size:.82rem}
-.hist-item:last-child{border-bottom:none}
-.hi-prod{font-weight:700;color:var(--green-dark)}
-.hi-date{font-size:.7rem;color:#888;margin-top:.1rem}
-.hi-stamp{color:var(--blue);font-weight:700}
-/* ORDER BTN */
-.order-cta{background:linear-gradient(135deg,#3971b8,#27ae60);border-radius:14px;padding:1.1rem 1.25rem;display:flex;align-items:center;gap:.85rem;text-decoration:none;margin-top:.5rem}
-.octa-icon{font-size:1.5rem}
-.octa-text{flex:1}
-.octa-title{font-family:'Merienda',cursive;color:#fff;font-size:.95rem}
-.octa-sub{font-size:.72rem;color:rgba(255,255,255,.75);margin-top:.1rem}
-.octa-arrow{color:rgba(255,255,255,.6);font-size:1.1rem}
+
+/* MONTHLY PROGRESS */
+.monthly-bar{background:#eee;border-radius:10px;height:8px;margin:.4rem 0 .2rem;overflow:hidden}
+.monthly-fill{height:100%;border-radius:10px;background:var(--green2);transition:width .4s}
+
 footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
 </style>
 </head>
@@ -72,67 +120,147 @@ footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
 
 <div class="wrap">
   <div class="card">
-    <div class="tab-bar">
-      <div class="tab on" onclick="swTab(this,'reg')">Đăng ký</div>
-      <div class="tab" onclick="swTab(this,'look')">Tra cứu</div>
+    <div class="card-title">Nhập số điện thoại</div>
+    <div id="reg-alert" class="alert"></div>
+    <label>Họ và tên</label>
+    <input type="text" id="reg-name" placeholder="Nguyễn Văn A"/>
+    <label>Số điện thoại (Zalo)</label>
+    <input type="tel" id="reg-phone" placeholder="0901 234 567" inputmode="tel"/>
+    <!-- 2 program buttons -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-top:.25rem">
+      <button class="btn" id="btn-prog1" onclick="registerProg1()" style="background:linear-gradient(135deg,#3971b8,#27ae60);font-size:.82rem;padding:.8rem .5rem;line-height:1.35">
+        🍃 Tham gia<br/>Chương trình 1
+      </button>
+      <button class="btn" id="btn-prog2" onclick="registerProg2()" style="background:linear-gradient(135deg,#0369a1,#0891b2);font-size:.82rem;padding:.8rem .5rem;line-height:1.35">
+        💙 Tham gia<br/>Chương trình 2
+      </button>
     </div>
-
-    <!-- REGISTER -->
-    <div class="tab-panel on" id="tab-reg">
-      <div id="reg-alert" class="alert"></div>
-      <label>Họ và tên</label>
-      <input type="text" id="reg-name" placeholder="Nguyễn Văn A"/>
-      <label>Số điện thoại (Zalo)</label>
-      <input type="tel" id="reg-phone" placeholder="0901 234 567" inputmode="tel"/>
-      <button class="btn" id="btn-reg" onclick="register()">Tạo tài khoản ✨</button>
-    </div>
-
-    <!-- LOOKUP -->
-    <div class="tab-panel" id="tab-look">
-      <div id="look-alert" class="alert"></div>
-      <label>Số điện thoại</label>
-      <input type="tel" id="look-phone" placeholder="0901 234 567" inputmode="tel"/>
-      <button class="btn" id="btn-look" onclick="lookup()">Tra cứu 🔍</button>
+    <div style="margin-top:.85rem;border-top:1px dashed var(--blue-mid);padding-top:.85rem">
+      <label>Đã là thành viên? Tra cứu:</label>
+      <div style="display:flex;gap:.5rem">
+        <input type="tel" id="look-phone" placeholder="0901 234 567" inputmode="tel" style="margin:0;flex:1"/>
+        <button class="btn" id="btn-look" onclick="lookup()" style="width:auto;padding:.65rem 1rem;font-size:.85rem">🔍</button>
+      </div>
+      <div id="look-alert" class="alert" style="margin-top:.5rem"></div>
     </div>
   </div>
 
-  <!-- MEMBER RESULT -->
   <div id="member-result" style="display:none">
-    <div class="member-card">
-      <div class="mc-avatar" id="mc-av"></div>
+    <!-- Member card -->
+    <div class="member-card" id="mc-card">
+      <div class="mc-deco"></div><div class="mc-deco2"></div>
+      <div class="mc-av" id="mc-av"></div>
       <div class="mc-name" id="mc-name"></div>
       <div class="mc-phone" id="mc-phone"></div>
-      <div class="mc-stamps" id="mc-stamps"></div>
-      <div class="sdots" id="sdots"></div>
-      <div class="reward-box" id="reward-box"></div>
+      <div class="mc-tier-label">Hạng thành viên</div>
+      <div class="mc-tier-name" id="mc-tier-name"></div>
+      <div class="stamps-wrap" id="stamps-wrap">
+        <div class="stamps-label" id="stamps-label"></div>
+        <div class="sdots" id="sdots"></div>
+      </div>
     </div>
 
-    <!-- ORDER CTA -->
+    <!-- Active privileges today -->
+    <div id="active-privs"></div>
+
+    <!-- Subscription CTA -->
+    <div id="sub-cta-wrap" style="display:none">
+      <div class="sub-cta">
+        <div class="sub-price">49.000đ / 30 ngày</div>
+        <div class="sub-desc">
+          📦 Gói Thành Viên Trả Trước<br/>
+          • Đồng giá Size S = 29.000đ<br/>
+          • Đồng giá Size L = 52.000đ<br/>
+          • Áp dụng tối đa 2 ly/ngày
+        </div>
+        <div style="font-size:.72rem;opacity:.75;margin-top:.5rem">Thanh toán chuyển khoản → nhân viên kích hoạt</div>
+      </div>
+    </div>
+
+    <!-- Order CTA -->
     <a class="order-cta" id="order-cta" href="#">
       <div class="octa-icon">🍵</div>
-      <div class="octa-text">
+      <div>
         <div class="octa-title">Xem menu & đặt hàng</div>
-        <div class="octa-sub">Không cần nhập lại số điện thoại</div>
+        <div class="octa-sub" id="octa-sub">Không cần nhập lại số điện thoại</div>
       </div>
       <div class="octa-arrow">›</div>
     </a>
 
-    <!-- HISTORY -->
-    <div class="card" style="margin-top:.85rem">
+    <!-- Monthly stats (VIP only) -->
+    <div id="monthly-stats" style="display:none" class="card">
+      <div class="card-title">📊 Hoạt động tháng này</div>
+      <div style="font-size:.82rem;color:var(--green-dark)">
+        <div style="display:flex;justify-content:space-between;margin-bottom:.5rem">
+          <span>Số ly đã mua</span><span style="font-weight:700" id="m-count">0/4</span>
+        </div>
+        <div class="monthly-bar"><div class="monthly-fill" id="m-bar" style="width:0%"></div></div>
+        <div style="font-size:.72rem;color:#888;margin-bottom:.75rem">Tối thiểu 4 ly/tháng để giữ hạng VIP</div>
+        <div style="display:flex;justify-content:space-between">
+          <span>Ly ngày thường</span><span style="font-weight:700" id="m-weekday">0/2</span>
+        </div>
+        <div class="monthly-bar"><div class="monthly-fill" id="m-weekday-bar" style="width:0%;background:var(--vip)"></div></div>
+        <div style="font-size:.72rem;color:#888">Tối thiểu 2 ly ngày thường (không phải T3/T4)</div>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="card">
       <div class="card-title">Lịch sử mua hàng</div>
       <div id="hist-list"></div>
     </div>
   </div>
 
-  <!-- BENEFITS -->
+  <!-- Program info -->
   <div class="card">
-    <div class="card-title">Quyền lợi thành viên</div>
-    <div style="font-size:.83rem;line-height:1.8;color:var(--green-dark)">
-      ☕ Mỗi lần mua nhận <b>1 dấu mốc</b><br/>
-      🎁 <b>Ly thứ 4:</b> Mua 2 ly — ly 2 FREE upsize<br/>
-      💚 <b>Ly thứ 7:</b> Giảm 20% tổng hoá đơn<br/>
-      ⭐ <b>Ly thứ 10:</b> Free 1 ly nước<br/>
-      <span style="font-size:.72rem;color:#aaa;margin-top:.5rem;display:block">Không quy đổi thành tiền mặt · Áp dụng tại Yoricha Thủ Đức</span>
+    <div style="font-family:'Merienda',cursive;color:var(--blue);font-size:1rem;margin-bottom:1rem">🌿 Chương trình thành viên</div>
+
+    <!-- PROGRAM 1 -->
+    <div style="border:2px solid #86efac;border-radius:14px;overflow:hidden;margin-bottom:.75rem">
+      <div style="background:linear-gradient(135deg,#3971b8,#27ae60);padding:.75rem 1rem;color:#fff">
+        <div style="font-family:'Merienda',cursive;font-size:.95rem;margin-bottom:.1rem">Chương trình 1</div>
+        <div style="font-family:'Merienda',cursive;font-size:1.05rem">🍃 Hành Trình Matchaholic</div>
+        <div style="font-size:.72rem;opacity:.85;margin-top:.2rem">Miễn phí tham gia · Tích lũy mộc theo từng ly</div>
+      </div>
+      <div style="padding:.85rem 1rem;background:#fff">
+        <div style="font-weight:700;font-size:.8rem;color:#15803d;margin-bottom:.5rem">Giai đoạn 1 — Matcha Tập Sự</div>
+        <div style="font-size:.78rem;color:var(--green-dark);line-height:1.85">
+          ☕ Mỗi ly = 1 mộc tích lũy<br/>
+          🎯 Mua combo 2 ly ở ly thứ 4 = +2 mộc<br/>
+          📸 Review Google Maps = Giảm 10% ly tiếp theo <span style="color:#888">(1 lần/tài khoản)</span><br/>
+          🎁 <b>Ly thứ 4:</b> Giảm 10% khi mua từ 2 ly trở lên<br/>
+          🎉 <b>Ly thứ 7:</b> Tặng 1 ly Size S miễn phí
+        </div>
+        <div style="font-weight:700;font-size:.8rem;color:var(--vip);margin:.75rem 0 .5rem">Giai đoạn 2 — VIP "Chữa Lành Bằng Matcha"</div>
+        <div style="font-size:.72rem;color:#888;margin-bottom:.4rem">Tự động nâng hạng sau khi hoàn thành ly thứ 7</div>
+        <div style="font-size:.78rem;color:var(--green-dark);line-height:1.85">
+          🥛 <b>Thứ 3:</b> Đổi nền sữa hạt miễn phí (1 ly/ngày)<br/>
+          📏 <b>Thứ 4:</b> Upsize S → L miễn phí (1 ly/ngày)<br/>
+          🎂 <b>Sinh nhật:</b> Xuất trình CMND/CCCD tháng sinh nhật → nhận voucher 1 ly bất kỳ<br/>
+          ⚠️ <b>Duy trì:</b> Tối thiểu 4 ly/tháng, ít nhất 2 ly vào ngày thường
+        </div>
+      </div>
+    </div>
+
+    <!-- PROGRAM 2 -->
+    <div style="border:2px solid #7dd3fc;border-radius:14px;overflow:hidden">
+      <div style="background:linear-gradient(135deg,#0369a1,#0891b2);padding:.75rem 1rem;color:#fff">
+        <div style="font-family:'Merienda',cursive;font-size:.95rem;margin-bottom:.1rem">Chương trình 2</div>
+        <div style="font-family:'Merienda',cursive;font-size:1.05rem">💙 Gói Subscription Trả Trước</div>
+        <div style="font-size:.72rem;opacity:.85;margin-top:.2rem">49.000đ / 30 ngày · Thanh toán tại cửa hàng</div>
+      </div>
+      <div style="padding:.85rem 1rem;background:#fff">
+        <div style="font-size:.78rem;color:var(--green-dark);line-height:1.85">
+          💚 <b>Đồng giá Size S = 29.000đ</b> (mọi loại nước)<br/>
+          💚 <b>Đồng giá Size L = 52.000đ</b> (mọi loại nước)<br/>
+          📌 Tối đa 2 ly/ngày · Hiệu lực 30 ngày<br/>
+          🔄 Gia hạn tiếp 49.000đ sau mỗi 30 ngày
+        </div>
+        <div style="background:#e0f2fe;border-radius:8px;padding:.55rem .75rem;margin-top:.65rem;font-size:.75rem;color:#0369a1;line-height:1.6">
+          📍 <b>Cách tham gia:</b> Đến cửa hàng thanh toán 49.000đ → Nhân viên kích hoạt số điện thoại của bạn ngay tại quầy.<br/>
+          ⚠️ Gói Subscription không tích mộc Chương trình 1.
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -141,74 +269,135 @@ footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
 
 <script>
 var API='https://script.google.com/macros/s/AKfycbxs-jt4COAvW__D7UFp1gmeiCbPJE7zNCqn7pEGOKUKDYmbcht1Wm765sxZcWH9gF4A/exec';
+
 async function api(p){
-  // Encode params - complex values (arrays/objects) as JSON strings
   var params=new URLSearchParams();
-  for(var k in p){
-    var v=p[k];
-    if(typeof v==='object')params.set(k,JSON.stringify(v));
-    else params.set(k,String(v));
-  }
-  var res=await fetch(API+'?'+params.toString());
-  return res.json();
+  for(var k in p){var v=p[k];params.set(k,typeof v==='object'?JSON.stringify(v):String(v));}
+  var res=await fetch(API+'?'+params.toString());return res.json();
 }
 function al(id,msg,type){var e=document.getElementById(id);e.textContent=msg;e.className='alert '+type;e.style.display='block';setTimeout(function(){e.style.display='none';},5000);}
-function swTab(el,name){
-  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
-  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('on');});
-  el.classList.add('on');document.getElementById('tab-'+name).classList.add('on');
-}
+
+
+var TIER_LABELS={'matcha_tapsu':'🍃 Matcha Tập Sự','vip':'💜 VIP Chữa Lành','subscription':'💙 Subscription'};
+var TIER_CARD={'matcha_tapsu':'mc-tapsu','vip':'mc-vip','subscription':'mc-sub'};
+
 function showMember(m){
   document.getElementById('member-result').style.display='block';
+  // Card
+  var card=document.getElementById('mc-card');
+  card.className='member-card '+(TIER_CARD[m.tier]||'mc-tapsu');
   document.getElementById('mc-av').textContent=m.name.charAt(0).toUpperCase();
   document.getElementById('mc-name').textContent=m.name;
   document.getElementById('mc-phone').textContent=m.phone;
-  document.getElementById('mc-stamps').textContent='Dấu mốc: '+m.stamps+'/10';
-  // dots
-  var ms={4:true,7:true,10:true};
-  var icons={4:'🎁',7:'💚',10:'⭐'};
-  var dots='';
-  for(var i=1;i<=10;i++){
-    var cls='sdot'+(ms[i]?' ms':'')+(i<=m.stamps?' on':'');
-    dots+='<div class="'+cls+'">'+(i<=m.stamps?(ms[i]?icons[i]:'✓'):(ms[i]?icons[i]:''))+'</div>';
+  document.getElementById('mc-tier-name').textContent=TIER_LABELS[m.tier]||m.tier;
+
+  // Stamps
+  var stampsWrap=document.getElementById('stamps-wrap');
+  if(m.tier==='subscription'){
+    stampsWrap.style.display='none';
+  } else {
+    stampsWrap.style.display='block';
+    var maxStamps=m.tier==='matcha_tapsu'?7:10;
+    document.getElementById('stamps-label').textContent='Dấu mốc: '+m.stamps+'/'+maxStamps;
+    var milestones=m.tier==='matcha_tapsu'?{4:true,7:true}:{};
+    var icons={4:'🎁',7:'🎉'};
+    var dots='';
+    for(var i=1;i<=maxStamps;i++){
+      var isMs=milestones[i];var isFilled=i<=m.stamps;
+      var cls='sdot'+(isMs?' milestone':'')+(isFilled?(m.tier==='vip'?' vip-on':' on'):'');
+      dots+='<div class="'+cls+'">'+(isFilled?(isMs?icons[i]:'✓'):(isMs?icons[i]||'◎':''))+'</div>';
+    }
+    document.getElementById('sdots').innerHTML=dots;
   }
-  document.getElementById('sdots').innerHTML=dots;
-  // reward
-  var rewards={4:'🎁 Ly thứ 4 — mua 2 ly, ly 2 FREE UPSIZE!',7:'💚 Ly thứ 7 — GIẢM 20% hôm nay!',10:'⭐ Ly thứ 10 — FREE 1 LY NƯỚC!'};
-  var rb=document.getElementById('reward-box');
-  if(rewards[m.stamps]){rb.textContent=rewards[m.stamps];rb.style.display='block';}
-  else rb.style.display='none';
-  // history
-  var hist=m.history||[];
-  var list=document.getElementById('hist-list');
-  if(!hist.length){list.innerHTML='<div style="color:#aaa;text-align:center;padding:.75rem;font-size:.82rem">Chưa có lịch sử</div>';return;}
-  list.innerHTML=[...hist].reverse().slice(0,8).map(function(h){
-    return'<div class="hist-item"><div><div class="hi-prod">'+h.product+'</div><div class="hi-date">'+h.date+'</div></div><div class="hi-stamp">Mốc #'+h.stamp+'</div></div>';
-  }).join('');
-  // order link with phone pre-filled
+
+  // Active privileges today
+  var privs='';
+  if(m.subActive){
+    privs+='<div class="priv-active">💙 Subscription đang hoạt động · Còn '+m.subUsedToday+'/2 ly hôm nay · HH: '+m.subExpiry+'</div>';
+  }
+  if(m.vipTuesdayMilk){
+    privs+='<div class="priv-active" style="background:#f3f0ff;border-color:#c4b5fd;color:var(--vip)">🥛 Hôm nay T3 · Đổi sữa hạt MIỄN PHÍ (1 ly)</div>';
+  }
+  if(m.vipWednesdayUpsize){
+    privs+='<div class="priv-active" style="background:#f3f0ff;border-color:#c4b5fd;color:var(--vip)">📏 Hôm nay T4 · Upsize S→L MIỄN PHÍ (1 ly)</div>';
+  }
+  if(m.isBirthdayMonth&&m.tier==='vip'){
+    privs+='<div class="priv-active" style="background:#fff8e1;border-color:#f6c90e;color:#856404">🎂 Tháng sinh nhật · Kiểm tra ví để nhận voucher!</div>';
+  }
+  if(m.stamps===3){
+    privs+='<div class="priv-active" style="background:#fef9e7;border-color:var(--gold-dark);color:var(--gold-dark)">🎁 Ly này là ly thứ 4 · Mua 2 ly được giảm 10%!</div>';
+  }
+  if(m.stamps===6){
+    privs+='<div class="priv-active" style="background:#f0fdf4;border-color:#86efac;color:#15803d">🎉 Ly này là ly thứ 7 · Được tặng 1 ly Size S MIỄN PHÍ!</div>';
+  }
+  document.getElementById('active-privs').innerHTML=privs;
+
+  // Sub CTA
+  document.getElementById('sub-cta-wrap').style.display=(m.tier!=='subscription')?'block':'none';
+
+  // Monthly stats (VIP)
+  var monthly=document.getElementById('monthly-stats');
+  if(m.tier==='vip'){
+    monthly.style.display='block';
+    document.getElementById('m-count').textContent=m.monthlyCount+'/4';
+    document.getElementById('m-bar').style.width=Math.min(100,m.monthlyCount/4*100)+'%';
+    document.getElementById('m-weekday').textContent=m.monthlyWeekday+'/2';
+    document.getElementById('m-weekday-bar').style.width=Math.min(100,m.monthlyWeekday/2*100)+'%';
+  } else {
+    monthly.style.display='none';
+  }
+
+  // Order link
   document.getElementById('order-cta').href='yoricha-order.html?phone='+encodeURIComponent(m.phone)+'&name='+encodeURIComponent(m.name);
+  if(m.subActive) document.getElementById('octa-sub').textContent='Giá Subscription đang được áp dụng 💙';
+
+  // History
+  var hist=m.history||[];
+  document.getElementById('hist-list').innerHTML=hist.length
+    ?[...hist].reverse().slice(0,8).map(function(h){return'<div class="hist-item"><div><div style="font-weight:700">'+h.product+'</div><div style="font-size:.7rem;color:#888">'+h.date+'</div></div><div style="color:var(--blue);font-weight:700">Mốc #'+h.stamp+'</div></div>';}).join('')
+    :'<div style="color:#aaa;text-align:center;padding:.75rem;font-size:.82rem">Chưa có lịch sử</div>';
 }
-async function register(){
+
+async function doRegister(prog){
   var name=document.getElementById('reg-name').value.trim();
   var phone=document.getElementById('reg-phone').value.trim();
-  if(!name||!phone){al('reg-alert','Vui lòng điền đầy đủ.','err');return;}
-  var btn=document.getElementById('btn-reg');btn.disabled=true;btn.textContent='⏳ Đang tạo...';
+  if(!name||!phone){al('reg-alert','Vui lòng điền đầy đủ tên và số điện thoại.','err');return;}
+  var btn=document.getElementById(prog===1?'btn-prog1':'btn-prog2');
+  btn.disabled=true;
   try{
     var d=await api({action:'register',name:name,phone:phone});
-    if(!d.ok){al('reg-alert',d.error,'err');return;}
-    // Redirect to order page with phone pre-filled
-    window.location.href='yoricha-order.html?phone='+encodeURIComponent(d.member.phone)+'&name='+encodeURIComponent(d.member.name);
+    if(!d.ok&&d.error.indexOf('đã được đăng ký')<0){al('reg-alert',d.error,'err');return;}
+    // If already registered, just proceed
+    var memberPhone=d.ok?d.member.phone:phone;
+    var memberName=d.ok?d.member.name:name;
+    if(prog===2){
+      // Program 2: show subscription info
+      al('reg-alert','✅ Tài khoản đã sẵn sàng! Vui lòng đến cửa hàng thanh toán 49.000đ để nhân viên kích hoạt gói Subscription.','ok');
+      document.getElementById('reg-alert').style.display='block';
+    } else {
+      window.location.href='yoricha-order.html?phone='+encodeURIComponent(memberPhone)+'&name='+encodeURIComponent(memberName);
+    }
   }catch(e){al('reg-alert','Lỗi kết nối.','err');}
-  finally{btn.disabled=false;btn.textContent='Tạo tài khoản ✨';}
+  finally{btn.disabled=false;}
 }
+function registerProg1(){doRegister(1);}
+function registerProg2(){doRegister(2);}
+
 async function lookup(){
   var phone=document.getElementById('look-phone').value.trim();
   if(!phone){al('look-alert','Nhập số điện thoại.','err');return;}
   var btn=document.getElementById('btn-look');btn.disabled=true;btn.textContent='⏳';
   try{
-    var d=await api({action:'lookup',phone:phone});
-    if(!d.ok){al('look-alert',d.error,'err');return;}
-    showMember(d.member);
+    // Use getMemberPrivileges for full data
+    var d=await api({action:'getMemberPrivileges',phone:phone});
+    if(!d.ok){
+      // Fallback to basic lookup
+      var d2=await api({action:'lookup',phone:phone});
+      if(!d2.ok){al('look-alert',d2.error,'err');return;}
+      showMember(Object.assign(d2.member,{tier:'matcha_tapsu',vipActive:false,subActive:false,vipTuesdayMilk:false,vipWednesdayUpsize:false,isBirthdayMonth:false,monthlyCount:0,monthlyWeekday:0}));
+    } else {
+      showMember(d.member);
+    }
   }catch(e){al('look-alert','Lỗi kết nối.','err');}
   finally{btn.disabled=false;btn.textContent='Tra cứu 🔍';}
 }
