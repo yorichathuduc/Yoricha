@@ -216,7 +216,7 @@ footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
     <div style="font-family:'Merienda',cursive;color:var(--blue);font-size:1rem;margin-bottom:1rem">🌿 Chương trình thành viên</div>
 
     <!-- PROGRAM 1 -->
-    <div style="border:2px solid #86efac;border-radius:14px;overflow:hidden;margin-bottom:.75rem">
+    <div id="prog1-info" style="border:2px solid #86efac;border-radius:14px;overflow:hidden;margin-bottom:.75rem">
       <div style="background:linear-gradient(135deg,#3971b8,#27ae60);padding:.75rem 1rem;color:#fff">
         <div style="font-family:'Merienda',cursive;font-size:.95rem;margin-bottom:.1rem">Chương trình 1</div>
         <div style="font-family:'Merienda',cursive;font-size:1.05rem">🍃 Hành Trình Matchaholic</div>
@@ -243,7 +243,7 @@ footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
     </div>
 
     <!-- PROGRAM 2 -->
-    <div style="border:2px solid #7dd3fc;border-radius:14px;overflow:hidden">
+    <div id="prog2-info" style="border:2px solid #7dd3fc;border-radius:14px;overflow:hidden">
       <div style="background:linear-gradient(135deg,#0369a1,#0891b2);padding:.75rem 1rem;color:#fff">
         <div style="font-family:'Merienda',cursive;font-size:.95rem;margin-bottom:.1rem">Chương trình 2</div>
         <div style="font-family:'Merienda',cursive;font-size:1.05rem">💙 Gói Subscription Trả Trước</div>
@@ -367,6 +367,17 @@ function showMember(m){
   document.getElementById('hist-list').innerHTML=hist.length
     ?[...hist].reverse().slice(0,8).map(function(h){return'<div class="hist-item"><div><div style="font-weight:700">'+h.product+'</div><div style="font-size:.7rem;color:#888">'+h.date+'</div></div><div style="color:var(--blue);font-weight:700">Mốc #'+h.stamp+'</div></div>';}).join('')
     :'<div style="color:#aaa;text-align:center;padding:.75rem;font-size:.82rem">Chưa có lịch sử</div>';
+  // Chỉ hiện chương trình phù hợp với tier của member
+  var p1 = document.getElementById('prog1-info');
+  var p2 = document.getElementById('prog2-info');
+  if (m.tier === 'subscription') {
+    if (p1) p1.style.display = 'none';
+    if (p2) p2.style.display = '';
+  } else {
+    // matcha_tapsu hoặc vip → Chương trình 1
+    if (p1) p1.style.display = '';
+    if (p2) p2.style.display = 'none';
+  }
 }
 
 async function doRegister(prog){
