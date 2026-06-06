@@ -678,15 +678,27 @@ function speak(text){
   window.speechSynthesis.speak(u);
 }
 function showBrowserNotif(count){
-  if(!('Notification' in window)||Notification.permission!=='granted')return;
-  new Notification('🍵 Yoricha — Có đơn mới!',{body:'Bạn có '+count+' đơn mới',requireInteraction:true});
+  if(!('Notification' in window))return;
+  function _show(){
+    if(Notification.permission!=='granted')return;
+    new Notification('🍵 Yoricha — Có đơn mới!',{
+      body:count>1?'Có '+count+' đơn mới đang chờ xử lý!':'Có 1 đơn mới đang chờ xử lý!',
+      requireInteraction:true,
+      tag:'yoricha-new-order'
+    });
+  }
+  if(Notification.permission==='default'){
+    Notification.requestPermission().then(function(p){if(p==='granted')_show();});
+  } else {
+    _show();
+  }
 }
 function checkNewOrders(newOrders){
   if(!lastOrderIDs.length){lastOrderIDs=newOrders.map(function(o){return o.orderID;});return;}
   var newOnes=newOrders.filter(function(o){return o.status==='Mới'&&lastOrderIDs.indexOf(o.orderID)<0;});
   if(newOnes.length>0){
     playBeep();
-    setTimeout(function(){speak('Shop ơi có đơn mới, đơn mới');},600);
+    setTimeout(function(){speak('Shop ơi có đơn mới, đơn mới, đơn mới');},600);
     showBrowserNotif(newOnes.length);
     var badge=document.getElementById('new-order-badge');
     badge.textContent=newOnes.length;badge.style.display='block';
@@ -805,7 +817,7 @@ function soRenderCart(){
   var total=soCart.reduce(function(s,i){return s+i.price*i.qty;},0);
   var card=document.getElementById('so-cart-card');card.style.display=soCart.length?'block':'none';
   document.getElementById('so-cart-list').innerHTML=soCart.map(function(it,i){
-    var subs=[];if(it.size)subs.push('Size '+it.size);if(it.bot)subs.push(it.bot);if(it.sua)subs.push(it.sua);if(it.sweet)subs.push('Ngọt '+it.sweet);if(it.note)subs.push('📝 '+it.note);subs.push('x'+it.qty);
+    var subs=[];if(it.size)subs.push('Size '+it.size+(it._upsized?' 🆙Free':''));if(it.bot)subs.push(it.bot);if(it.sua)subs.push(it.sua);if(it.sweet)subs.push('Ngọt '+it.sweet);if(it.note)subs.push('📝 '+it.note);subs.push('x'+it.qty);
     return'<div style="display:flex;align-items:flex-start;gap:.55rem;padding:.55rem 0;border-bottom:1px dashed var(--blue-mid)"><button style="background:none;border:none;color:#ccc;cursor:pointer;font-size:.95rem;padding:.1rem;flex-shrink:0" onclick="soRmCart('+i+')">✕</button><div style="font-weight:700;font-size:.82rem;flex:1"><div style="font-size:.7rem;color:#888;margin-top:.1rem">'+subs.join(' · ')+'</div>'+it.name+'</div><div style="font-weight:700;color:var(--blue);font-size:.82rem">'+fmt(it.price*it.qty)+'</div></div>';
   }).join('');
   var soDiscount=0;
@@ -817,8 +829,55 @@ async function soApplyCoupon(){
   var el=document.getElementById('so-coupon-result');
   if(!code){el.style.display='none';return;}
   var d=await api({action:'validateCoupon',code:code,phone:soMember?soMember.phone:''});
-  if(d.ok){soCouponData=d.coupon;el.textContent='✅ '+d.coupon.description;el.style.cssText='display:block;background:#e6f7ed;color:#1a7f3c;border-radius:8px;padding:.4rem .7rem;font-weight:600';soRenderCart();}
+  if(d.ok){
+    soCouponData=d.coupon;
+    if(d.coupon.type==='free_upsize'){
+      // Show picker after a short delay so coupon result UI shows first
+      setTimeout(showUpsizePicker, 200);
+    }
+    el.textContent='✅ '+d.coupon.description;el.style.cssText='display:block;background:#e6f7ed;color:#1a7f3c;border-radius:8px;padding:.4rem .7rem;font-weight:600';soRenderCart();
+  }
   else{soCouponData=null;el.textContent='❌ '+d.error;el.style.cssText='display:block;background:#fdecea;color:#b91c1c;border-radius:8px;padding:.4rem .7rem;font-weight:600';}
+}
+ 
+function showUpsizePicker(){
+  var eligibleItems=soCart.filter(function(it){return it.size==='S';});
+  if(!eligibleItems.length){
+    var el=document.getElementById('so-coupon-result');
+    el.textContent='⚠️ Không có ly size S nào trong giỏ để upsize';
+    el.style.cssText='display:block;background:#fff3cd;color:#856404;border-radius:8px;padding:.4rem .7rem;font-weight:600';
+    soCouponData=null;
+    return;
+  }
+  var list=document.getElementById('upsize-list');
+  list.innerHTML=eligibleItems.map(function(it,i){
+    var realIdx=soCart.indexOf(it);
+    var subs=[];if(it.bot)subs.push(it.bot);if(it.sua)subs.push(it.sua);if(it.sweet)subs.push('Ngọt '+it.sweet);
+    return'<div onclick="doUpsize('+realIdx+')" style="display:flex;align-items:center;gap:.75rem;padding:.7rem .85rem;border:1.5px solid var(--blue-mid);border-radius:12px;margin-bottom:.5rem;cursor:pointer;background:var(--blue-light)" >'+
+      '<div style="width:36px;height:36px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.88rem;flex-shrink:0">S</div>'+
+      '<div style="flex:1"><div style="font-weight:700;font-size:.85rem">'+it.name+'</div>'+
+      (subs.length?'<div style="font-size:.72rem;color:#888">'+subs.join(' · ')+'</div>':'')+
+      '</div>'+
+      '<div style="font-size:.75rem;font-weight:700;color:var(--blue)">→ L 🆙</div>'+
+      '</div>';
+  }).join('');
+  document.getElementById('upsize-modal').style.display='flex';
+}
+function doUpsize(idx){
+  var it=soCart[idx];
+  if(!it||it.size!=='S')return;
+  var menuItem=menuS.find(function(m){return m.id===it.id;});
+  if(menuItem){
+    var extras=it.price-(menuItem.price_s*1000);
+    it.price=menuItem.price_l*1000+extras;
+  }
+  it.size='L';
+  it._upsized=true;
+  document.getElementById('upsize-modal').style.display='none';
+  soRenderCart();
+  var el=document.getElementById('so-coupon-result');
+  el.textContent='✅ Đã upsize '+it.name+' lên size L miễn phí!';
+  el.style.cssText='display:block;background:#e6f7ed;color:#1a7f3c;border-radius:8px;padding:.4rem .7rem;font-weight:600';
 }
 async function soPlaceOrder(){
   if(!soCart.length){al('so-alert','Chưa chọn món!','err');return;}
@@ -826,7 +885,13 @@ async function soPlaceOrder(){
   var total=soCart.reduce(function(s,i){return s+i.price*i.qty;},0);
   if(soCouponData){var disc=soCouponData.type==='percent'?Math.round(total*Number(soCouponData.value)/100):(Number(soCouponData.value)*1000);total=Math.max(0,total-disc);}
   var note='[Tại quầy] [NV: '+(staffInfo?staffInfo.name:'?')+'] '+document.getElementById('so-note').value.trim();
-  if(soCouponData)note+=' [Mã: '+soCouponData.code+']';
+  if(soCouponData){
+    note+=' [Mã: '+soCouponData.code+']';
+    if(soCouponData.type==='free_upsize'){
+      var upsized=soCart.find(function(it){return it._upsized;});
+      if(upsized)note+=' [Upsize miễn phí: '+upsized.name+']';
+    }
+  }
   var d=await api({action:'placeOrder',password:PWD,phone:soMember?soMember.phone:'',name:name,note:note,items:JSON.stringify(soCart),total:total});
   if(!d.ok){al('so-alert',d.error,'err');return;}
   if(soCouponData){api({action:'useCoupon',code:soCouponData.code,phone:soMember?soMember.phone:''});soCouponData=null;}
@@ -1217,5 +1282,15 @@ loadOrders=async function(){
 document.getElementById('logo-login').src='https://drive.google.com/thumbnail?id=1uQD0joy3YQ1PlHSGNZJoy_dFC_oT-miJ&sz=w300';
 if('Notification' in window&&Notification.permission==='default'){document.addEventListener('click',function(){Notification.requestPermission();},{once:true});}
 </script>
+ 
+<!-- UPSIZE PICKER MODAL -->
+<div id="upsize-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center;padding:1rem">
+  <div style="background:#fff;border-radius:18px;padding:1.25rem;width:100%;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,.18)">
+    <div style="font-family:'Merienda',cursive;color:var(--blue);font-size:.97rem;margin-bottom:.3rem">🆙 Chọn ly được upsize miễn phí</div>
+    <div style="font-size:.77rem;color:#888;margin-bottom:.85rem">Ly sẽ được đổi từ <b>S → L</b>, không tính thêm phí</div>
+    <div id="upsize-list"></div>
+    <button class="btn btn-full" style="margin-top:.75rem;background:#aaa" onclick="document.getElementById('upsize-modal').style.display='none'">Bỏ qua</button>
+  </div>
+</div>
 </body>
 </html>
