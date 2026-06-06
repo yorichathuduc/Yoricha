@@ -349,27 +349,50 @@ function show(id){
 }
 
 // ── PHONE ────────────────────────────────────────────────────
+
 async function goMenu(){
   var ph=document.getElementById('inp-phone').value.trim();
   show('pg-menu');
-  document.getElementById('mgrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:2rem"><div style="font-size:1.5rem;animation:spin 1s linear infinite;display:inline-block">🍵</div><div style="font-size:.82rem;color:#aaa;margin-top:.5rem">Đang tải menu...</div></div>';
+  document.getElementById('mgrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:2rem"><div style="font-size:1.5rem">🍵</div><div style="font-size:.82rem;color:#aaa;margin-top:.5rem">Đang tải menu...</div></div>';
   if(ph){
     try{
-      // Dùng getMemberPrivileges để lấy đầy đủ subActive, tier...
       var d=await api({action:'getMemberPrivileges',phone:ph});
+      console.log('getMemberPrivileges response:', JSON.stringify(d));
       if(d.ok){
-        member=d.member;
+        member=normalizeMember(d.member);
       } else {
-        // Fallback lookup cơ bản
         var d2=await api({action:'lookup',phone:ph});
-        if(d2.ok) member=d2.member;
+        console.log('lookup response:', JSON.stringify(d2));
+        if(d2.ok) member=normalizeMember(d2.member);
       }
       if(member) renderBadge();
-    }catch(e){}
+    }catch(e){console.error(e);}
   } else {
     member=null;
   }
   try{await loadMenu();}catch(e){}
+}
+
+// Chuẩn hóa member data từ backend (field names có thể khác nhau)
+function normalizeMember(m){
+  if(!m) return m;
+  // subActive có thể là subActive, sub_active, isSubActive, active...
+  var active = m.subActive || m.sub_active || m.isSubActive || m.subscriptionActive || false;
+  // Nếu tier là subscription nhưng không có subActive field rõ ràng
+  // thì check thêm subExpiry còn hạn không
+  if(!active && (m.tier==='subscription'||m.tier==='Subscription')){
+    if(m.subExpiry){
+      var exp=new Date(m.subExpiry);
+      if(!isNaN(exp) && exp>new Date()) active=true;
+    }
+  }
+  m.subActive=active;
+  // stamps normalize
+  m.stamps=Number(m.stamps)||0;
+  // subUsedToday
+  m.subUsedToday=m.subUsedToday||m.sub_used_today||0;
+  console.log('Normalized member - subActive:', m.subActive, 'tier:', m.tier, 'stamps:', m.stamps);
+  return m;
 }
 
 function renderBadge(){
