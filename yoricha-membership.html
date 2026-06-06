@@ -387,7 +387,7 @@ async function doRegister(prog){
   var btn=document.getElementById(prog===1?'btn-prog1':'btn-prog2');
   btn.disabled=true;
   try{
-    var d=await api({action:'register',name:name,phone:phone});
+    var d=await api({action:'register',name:name,phone:phone,program:String(prog)});
     if(!d.ok&&d.error.indexOf('đã được đăng ký')<0){al('reg-alert',d.error,'err');return;}
     // If already registered, just proceed
     var memberPhone=d.ok?d.member.phone:phone;
