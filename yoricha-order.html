@@ -49,15 +49,13 @@ textarea{resize:none;height:56px}
 .mitem{background:#fff;border:1.5px solid var(--blue-mid);border-radius:16px;overflow:hidden;cursor:pointer;transition:border-color .15s}
 .mitem:active{border-color:var(--blue);box-shadow:0 2px 12px rgba(57,113,184,.15)}
 .mitem.na{opacity:.5;pointer-events:none}
-.mitem-inner{padding:.75rem}
-.mi-img-wrap{width:100%;aspect-ratio:4/5;overflow:hidden;border-radius:0}
+.mi-img-wrap{width:100%;aspect-ratio:4/5;overflow:hidden}
 .mi-img{width:100%;height:100%;object-fit:cover;display:block}
 .mi-img-ph{width:100%;aspect-ratio:4/5;background:linear-gradient(135deg,#e8f0fb,#b5d0f0);display:flex;align-items:center;justify-content:center;font-size:2.5rem}
 .mi-info{padding:.65rem .75rem .75rem}
 .mi-name{font-weight:700;font-size:.88rem;line-height:1.3;margin-bottom:.3rem;color:var(--green-dark)}
 .mi-price{font-size:.8rem;color:var(--blue);font-weight:700}
 .mi-desc{font-size:.7rem;color:#888;margin-top:.2rem;line-height:1.4}
-.mi-na{font-size:.65rem;color:var(--red)}
 .szb{display:inline-block;font-size:.62rem;background:var(--blue-light);color:var(--blue);border-radius:5px;padding:.1rem .35rem;margin-right:.2rem;font-weight:700}
 /* MODAL */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end;justify-content:center}
@@ -164,11 +162,9 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
   <!-- COUPON -->
   <div class="card">
     <div class="card-title">🎟️ Mã giảm giá</div>
-    <div class="coupon-row">
-      <input type="text" id="inp-coupon" placeholder="Nhập mã..." style="text-transform:uppercase"/>
-      <button class="btn-sm" onclick="applyCoupon()" id="btn-coupon">Áp dụng</button>
-    </div>
-    <div class="coupon-result" id="coupon-result"></div>
+    <input type="text" id="inp-coupon" placeholder="Nhập mã..." style="text-transform:uppercase"/>
+    <button class="btn-sm" onclick="applyCoupon()" id="btn-coupon">Áp dụng</button>
+    <div id="coupon-result" style="display:none;margin-top:.5rem;font-size:.82rem;font-weight:600;padding:.5rem .75rem;border-radius:8px"></div>
   </div>
   <div id="disc-notice"></div>
 
@@ -180,13 +176,11 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
       <div class="del-opt" onclick="selDel(this,'ship')">🛵<br/>Giao hàng</div>
       <div class="del-opt" onclick="selDel(this,'dine')">🪑<br/>Tại chỗ</div>
     </div>
-
     <!-- PICKUP -->
     <div id="del-pickup">
       <label>Giờ đến lấy</label>
       <input type="text" id="inp-pickuptime" placeholder="VD: 14:30" inputmode="numeric"/>
     </div>
-
     <!-- SHIP -->
     <div id="del-ship" style="display:none">
       <label>Địa chỉ giao hàng</label>
@@ -212,7 +206,6 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
       </div>
       <div class="ship-fee-box" id="ship-fee-box" style="display:none"></div>
     </div>
-
     <!-- DINE -->
     <div id="del-dine" style="display:none">
       <div style="font-size:.82rem;color:#666;padding:.3rem 0;line-height:1.6">
@@ -227,15 +220,15 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
     <label>Tên</label>
     <input type="text" id="inp-name" placeholder="Nguyễn Văn A" oninput="if(payMode==='transfer')updateQR()"/>
     <div id="cphone-wrap" style="display:none">
-    <label>Số điện thoại <span style="color:var(--red)">*</span></label>
-    <input type="tel" id="inp-cphone" placeholder="0901 234 567" inputmode="tel"/>
+      <label>Số điện thoại <span style="color:var(--red)">*</span></label>
+      <input type="tel" id="inp-cphone" placeholder="0901 234 567" inputmode="tel"/>
     </div>
     <label>Ghi chú chung</label>
     <textarea id="inp-note" placeholder="Ghi chú thêm..."></textarea>
     <div class="total-row"><span>Tổng cộng</span><span id="cart-total-final">0đ</span></div>
   </div>
 
-  <!-- PAYMENT - cuối cùng sau khi thấy tổng tiền -->
+  <!-- PAYMENT -->
   <div class="card">
     <div class="card-title">💳 Thanh toán</div>
     <div class="del-opts">
@@ -243,7 +236,6 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
       <div class="del-opt" onclick="selPay(this,'transfer')">📱<br/>Chuyển khoản</div>
     </div>
     <div id="pay-qr" style="display:none">
-      <!-- Cách 1: Thông tin chuyển khoản -->
       <div style="margin-bottom:1rem">
         <div style="font-size:.8rem;font-weight:700;color:var(--green-dark);margin-bottom:.6rem">Cách 1: Điền thông tin chuyển khoản</div>
         <div style="background:var(--cream);border:1.5px solid var(--blue-mid);border-radius:12px;padding:.85rem 1rem;line-height:2">
@@ -259,18 +251,16 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
             <span style="color:#888">Số tài khoản</span>
             <div style="display:flex;align-items:center;gap:.5rem">
               <span style="font-weight:700;color:var(--blue);font-size:1rem;letter-spacing:.5px">1043660648</span>
-              <button onclick="copySTK()" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:.3rem .65rem;font-size:.72rem;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent">Copy</button>
+              <button onclick="copySTK()" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:.3rem .65rem;font-size:.72rem;font-weight:700;cursor:pointer">Copy</button>
             </div>
           </div>
         </div>
       </div>
-      <!-- Cách 2: QR tại cửa hàng -->
       <div style="background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:12px;padding:.85rem 1rem;text-align:center">
         <div style="font-size:.8rem;font-weight:700;color:var(--green-dark);margin-bottom:.3rem">Cách 2: Quét mã thanh toán tại cửa hàng</div>
         <div style="font-size:.75rem;color:#888">Nhân viên sẽ xuất mã QR khi bạn đến lấy hàng</div>
       </div>
     </div>
-    <!-- Transfer warning - only show when transfer selected -->
     <div id="transfer-warning" style="display:none;background:#fff8e1;border:1.5px solid #f6c90e;border-radius:12px;padding:.85rem 1rem;margin-bottom:.75rem">
       <div style="font-size:.88rem;font-weight:700;color:#856404;margin-bottom:.3rem">📸 Lưu ý quan trọng!</div>
       <div style="font-size:.82rem;color:#856404;line-height:1.6">
@@ -280,7 +270,6 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
     </div>
     <div id="order-alert" class="alert"></div>
     <button class="btn" id="btn-order" onclick="placeOrder()">Đặt hàng 🍵</button>
-  </div>
   </div>
 </div>
 
@@ -298,7 +287,6 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
     </div>
     <button class="btn btn-outline" onclick="resetAll()">Đặt thêm</button>
   </div>
-  <!-- MEMBER STATUS after order -->
   <div id="mst-wrap" style="display:none">
     <div class="mst-card">
       <div class="mst-title">🌿 Dấu mốc của bạn</div>
@@ -317,9 +305,7 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
   <div class="modal" onclick="event.stopPropagation()">
     <div id="mod-img-wrap" style="margin-bottom:.75rem;display:none"><img id="mod-img" src="" style="width:100%;height:160px;object-fit:cover;border-radius:14px" loading="lazy"/></div>
     <div class="modal-title" id="mod-title"></div>
-    <!-- SIZE -->
     <div class="sz-grid" id="sz-grid"></div>
-    <!-- MATCHA OPTIONS -->
     <div id="matcha-opts" style="display:none">
       <div class="opt-group">
         <div class="opt-label">Loại bột matcha</div>
@@ -337,7 +323,6 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
         </div>
       </div>
     </div>
-    <!-- SWEET -->
     <div class="opt-group">
       <div class="opt-label">Độ ngọt</div>
       <div class="opt-chips" id="chips-sweet">
@@ -348,12 +333,10 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
         <div class="chip" onclick="selChip(this,'sweet')">100%</div>
       </div>
     </div>
-    <!-- NOTE PER ITEM -->
     <div class="opt-group">
       <div class="opt-label">Ghi chú cho ly này</div>
       <input type="text" id="mod-note" placeholder="VD: ít đá, không đường..." style="margin-bottom:.5rem"/>
     </div>
-    <!-- QTY -->
     <div class="qty-row">
       <button class="qty-btn" onclick="dQty(-1)">−</button>
       <span class="qty-n" id="qty-n">1</span>
@@ -376,13 +359,10 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
 
 <script>
 var API='https://script.google.com/macros/s/AKfycbxs-jt4COAvW__D7UFp1gmeiCbPJE7zNCqn7pEGOKUKDYmbcht1Wm765sxZcWH9gF4A/exec';
-var MAPS_KEY='AIzaSyDKG3-6nsURa-1MT8gtxgLWZR64UuywjMQ';
-var BANK_ID='VCB';           // Vietcombank
-var SHOP_ADDR='24/10 Đường số 6, Linh Chiểu, Thủ Đức, TP.HCM';
 var menu=[],cart=[],member=null,curItem=null,curSize=null,curQty=1,pollT=null;
-var delMode='pickup',shipFee=0,couponData=null;
+var delMode='pickup',shipFee=0,couponData=null,payMode='cash';
 
-// Pre-fill from URL params (coming from membership page)
+// Pre-fill from URL params
 window.addEventListener('DOMContentLoaded',function(){
   var params=new URLSearchParams(window.location.search);
   var ph=params.get('phone'),nm=params.get('name');
@@ -394,18 +374,12 @@ window.addEventListener('DOMContentLoaded',function(){
 
 function fmt(n){return Number(n).toLocaleString('vi-VN')+'đ';}
 async function api(p){
-  // Encode params - complex values (arrays/objects) as JSON strings
   var params=new URLSearchParams();
-  for(var k in p){
-    var v=p[k];
-    if(typeof v==='object')params.set(k,JSON.stringify(v));
-    else params.set(k,String(v));
-  }
+  for(var k in p){var v=p[k];if(typeof v==='object')params.set(k,JSON.stringify(v));else params.set(k,String(v));}
   var res=await fetch(API+'?'+params.toString());
   return res.json();
 }
 function al(id,msg,type){var e=document.getElementById(id);e.textContent=msg;e.className='alert '+type;e.style.display='block';setTimeout(function(){e.style.display='none';},5000);}
-
 function show(id){
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('on');});
   document.getElementById(id).classList.add('on');
@@ -416,19 +390,24 @@ function show(id){
 // ── PHONE ───────────────────────────────────────────────────
 async function goMenu(){
   var ph=document.getElementById('inp-phone').value.trim();
-  // Navigate immediately, load data in background
   show('pg-menu');
   document.getElementById('mgrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:2rem"><div style="font-size:1.5rem;animation:spin 1s linear infinite;display:inline-block">🍵</div><div style="font-size:.82rem;color:#aaa;margin-top:.5rem">Đang tải menu...</div></div>';
   if(ph){
     try{var d=await api({action:'lookup',phone:ph});if(d.ok){member=d.member;renderBadge();}}
     catch(e){}
-  } else member=null;
+  } else {
+    member=null;
+  }
   try{await loadMenu();}catch(e){}
 }
 function renderBadge(){
   var el=document.getElementById('member-preview');
   if(!member){el.innerHTML='';return;}
-  var dots='';for(var i=1;i<=10;i++){var c='sdot'+(i===4||i===7||i===10?' ms':'')+(i<=member.stamps?' on':'');dots+='<div class="'+c+'"></div>';}
+  var dots='';
+  for(var i=1;i<=10;i++){
+    var c='sdot'+(i===4||i===7||i===10?' ms':'')+(i<=member.stamps?' on':'');
+    dots+='<div class="'+c+'"></div>';
+  }
   el.innerHTML='<div class="mbadge"><div class="mbav">'+member.name.charAt(0).toUpperCase()+'</div><div><div class="mb-name">Chào, '+member.name+'! 👋</div><div class="mb-stamps">'+member.stamps+'/10 dấu mốc</div><div class="sdots">'+dots+'</div></div></div>';
 }
 
@@ -441,14 +420,21 @@ async function loadMenu(){
       return;
     }
     menu=d.menu;
-    var cats=[];menu.forEach(function(it){if(cats.indexOf(it.category)<0)cats.push(it.category);});
-    document.getElementById('cat-tabs').innerHTML=cats.map(function(c,i){return'<div class="ctab'+(i===0?' on':'')+'" onclick="filt(this,\''+c+'\')">'+c+'</div>';}).join('');
+    var cats=[];
+    menu.forEach(function(it){if(cats.indexOf(it.category)<0)cats.push(it.category);});
+    document.getElementById('cat-tabs').innerHTML=cats.map(function(c,i){
+      return'<div class="ctab'+(i===0?' on':'')+'" onclick="filt(this,\''+c+'\')">'+c+'</div>';
+    }).join('');
     renderMenu(cats[0]);
   }catch(e){
-    document.getElementById('mgrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#aaa;font-size:.85rem">⚠️ Lỗi kết nối. Vui lòng thử lại.<br/><button onclick="loadMenu()" style="margin-top:.5rem;background:var(--blue);color:#fff;border:none;border-radius:8px;padding:.5rem 1rem;cursor:pointer;font-size:.82rem">Thử lại</button></div>';
+    document.getElementById('mgrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#aaa;font-size:.85rem">⚠️ Lỗi kết nối.<br/><button onclick="loadMenu()" style="margin-top:.5rem;background:var(--blue);color:#fff;border:none;border-radius:8px;padding:.5rem 1rem;cursor:pointer;font-size:.82rem">Thử lại</button></div>';
   }
 }
-function filt(el,cat){document.querySelectorAll('.ctab').forEach(function(t){t.classList.remove('on');});el.classList.add('on');renderMenu(cat);}
+function filt(el,cat){
+  document.querySelectorAll('.ctab').forEach(function(t){t.classList.remove('on');});
+  el.classList.add('on');
+  renderMenu(cat);
+}
 function renderMenu(cat){
   var items=menu.filter(function(it){return it.category===cat;});
   document.getElementById('mgrid').innerHTML=items.map(function(it){
@@ -459,26 +445,19 @@ function renderMenu(cat){
     var imgBlock=it.image&&it.image.length>5
       ?'<div class="mi-img-wrap"><img class="mi-img" src="'+it.image+'" loading="lazy"/></div>'
       :'<div class="mi-img-ph">🍵</div>';
-    return'<div class="mitem'+(it.available?'':' na')+'" onclick="openMod(\''+it.id+'\')">'
-      +imgBlock
-      +'<div class="mi-info">'
-      +'<div class="mi-name">'+it.name+naLabel+'</div>'
-      +'<div class="mi-price">'+ps+'</div>'
-      +'<div class="mi-desc">'+(it.description||'')+'</div>'
-      +'</div></div>';
+    return'<div class="mitem'+(it.available?'':' na')+'" onclick="openMod(\''+it.id+'\')">'+imgBlock+'<div class="mi-info"><div class="mi-name">'+it.name+naLabel+'</div><div class="mi-price">'+ps+'</div><div class="mi-desc">'+(it.description||'')+'</div></div></div>';
   }).join('');
 }
 
 // ── MODAL ────────────────────────────────────────────────────
 function openMod(id){
-  var it=menu.find(function(x){return x.id===id;});if(!it||!it.available)return;
+  var it=menu.find(function(x){return x.id===id;});
+  if(!it||!it.available)return;
   curItem=it;curSize=it.price_s?'S':'L';curQty=1;
   document.getElementById('mod-title').textContent=it.name;
   var modImgWrap=document.getElementById('mod-img-wrap');
   if(it.image&&it.image.length>5){
-    var modImg=document.getElementById('mod-img');
-    modImg.src=it.image;
-    modImg.referrerPolicy='no-referrer';
+    document.getElementById('mod-img').src=it.image;
     modImgWrap.style.display='block';
   } else {
     modImgWrap.style.display='none';
@@ -487,19 +466,26 @@ function openMod(id){
   if(it.price_s)sz+='<div class="sz-opt'+(curSize==='S'?' on':'')+'" onclick="selSz(this,\'S\')"><div class="sz-lbl">Size S</div><div class="sz-price">'+fmt(it.price_s*1000)+'</div></div>';
   if(it.price_l)sz+='<div class="sz-opt'+(curSize==='L'&&!it.price_s?' on':'')+'" onclick="selSz(this,\'L\')"><div class="sz-lbl">Size L</div><div class="sz-price">'+fmt(it.price_l*1000)+'</div></div>';
   document.getElementById('sz-grid').innerHTML=sz;
-  // Show matcha options only for matcha category
   var isMatcha=it.category==='Matcha';
   document.getElementById('matcha-opts').style.display=isMatcha?'block':'none';
-  // Reset chips
   document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on');});
-  if(isMatcha){document.querySelector('#chips-bot .chip').classList.add('on');document.querySelector('#chips-sua .chip').classList.add('on');}
+  if(isMatcha){
+    document.querySelector('#chips-bot .chip').classList.add('on');
+    document.querySelector('#chips-sua .chip').classList.add('on');
+  }
   document.querySelectorAll('#chips-sweet .chip')[2].classList.add('on');
   document.getElementById('mod-note').value='';
   document.getElementById('qty-n').textContent=1;
   document.getElementById('modal').style.display='flex';
 }
-function selSz(el,sz){document.querySelectorAll('.sz-opt').forEach(function(o){o.classList.remove('on');});el.classList.add('on');curSize=sz;}
-function selChip(el,group){document.querySelectorAll('#chips-'+group+' .chip').forEach(function(c){c.classList.remove('on');});el.classList.add('on');}
+function selSz(el,sz){
+  document.querySelectorAll('.sz-opt').forEach(function(o){o.classList.remove('on');});
+  el.classList.add('on');curSize=sz;
+}
+function selChip(el,group){
+  document.querySelectorAll('#chips-'+group+' .chip').forEach(function(c){c.classList.remove('on');});
+  el.classList.add('on');
+}
 function dQty(d){curQty=Math.max(1,curQty+d);document.getElementById('qty-n').textContent=curQty;}
 function closeModal(e){document.getElementById('modal').style.display='none';}
 function getChip(group){var el=document.querySelector('#chips-'+group+' .chip.on');return el?el.textContent:'';}
@@ -508,7 +494,6 @@ function addCart(){
   var isMatcha=curItem.category==='Matcha';
   var bot=isMatcha?getChip('bot'):'';
   var sua=isMatcha?getChip('sua'):'';
-  // Extra price for MK4 and special milk
   if(bot.includes('MK4'))pr+=15000;
   if(sua.includes('Hạt điều'))pr+=10000;
   if(sua.includes('Đậu nành'))pr+=10000;
@@ -529,6 +514,43 @@ function updBar(){
   updDistLabels();
 }
 function rmCart(i){cart.splice(i,1);updBar();renderCart();if(!cart.length)show('pg-menu');}
+
+function getMilestoneDiscount(sub,totalQty){
+  // Trả về {amount, label} nếu có ưu đãi milestone
+  if(!member)return{amount:0,label:''};
+  var s=member.stamps;
+
+  // Ly thứ 4 (đang có 3 stamps): mua >= 2 ly, 1 ly S được upsize miễn phí
+  if(s===3&&totalQty>=2){
+    var upsizeAmt=0;
+    cart.forEach(function(it){
+      if(it.size==='S'){
+        var menuIt=menu.find(function(m){return m.id===it.id;});
+        if(menuIt&&menuIt.price_l){
+          var diff=(menuIt.price_l-menuIt.price_s)*1000;
+          if(diff>upsizeAmt)upsizeAmt=diff;
+        }
+      }
+    });
+    if(upsizeAmt>0)return{amount:upsizeAmt,label:'🎁 Ly thứ 4 — FREE UPSIZE S→L (-'+fmt(upsizeAmt)+')'};
+    return{amount:0,label:'🎁 Ly thứ 4 — Mua 2 ly để được FREE UPSIZE S→L!'};
+  }
+
+  // Ly thứ 7 (đang có 6 stamps): giảm 20%
+  if(s===6){
+    var disc=Math.round(sub*0.2);
+    return{amount:disc,label:'💚 Ly thứ 7 — GIẢM 20%! '+fmt(sub)+' → '+fmt(sub-disc)};
+  }
+
+  // Ly thứ 10 (đang có 9 stamps): free 1 ly rẻ nhất
+  if(s===9){
+    var minPrice=Math.min.apply(null,cart.map(function(it){return it.price;}));
+    return{amount:minPrice,label:'⭐ Ly thứ 10 — FREE 1 ly! (-'+fmt(minPrice)+')'};
+  }
+
+  return{amount:0,label:''};
+}
+
 function renderCart(){
   var sub=cart.reduce(function(s,i){return s+i.price*i.qty;},0);
   var totalQty=cart.reduce(function(s,i){return s+i.qty;},0);
@@ -542,27 +564,32 @@ function renderCart(){
     subs.push('x'+it.qty);
     return'<div class="ci"><button class="ci-rm" onclick="rmCart('+i+')">✕</button><div class="ci-name">'+it.name+'<div class="ci-sub">'+subs.join(' · ')+'</div></div><div class="ci-price">'+fmt(it.price*it.qty)+'</div></div>';
   }).join('');
-  // Discount
-  var disc='';
-  if(member){
-    var s=member.stamps;
-    if(s===4)disc='<div class="disc-box">🎁 Ly thứ 4 — mua 2 ly, ly 2 FREE UPSIZE!</div>';
-    if(s===7)disc='<div class="disc-box">💚 Ly thứ 7 — GIẢM 20%! '+fmt(sub)+' → '+fmt(sub*.8)+'</div>';
-    if(s===10)disc='<div class="disc-box">⭐ Ly thứ 10 — FREE 1 LY NƯỚC!</div>';
-  }
-  document.getElementById('disc-notice').innerHTML=disc;
+
+  // Hiển thị ưu đãi milestone
+  var ms=getMilestoneDiscount(sub,totalQty);
+  document.getElementById('disc-notice').innerHTML=ms.label?'<div class="disc-box">'+ms.label+'</div>':'';
+
   document.getElementById('cart-subtotal').textContent=fmt(sub);
   calcTotal();
   if(member&&!document.getElementById('inp-name').value)document.getElementById('inp-name').value=member.name;
   if(member&&!document.getElementById('inp-cphone').value)document.getElementById('inp-cphone').value=member.phone.replace(/^84/,'0');
 }
+
 function calcTotal(){
   var sub=cart.reduce(function(s,i){return s+i.price*i.qty;},0);
+  var totalQty=cart.reduce(function(s,i){return s+i.qty;},0);
   var discount=0;
+
+  // Milestone discount
+  var ms=getMilestoneDiscount(sub,totalQty);
+  discount+=ms.amount;
+
+  // Coupon discount
   if(couponData){
-    if(couponData.type==='percent')discount=Math.round(sub*Number(couponData.value)/100);
-    if(couponData.type==='fixed')discount=Number(couponData.value);
+    if(couponData.type==='percent')discount+=Math.round(sub*Number(couponData.value)/100);
+    if(couponData.type==='fixed')discount+=Number(couponData.value);
   }
+
   var total=Math.max(0,sub-discount)+shipFee;
   var parts=[];
   if(shipFee>0)parts.push('ship '+fmt(shipFee));
@@ -579,7 +606,6 @@ function selDel(el,mode){
   document.getElementById('del-dine').style.display=mode==='dine'?'block':'none';
   document.getElementById('ship-fee-box').style.display='none';
   document.querySelectorAll('.dist-opt').forEach(function(o){o.classList.remove('on');});
-  // Chỉ hiện ô SĐT khi pick-up hoặc ship
   document.getElementById('cphone-wrap').style.display=(mode==='pickup'||mode==='ship')?'block':'none';
   updDistLabels();
   calcTotal();
@@ -606,31 +632,18 @@ function selDist(el,range,fee){
   calcTotal();
 }
 
-// ── PAYMENT ──────────────────────────────────────────────────
-var payMode='cash';
+// ── PAYMENT ─────────────────────────────────────────────────
 function selPay(el,mode){
   el.parentNode.querySelectorAll('.del-opt').forEach(function(o){o.classList.remove('on');});
-  document.getElementById('transfer-warning').style.display=mode==='transfer'?'block':'none';
   el.classList.add('on');
   payMode=mode;
-  if(mode==='transfer'){
-    updateQR();
-    document.getElementById('pay-qr').style.display='block';
-  } else {
-    document.getElementById('pay-qr').style.display='none';
-  }
-}
-function updateQR(){
-  // No QR image needed - just show bank info
+  document.getElementById('transfer-warning').style.display=mode==='transfer'?'block':'none';
+  document.getElementById('pay-qr').style.display=mode==='transfer'?'block':'none';
 }
 function copySTK(){
   var stk='1043660648';
   if(navigator.clipboard){
-    navigator.clipboard.writeText(stk).then(function(){
-      alert('✅ Đã copy số tài khoản: '+stk);
-    }).catch(function(){
-      prompt('Copy số tài khoản:',stk);
-    });
+    navigator.clipboard.writeText(stk).then(function(){alert('✅ Đã copy số tài khoản: '+stk);}).catch(function(){prompt('Copy số tài khoản:',stk);});
   } else {
     prompt('Copy số tài khoản:',stk);
   }
@@ -640,7 +653,11 @@ function copySTK(){
 async function applyCoupon(){
   var code=document.getElementById('inp-coupon').value.trim().toUpperCase();
   var res_el=document.getElementById('coupon-result');
-  if(!code){res_el.textContent='Nhập mã trước!';res_el.className='coupon-result err';res_el.style.display='block';return;}
+  if(!code){
+    res_el.textContent='Nhập mã trước!';
+    res_el.style.cssText='display:block;background:#fdecea;color:#b91c1c;border:1px solid #fca5a5';
+    return;
+  }
   var btn=document.getElementById('btn-coupon');
   btn.disabled=true;btn.textContent='⏳';
   var phone=member?member.phone:(document.getElementById('inp-phone').value.trim()||'');
@@ -649,29 +666,22 @@ async function applyCoupon(){
     if(!d.ok){
       couponData=null;
       res_el.textContent='❌ '+d.error;
-      res_el.className='coupon-result err';
-      res_el.style.display='block';
+      res_el.style.cssText='display:block;background:#fdecea;color:#b91c1c;border:1px solid #fca5a5;padding:.5rem .75rem;border-radius:8px';
     } else {
       couponData=d.coupon;
       var msg='✅ '+d.coupon.description;
-      if(d.coupon.type==='free_upsize')msg='✅ '+d.coupon.description+' — nhân viên sẽ áp dụng khi bạn đến lấy';
+      if(d.coupon.type==='free_upsize')msg='✅ '+d.coupon.description+' — nhân viên sẽ áp dụng khi đến lấy';
       if(d.coupon.type==='free_drink')msg='✅ '+d.coupon.description+' — nhân viên sẽ tặng thêm 1 ly';
       if(d.coupon.type==='free_item')msg='✅ '+d.coupon.description+' — nhân viên sẽ tặng kèm';
       res_el.textContent=msg;
-      res_el.className='coupon-result ok';
-      res_el.style.display='block';
+      res_el.style.cssText='display:block;background:#e6f7ed;color:#1a7f3c;border:1px solid #a3d9b1;padding:.5rem .75rem;border-radius:8px';
       calcTotal();
     }
   }catch(e){
-    res_el.textContent='❌ Lỗi kết nối';res_el.className='coupon-result err';res_el.style.display='block';
+    res_el.textContent='❌ Lỗi kết nối';
+    res_el.style.cssText='display:block;background:#fdecea;color:#b91c1c;border:1px solid #fca5a5;padding:.5rem .75rem;border-radius:8px';
   }
   btn.disabled=false;btn.textContent='Áp dụng';
-}
-function removeCoupon(){
-  couponData=null;
-  document.getElementById('inp-coupon').value='';
-  document.getElementById('coupon-result').style.display='none';
-  calcTotal();
 }
 
 // ── ORDER ────────────────────────────────────────────────────
@@ -684,23 +694,33 @@ async function placeOrder(){
   if(delMode==='pickup'&&!document.getElementById('inp-pickuptime').value.trim()){al('order-alert','Nhập giờ đến lấy.','err');return;}
   if(delMode==='ship'&&!document.getElementById('inp-address').value.trim()){al('order-alert','Nhập địa chỉ giao hàng.','err');return;}
   if(delMode==='ship'&&!document.querySelector('.dist-opt.on')){al('order-alert','Chọn khoảng cách để tính phí ship.','err');return;}
+
+  // Tính discount để ghi vào note
+  var sub=cart.reduce(function(s,i){return s+i.price*i.qty;},0);
+  var totalQty=cart.reduce(function(s,i){return s+i.qty;},0);
+  var ms=getMilestoneDiscount(sub,totalQty);
+  var discount=ms.amount;
+  if(couponData){
+    if(couponData.type==='percent')discount+=Math.round(sub*Number(couponData.value)/100);
+    if(couponData.type==='fixed')discount+=Number(couponData.value);
+  }
+  var total=Math.max(0,sub-discount)+shipFee;
+
   var note=document.getElementById('inp-note').value.trim();
-  var cphone=document.getElementById('inp-cphone').value.trim();
   var payLabel=payMode==='transfer'?'[Chuyển khoản]':'[Tiền mặt]';
   var couponLabel=couponData?'[Mã: '+couponData.code+' - '+couponData.description+']':'';
+  var msLabel=ms.amount>0?'[Milestone: '+ms.label+']':'';
   var phoneLabel=cphone?'[SĐT:'+cphone+']':'';
-  note=payLabel+' '+phoneLabel+' '+couponLabel+' '+note;
+  note=payLabel+' '+phoneLabel+' '+couponLabel+' '+msLabel+' '+note;
   if(delMode==='pickup')note='[Pick-up lúc '+document.getElementById('inp-pickuptime').value+'] '+note;
   if(delMode==='ship')note='[Ship đến: '+document.getElementById('inp-address').value+' | Phí: '+(shipFee===0?'Miễn phí':fmt(shipFee))+'] '+note;
   if(delMode==='dine')note='[Uống tại chỗ] '+note;
-  var sub=cart.reduce(function(s,i){return s+i.price*i.qty;},0);
-  var total=sub+shipFee;
+
   var btn=document.getElementById('btn-order');btn.disabled=true;btn.textContent='⏳ Đang gửi...';
   try{
     var d=await api({action:'placeOrder',phone:member?member.phone:(document.getElementById('inp-phone').value.trim()||''),name:name,note:note,items:JSON.stringify(cart),total:total});
     if(!d.ok){al('order-alert',d.error,'err');return;}
     var isTransfer=payMode==='transfer';
-    // Mark coupon as used
     if(couponData){
       api({action:'useCoupon',code:couponData.code,phone:member?member.phone:(document.getElementById('inp-phone').value.trim()||'')});
       couponData=null;
@@ -720,7 +740,6 @@ function showStatus(oid,items,total,isTransfer){
   show('pg-status');
   if(pollT)clearInterval(pollT);
   pollT=setInterval(function(){pollStatus(oid);},10000);
-  // Show member info
   if(member){
     api({action:'lookup',phone:member.phone}).then(function(d){if(d.ok){member=d.member;renderMemberStatus();}});
   }
@@ -729,29 +748,52 @@ function renderMemberStatus(){
   var wrap=document.getElementById('mst-wrap');wrap.style.display='block';
   document.getElementById('mst-count').textContent='Bạn có '+member.stamps+'/10 dấu mốc';
   var icons={4:'🎁',7:'💚',10:'⭐'};
-  var dots='';for(var i=1;i<=10;i++){var c='mst-dot'+(i===4||i===7||i===10?' ms':'')+(i<=member.stamps?' on':'');dots+='<div class="'+c+'">'+(i<=member.stamps?(icons[i]||'✓'):(icons[i]||''))+'</div>';}
+  var dots='';
+  for(var i=1;i<=10;i++){
+    var c='mst-dot'+(i===4||i===7||i===10?' ms':'')+(i<=member.stamps?' on':'');
+    dots+='<div class="'+c+'">'+(i<=member.stamps?(icons[i]||'✓'):(icons[i]||''))+'</div>';
+  }
   document.getElementById('mst-dots').innerHTML=dots;
-  var rewards={4:'🎁 Ly tiếp theo được FREE UPSIZE!',7:'💚 Đơn tiếp được GIẢM 20%!',10:'⭐ Lần tới FREE 1 ly!'};
+  var rewards={3:'🎁 Ly tiếp: mua 2 ly được FREE UPSIZE S→L!',6:'💚 Đơn tiếp được GIẢM 20%!',9:'⭐ Lần tới FREE 1 ly!'};
   var rv=document.getElementById('mst-reward');
   if(rewards[member.stamps]){rv.textContent=rewards[member.stamps];rv.style.display='block';}
+  else{rv.style.display='none';}
   var hist=(member.history||[]);
   document.getElementById('mst-hist').innerHTML=[...hist].reverse().slice(0,5).map(function(h){
     return'<div class="mst-hi"><span>'+h.product+'</span><span style="opacity:.7">Mốc #'+h.stamp+'</span></div>';
   }).join('');
 }
 async function pollStatus(oid){
-  try{var d=await api({action:'getOrderStatus',orderID:oid});
+  try{
+    var d=await api({action:'getOrderStatus',orderID:oid});
     if(d.ok){
       var icons={'Mới':'⏳','Đang làm':'🍵','Xong':'✅'};
       var labels={'Mới':'Đang chờ xác nhận','Đang làm':'Đang pha chế...','Xong':'Sẵn sàng rồi!'};
       var cls={'Mới':'new','Đang làm':'making','Xong':'done'};
       document.getElementById('st-icon').textContent=icons[d.status]||'⏳';
-      var pill=document.getElementById('st-pill');pill.textContent=labels[d.status]||d.status;pill.className='st-pill '+(cls[d.status]||'new');
-      if(d.status==='Xong'){clearInterval(pollT);if(member)api({action:'lookup',phone:member.phone}).then(function(r){if(r.ok){member=r.member;renderMemberStatus();}});}
+      var pill=document.getElementById('st-pill');
+      pill.textContent=labels[d.status]||d.status;
+      pill.className='st-pill '+(cls[d.status]||'new');
+      if(d.status==='Xong'){
+        clearInterval(pollT);
+        if(member)api({action:'lookup',phone:member.phone}).then(function(r){if(r.ok){member=r.member;renderMemberStatus();}});
+      }
     }
   }catch(e){}
 }
-function resetAll(){if(pollT)clearInterval(pollT);member=null;shipFee=0;couponData=null;try{document.getElementById('inp-coupon').value='';document.getElementById('coupon-result').style.display='none';}catch(e){}document.getElementById('inp-phone').value='';document.getElementById('inp-name').value='';document.getElementById('inp-cphone').value='';document.getElementById('inp-note').value='';document.getElementById('member-preview').innerHTML='';document.getElementById('mst-wrap').style.display='none';show('pg-phone');}
+function resetAll(){
+  if(pollT)clearInterval(pollT);
+  member=null;shipFee=0;couponData=null;payMode='cash';
+  document.getElementById('inp-coupon').value='';
+  document.getElementById('coupon-result').style.display='none';
+  document.getElementById('inp-phone').value='';
+  document.getElementById('inp-name').value='';
+  document.getElementById('inp-cphone').value='';
+  document.getElementById('inp-note').value='';
+  document.getElementById('member-preview').innerHTML='';
+  document.getElementById('mst-wrap').style.display='none';
+  show('pg-phone');
+}
 </script>
 </body>
 </html>
