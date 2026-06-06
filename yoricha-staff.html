@@ -537,6 +537,7 @@ var API='https://script.google.com/macros/s/AKfycbxs-jt4COAvW__D7UFp1gmeiCbPJE7z
 var IMGBB_KEY='a0f2439e546f124d0aaa005c639c351b';
 var PWD='',staffInfo=null,orders=[],menuS=[],invData=[],poData=[],couponsList=[];
 var soCart=[],soMember=null,soCurItem=null,soCurSize=null,soCurQty=1,soCouponData=null;
+var currentMemPhone='';
 var autoT=null,currentShiftID=localStorage.getItem('yoricha_shiftID')||null;
 var dashFrom=null,dashTo=null;
  
@@ -919,6 +920,7 @@ async function lookupMem(){
     d={ok:true,member:Object.assign(d2.member,{tier:'matcha_tapsu',subActive:false,monthlyCount:0,monthlyWeekday:0})};
   }
   var m=d.member;
+  currentMemPhone=m.phone;
   var dots='';for(var i=1;i<=10;i++){var c='sdot'+(i===4||i===7||i===10?' ms':'')+(i<=m.stamps?' on':'');dots+='<div class="'+c+'"></div>';}
   var pbns=menuS.filter(function(it){return it.available;}).map(function(it){return'<button class="pbtn" onclick="addPurch(\''+m.phone+'\',\''+it.name+'\')">'+it.name+'</button>';}).join('');
   if(!pbns)pbns='<button class="pbtn" onclick="addPurch(\''+m.phone+'\',\'Matcha\')">Matcha</button>';
@@ -935,13 +937,13 @@ async function lookupMem(){
     subInfo='<div style="background:#e0f2fe;border:1.5px solid #7dd3fc;border-radius:10px;padding:.55rem .75rem;margin:.5rem 0;font-size:.78rem;color:#0369a1;font-weight:600">💙 Subscription đang hoạt động · HH: '+m.subExpiry+'<br/>Đã dùng hôm nay: '+m.subUsedToday+'/2 ly</div>';
   } else if(tier==='subscription'&&m.subExpiry){
     // Đã từng kích hoạt, nay hết hạn
-    subInfo='<div style="background:#fff3cd;border:1.5px solid #f6c90e;border-radius:10px;padding:.5rem .75rem;margin:.5rem 0;font-size:.78rem;color:#856404;font-weight:600">⚠️ Subscription đã hết hạn · '+m.subExpiry+'<br/><button class="btn btn-sm" onclick="activateSub(this)" data-phone="'+m.phone+'" style="background:#0369a1;margin-top:.4rem;font-size:.75rem">🔄 Gia hạn thêm 30 ngày (49k)</button></div>';
+    subInfo='<div style="background:#fff3cd;border:1.5px solid #f6c90e;border-radius:10px;padding:.5rem .75rem;margin:.5rem 0;font-size:.78rem;color:#856404;font-weight:600">⚠️ Subscription đã hết hạn · '+m.subExpiry+'<br/><button class="btn btn-sm" onclick="activateSub(currentMemPhone)" style="background:#0369a1;margin-top:.4rem;font-size:.75rem">🔄 Gia hạn thêm 30 ngày (49k)</button></div>';
   } else if(tier==='subscription'&&!m.subExpiry){
     // Đã đăng ký gói trên member page, chưa thanh toán/kích hoạt lần đầu
-    subInfo='<div style="background:#f0f9ff;border:1.5px solid #7dd3fc;border-radius:10px;padding:.5rem .75rem;margin:.5rem 0;font-size:.78rem;color:#0369a1;font-weight:600">📋 Khách đã đăng ký Chương trình 2 · Chờ kích hoạt<br/><button class="btn btn-sm" onclick="activateSub(this)" data-phone="'+m.phone+'" style="background:linear-gradient(135deg,#0369a1,#0891b2);margin-top:.4rem;font-size:.75rem;width:100%">💙 Kích hoạt lần đầu (49k)</button></div>';
+    subInfo='<div style="background:#f0f9ff;border:1.5px solid #7dd3fc;border-radius:10px;padding:.5rem .75rem;margin:.5rem 0;font-size:.78rem;color:#0369a1;font-weight:600">📋 Khách đã đăng ký Chương trình 2 · Chờ kích hoạt<br/><button class="btn btn-sm" onclick="activateSub(currentMemPhone)" style="background:linear-gradient(135deg,#0369a1,#0891b2);margin-top:.4rem;font-size:.75rem;width:100%">💙 Kích hoạt lần đầu (49k)</button></div>';
   } else {
     // Chưa đăng ký gói nào
-    subInfo='<button class="btn btn-sm" onclick="activateSub(this)" data-phone="'+m.phone+'" style="background:linear-gradient(135deg,#0369a1,#0891b2);width:100%;margin:.5rem 0;font-size:.78rem">💙 Kích hoạt Subscription 49k</button>';
+    subInfo='<button class="btn btn-sm" onclick="activateSub(currentMemPhone)" style="background:linear-gradient(135deg,#0369a1,#0891b2);width:100%;margin:.5rem 0;font-size:.78rem">💙 Kích hoạt Subscription 49k</button>';
   }
  
   // Birthday input for VIP
@@ -951,7 +953,7 @@ async function lookupMem(){
       '<div style="font-size:.73rem;font-weight:700;margin-bottom:.3rem;color:var(--gold-dark)">🎂 Cập nhật sinh nhật (xuất trình CMND):</div>'+
       '<div style="display:flex;gap:.4rem">'+
       '<input type="text" id="bday-input-'+m.phone.slice(-4)+'" placeholder="dd/mm" style="margin:0;flex:1;font-size:.82rem;padding:.4rem .6rem"/>'+
-      '<button class="btn btn-sm" onclick="saveBday(this)" data-phone="'+m.phone+'" data-input="bday-input-'+m.phone.slice(-4)+'" style="font-size:.75rem">Lưu</button>'+
+      '<button class="btn btn-sm" onclick="saveBday(currentMemPhone,&quot;bday-input-'+m.phone.slice(-4)+'&quot;)" style="font-size:.75rem">Lưu</button>'+
       '</div></div>';
   }
  
@@ -1251,8 +1253,7 @@ async function checkCoupon(){
 }
  
 // ── SUBSCRIPTION ACTIVATION ──────────────────────────────────
-async function activateSub(elOrPhone){
-  var phone=typeof elOrPhone==='object'?elOrPhone.dataset.phone:elOrPhone;
+async function activateSub(phone){
   if(!confirm('Kích hoạt gói Subscription 30 ngày cho '+phone+'?\n\nXác nhận khách đã thanh toán 49.000đ tại quầy.')){return;}
   var d=await api({action:'activateSubscription',password:PWD,phone:phone});
   if(d.ok){
@@ -1264,15 +1265,8 @@ async function activateSub(elOrPhone){
   }
 }
  
-async function saveBday(elOrPhone, inputId){
-  var phone, bday;
-  if(typeof elOrPhone==='object'&&elOrPhone.dataset){
-    phone=elOrPhone.dataset.phone;
-    bday=document.getElementById(elOrPhone.dataset.input).value.trim();
-  } else {
-    phone=elOrPhone;
-    bday=document.getElementById(inputId).value.trim();
-  }
+async function saveBday(phone, inputId){
+  var bday=document.getElementById(inputId).value.trim();
   if(!bday||!bday.match(/^\d{1,2}\/\d{1,2}$/)){
     alert('Nhập ngày sinh đúng định dạng dd/mm (VD: 15/08)');return;
   }
