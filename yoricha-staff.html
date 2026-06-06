@@ -13,14 +13,14 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--blue:#3971b8;--blue-light:#e8f0fb;--blue-mid:#b5d0f0;--green-dark:#343b1b;--cream:#fbfcee;--gold:#f6e6a5;--gold-dark:#d4a017;--red:#e74c3c;--orange:#f39c12;--green2:#27ae60}
 html,body{font-family:'Nunito',sans-serif;background:#f0f4fa;color:#222;min-height:100vh;-webkit-tap-highlight-color:transparent}
-
+ 
 /* ── LOGIN ── */
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;background:var(--blue)}
 .login-card{background:#fff;border-radius:20px;padding:2rem 1.5rem;width:100%;max-width:320px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.15)}
 .login-logo img{height:64px;object-fit:contain;border-radius:14px;padding:8px;background:var(--blue);margin-bottom:1rem}
 .login-title{font-family:'Merienda',cursive;color:var(--blue);font-size:1.1rem;margin-bottom:.25rem}
 .login-subtitle{font-size:.78rem;color:#aaa;margin-bottom:1.25rem}
-
+ 
 /* ── LAYOUT ── */
 .app{display:flex;flex-direction:column;min-height:100vh}
 .header{background:var(--blue);padding:.7rem 1rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:80;flex-shrink:0}
@@ -31,7 +31,7 @@ html,body{font-family:'Nunito',sans-serif;background:#f0f4fa;color:#222;min-heig
 .header-role{font-size:.65rem;opacity:.7}
 .header-clock{color:#fff;font-size:.78rem;font-weight:700;background:rgba(255,255,255,.15);border-radius:8px;padding:.3rem .65rem;cursor:pointer;border:none;font-family:'Nunito',sans-serif}
 .header-clock.active{background:var(--green2)}
-
+ 
 /* ── BOTTOM NAV ── */
 .content{flex:1;padding-bottom:70px;overflow-y:auto}
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1.5px solid #e8edf5;display:flex;z-index:80;padding-bottom:env(safe-area-inset-bottom)}
@@ -40,15 +40,15 @@ html,body{font-family:'Nunito',sans-serif;background:#f0f4fa;color:#222;min-heig
 .nav-item .nav-icon{font-size:1.25rem;line-height:1;margin-bottom:.15rem}
 .nav-item .nav-label{font-size:.6rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .nav-badge{position:absolute;top:4px;right:calc(50% - 18px);background:var(--red);color:#fff;font-size:.58rem;font-weight:700;border-radius:10px;padding:.05rem .35rem;min-width:16px;text-align:center;display:none}
-
+ 
 /* ── PANELS ── */
 .panel{display:none;padding:.75rem;max-width:600px;margin:0 auto}
 .panel.on{display:block}
-
+ 
 /* ── CARDS ── */
 .card{background:#fff;border-radius:14px;padding:1rem;margin-bottom:.65rem;box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .card-title{font-family:'Merienda',cursive;color:var(--blue);font-size:.88rem;margin-bottom:.75rem;display:flex;align-items:center;justify-content:space-between}
-
+ 
 /* ── FORM ── */
 label{display:block;font-size:.75rem;font-weight:700;color:var(--green-dark);margin-bottom:.2rem}
 input,select,textarea{width:100%;border:1.5px solid var(--blue-mid);border-radius:10px;padding:.6rem .85rem;font-family:'Nunito',sans-serif;font-size:.88rem;color:var(--green-dark);background:#fafafa;outline:none;-webkit-appearance:none;margin-bottom:.6rem}
@@ -56,7 +56,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--blue);background:#fff
 textarea{resize:none;height:52px}
 .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
 .fgrid .full{grid-column:1/-1}
-
+ 
 /* ── BUTTONS ── */
 .btn{display:inline-block;background:var(--blue);color:#fff;font-family:'Merienda',cursive;font-size:.85rem;border:none;border-radius:11px;padding:.6rem 1rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .btn:active{filter:brightness(.9)}
@@ -67,7 +67,7 @@ textarea{resize:none;height:52px}
 .btn-green{background:var(--green2)}.btn-orange{background:var(--orange);color:#fff}
 .btn-red{background:var(--red);color:#fff}
 .btn-row{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.55rem}
-
+ 
 /* ── ORDERS ── */
 .ocard{background:#fff;border-radius:12px;padding:.85rem;margin-bottom:.5rem;box-shadow:0 2px 6px rgba(0,0,0,.06);border-left:4px solid #ddd}
 .ocard.new{border-left-color:var(--orange)}.ocard.making{border-left-color:var(--blue)}.ocard.done{border-left-color:var(--green2);opacity:.6}
@@ -82,7 +82,7 @@ textarea{resize:none;height:52px}
 .opill{display:inline-block;padding:.16rem .65rem;border-radius:20px;font-size:.68rem;font-weight:700}
 .opill.new{background:#fff3cd;color:#856404}.opill.making{background:#cfe2ff;color:#084298}.opill.done{background:#d1e7dd;color:#0a3622}
 .mbadge{display:inline-block;background:var(--blue-light);color:var(--blue);font-size:.62rem;font-weight:700;padding:.08rem .4rem;border-radius:6px;margin-left:.3rem}
-
+ 
 /* ── INVENTORY ── */
 .inv-item{display:flex;align-items:center;gap:.5rem;padding:.6rem 0;border-bottom:1px solid #eee}
 .inv-item:last-child{border-bottom:none}
@@ -93,7 +93,7 @@ textarea{resize:none;height:52px}
 .inv-qty{width:60px;text-align:center;margin:0;padding:.35rem .4rem;font-size:.85rem;font-weight:700}
 .inv-qty.low{border-color:var(--red);color:var(--red)}
 .low-badge{background:#fdecea;color:var(--red);font-size:.65rem;font-weight:700;padding:.1rem .4rem;border-radius:6px}
-
+ 
 /* ── PURCHASE ORDERS ── */
 .po-card{background:#fff;border-radius:12px;padding:.85rem;margin-bottom:.55rem;box-shadow:0 2px 6px rgba(0,0,0,.06);border-left:4px solid var(--blue-mid)}
 .po-card.ordered{border-left-color:var(--orange)}
@@ -105,14 +105,14 @@ textarea{resize:none;height:52px}
 .po-status.paid{background:#d1e7dd;color:#0a3622}
 .upload-btn{background:var(--blue-light);border:1.5px dashed var(--blue-mid);border-radius:10px;padding:.5rem;text-align:center;cursor:pointer;font-size:.75rem;color:var(--blue);font-weight:700;display:block;margin-top:.4rem}
 .upload-img{width:100%;max-height:120px;object-fit:cover;border-radius:8px;margin-top:.4rem}
-
+ 
 /* ── SHIFT ── */
 .shift-row{display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid #eee;font-size:.78rem}
 .shift-row:last-child{border-bottom:none}
 .shift-name{font-weight:700;color:var(--green-dark)}
 .shift-time{color:#666;font-size:.72rem}
 .shift-hours{font-weight:700;color:var(--blue)}
-
+ 
 /* ── MEMBERS TABLE ── */
 .mtable{width:100%;border-collapse:collapse;font-size:.76rem}
 .mtable th{text-align:left;padding:.5rem .6rem;background:var(--blue);color:#fff;font-family:'Merienda',cursive;font-weight:400}
@@ -120,7 +120,7 @@ textarea{resize:none;height:52px}
 .sdots{display:flex;gap:2px}
 .sdot{width:10px;height:10px;border-radius:50%;background:#dde;border:1px solid #bbc;flex-shrink:0}
 .sdot.on{background:var(--blue);border-color:var(--blue)}.sdot.ms.on{background:var(--gold-dark);border-color:var(--gold-dark)}
-
+ 
 /* ── MENU EDITOR ── */
 .mrow{display:flex;align-items:center;gap:.5rem;padding:.5rem 0;border-bottom:1px solid #eee}
 .mrow:last-child{border-bottom:none}
@@ -134,7 +134,7 @@ textarea{resize:none;height:52px}
 .slider::before{content:'';position:absolute;width:14px;height:14px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.25s}
 input:checked+.slider{background:var(--blue)}
 input:checked+.slider::before{transform:translateX(16px)}
-
+ 
 /* ── DASHBOARD ── */
 .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:.75rem}
 .dash-card{background:#fff;border-radius:14px;padding:1rem;box-shadow:0 2px 8px rgba(0,0,0,.06);text-align:center}
@@ -149,11 +149,11 @@ input:checked+.slider::before{transform:translateX(16px)}
 .top-item:last-child{border-bottom:none}
 .top-rank{width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;font-size:.68rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-right:.5rem}
 .top-rank.gold{background:var(--gold-dark)}.top-rank.silver{background:#888}.top-rank.bronze{background:#cd7f32}
-
+ 
 /* ── COUPON ── */
 .cp-row{display:flex;align-items:flex-start;gap:.5rem;padding:.6rem 0;border-bottom:1px solid #eee}
 .cp-code{font-family:monospace;font-weight:700;font-size:.85rem;background:var(--blue-light);color:var(--blue);padding:.15rem .55rem;border-radius:6px}
-
+ 
 /* ── MODAL ── */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end;justify-content:center}
 .modal{background:#fff;border-radius:20px 20px 0 0;padding:1.25rem 1rem calc(1.25rem + env(safe-area-inset-bottom));width:100%;max-width:520px;max-height:88vh;overflow-y:auto}
@@ -171,7 +171,7 @@ input:checked+.slider::before{transform:translateX(16px)}
 .qty-row{display:flex;align-items:center;gap:.65rem;margin-bottom:.85rem}
 .qty-btn{width:36px;height:36px;border-radius:50%;border:2px solid var(--blue);background:#fff;color:var(--blue);font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
 .qty-n{font-size:1rem;font-weight:700;min-width:24px;text-align:center}
-
+ 
 /* ── MISC ── */
 .alert{border-radius:10px;padding:.55rem .8rem;font-size:.78rem;font-weight:600;margin-bottom:.6rem;display:none}
 .alert.ok{background:#e6f7ed;color:#1a7f3c;border:1px solid #a3d9b1}
@@ -184,7 +184,7 @@ input:checked+.slider::before{transform:translateX(16px)}
 </style>
 </head>
 <body>
-
+ 
 <!-- ── LOGIN ── -->
 <div id="login-screen">
   <div class="login-wrap">
@@ -199,10 +199,10 @@ input:checked+.slider::before{transform:translateX(16px)}
     </div>
   </div>
 </div>
-
+ 
 <!-- ── MAIN APP ── -->
 <div id="app" class="app" style="display:none">
-
+ 
   <!-- Header -->
   <div class="header">
     <a class="header-left" href="index.html">
@@ -214,10 +214,10 @@ input:checked+.slider::before{transform:translateX(16px)}
     </a>
     <button class="header-clock" id="clock-btn" onclick="toggleShift()">⏱ Bắt đầu ca</button>
   </div>
-
+ 
   <!-- Content -->
   <div class="content">
-
+ 
     <!-- ORDERS -->
     <div class="panel on" id="panel-orders">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem">
@@ -235,7 +235,7 @@ input:checked+.slider::before{transform:translateX(16px)}
       <div id="orders-alert" class="alert"></div>
       <div id="orders-list"></div>
     </div>
-
+ 
     <!-- NEW ORDER -->
     <div class="panel" id="panel-neworder">
       <div class="card">
@@ -282,7 +282,7 @@ input:checked+.slider::before{transform:translateX(16px)}
         </div>
       </div>
     </div>
-
+ 
     <!-- MEMBERS -->
     <div class="panel" id="panel-members">
       <div class="card">
@@ -299,7 +299,7 @@ input:checked+.slider::before{transform:translateX(16px)}
         <div id="mem-table"><div class="empty">Nhấn 🔄 để tải</div></div>
       </div>
     </div>
-
+ 
     <!-- INVENTORY -->
     <div class="panel" id="panel-inventory">
       <!-- Low stock alert -->
@@ -348,7 +348,7 @@ input:checked+.slider::before{transform:translateX(16px)}
         <button class="btn btn-sm" onclick="addInvItem()">+ Thêm</button>
       </div>
     </div>
-
+ 
     <!-- MENU -->
     <div class="panel" id="panel-menu">
       <div class="card">
@@ -373,7 +373,7 @@ input:checked+.slider::before{transform:translateX(16px)}
         <button class="btn btn-sm" onclick="addMenuItem()">+ Thêm món</button>
       </div>
     </div>
-
+ 
     <!-- MORE (Dashboard + Coupons + Shifts) -->
     <div class="panel" id="panel-more">
       <!-- Sub tabs -->
@@ -382,7 +382,7 @@ input:checked+.slider::before{transform:translateX(16px)}
         <button class="ptab" onclick="swMore(this,'shifts')">⏱ Ca làm</button>
         <button class="ptab" onclick="swMore(this,'coupons')">🎟️ Mã KM</button>
       </div>
-
+ 
       <!-- Dashboard -->
       <div id="more-dash">
         <div style="margin-bottom:.85rem">
@@ -410,7 +410,7 @@ input:checked+.slider::before{transform:translateX(16px)}
         <div class="card"><div class="card-title">👥 Khách thân thiết</div><div id="d-top-customers"><div class="empty">Đang tải...</div></div></div>
         <div class="card"><div class="card-title">📅 Doanh thu theo ngày</div><div id="d-by-day"></div></div>
       </div>
-
+ 
       <!-- Shifts -->
       <div id="more-shifts" style="display:none">
         <div class="card">
@@ -418,7 +418,7 @@ input:checked+.slider::before{transform:translateX(16px)}
           <div id="shifts-list"><div class="empty">Nhấn 🔄 để tải</div></div>
         </div>
       </div>
-
+ 
       <!-- Coupons -->
       <div id="more-coupons" style="display:none">
         <div class="card">
@@ -457,9 +457,9 @@ input:checked+.slider::before{transform:translateX(16px)}
         </div>
       </div>
     </div>
-
+ 
   </div><!-- content -->
-
+ 
   <!-- ── BOTTOM NAV ── -->
   <nav class="bottom-nav">
     <button class="nav-item on" onclick="swPanel(this,'orders')">
@@ -490,7 +490,7 @@ input:checked+.slider::before{transform:translateX(16px)}
     </button>
   </nav>
 </div><!-- app -->
-
+ 
 <!-- Item Modal -->
 <div class="overlay" id="so-modal" style="display:none" onclick="closeSoModal(event)">
   <div class="modal" onclick="event.stopPropagation()">
@@ -531,7 +531,7 @@ input:checked+.slider::before{transform:translateX(16px)}
     <button class="btn btn-full" onclick="soAddCart()">Thêm vào giỏ →</button>
   </div>
 </div>
-
+ 
 <script>
 var API='https://script.google.com/macros/s/AKfycbxs-jt4COAvW__D7UFp1gmeiCbPJE7zNCqn7pEGOKUKDYmbcht1Wm765sxZcWH9gF4A/exec';
 var IMGBB_KEY='a0f2439e546f124d0aaa005c639c351b';
@@ -539,7 +539,7 @@ var PWD='',staffInfo=null,orders=[],menuS=[],invData=[],poData=[],couponsList=[]
 var soCart=[],soMember=null,soCurItem=null,soCurSize=null,soCurQty=1,soCouponData=null;
 var autoT=null,currentShiftID=localStorage.getItem('yoricha_shiftID')||null;
 var dashFrom=null,dashTo=null;
-
+ 
 function fmt(n){return Number(n).toLocaleString('vi-VN')+'đ';}
 async function api(p){
   var params=new URLSearchParams();
@@ -548,7 +548,7 @@ async function api(p){
   return res.json();
 }
 function al(id,msg,type){var e=document.getElementById(id);if(!e)return;e.textContent=msg;e.className='alert '+type;e.style.display='block';setTimeout(function(){e.style.display='none';},5000);}
-
+ 
 // ── LOGIN ─────────────────────────────────────────────────────
 async function login(){
   var p=document.getElementById('inp-pwd').value;
@@ -577,7 +577,7 @@ async function login(){
     showApp();
   }catch(e){al('login-alert','Lỗi kết nối.','err');btn.disabled=false;btn.textContent='Đăng nhập';}
 }
-
+ 
 function showApp(){
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='flex';
@@ -594,7 +594,7 @@ function showApp(){
   requestNotifPermission();
   document.getElementById('logo-main').src='https://drive.google.com/thumbnail?id=1uQD0joy3YQ1PlHSGNZJoy_dFC_oT-miJ&sz=w300';
 }
-
+ 
 function logout(){
   if(autoT)clearInterval(autoT);
   PWD='';staffInfo=null;
@@ -604,7 +604,7 @@ function logout(){
   var btn=document.querySelector('#login-screen .btn');
   btn.disabled=false;btn.textContent='Đăng nhập';
 }
-
+ 
 // ── SHIFT ─────────────────────────────────────────────────────
 async function toggleShift(){
   var btn=document.getElementById('clock-btn');
@@ -623,7 +623,7 @@ async function toggleShift(){
     if(d.ok)alert('✅ Kết thúc ca!\nTổng: '+d.hours+' giờ');
   }
 }
-
+ 
 // ── NAV ───────────────────────────────────────────────────────
 function swPanel(el,name){
   document.querySelectorAll('.nav-item').forEach(function(b){b.classList.remove('on');});
@@ -635,7 +635,7 @@ function swPanel(el,name){
   if(name==='inventory'){loadInventory();loadPOs();}
   if(name==='more'){if(!dashFrom)selQuick(document.querySelector('#panel-more .ptab'),'today');}
 }
-
+ 
 function swMore(el,name){
   document.querySelectorAll('#panel-more .ptab').forEach(function(t){t.classList.remove('on');});
   el.classList.add('on');
@@ -646,7 +646,7 @@ function swMore(el,name){
   if(name==='coupons')loadCoupons();
   if(name==='dash')renderDash();
 }
-
+ 
 // ── NOTIFICATIONS ─────────────────────────────────────────────
 var lastOrderIDs=[];
 function requestNotifPermission(){
@@ -695,7 +695,7 @@ function checkNewOrders(newOrders){
   }
   lastOrderIDs=newOrders.map(function(o){return o.orderID;});
 }
-
+ 
 // ── ORDERS ────────────────────────────────────────────────────
 async function loadOrders(){
   var d=await api({action:'getOrders',password:PWD});
@@ -742,7 +742,7 @@ async function updOrd(oid,status){
   await loadOrders();
   if(status==='Xong')alert('✅ Đơn #'+oid+' hoàn thành!');
 }
-
+ 
 // ── STAFF NEW ORDER ───────────────────────────────────────────
 async function soLookup(){
   var ph=document.getElementById('so-phone').value.trim();if(!ph)return;
@@ -843,7 +843,7 @@ function soReset(){
   try{document.getElementById('so-coupon').value='';document.getElementById('so-coupon-result').style.display='none';}catch(e){}
   document.getElementById('so-success').style.display='none';document.getElementById('so-cart-card').style.display='none';
 }
-
+ 
 // ── MEMBERS ───────────────────────────────────────────────────
 async function lookupMem(){
   var ph=document.getElementById('mem-phone').value.trim();if(!ph){al('mem-alert','Nhập SĐT.','err');return;}
@@ -862,17 +862,17 @@ async function lookupMem(){
   var tierColor={'matcha_tapsu':'#15803d','vip':'#7c3aed','subscription':'#0369a1'};
   var tier=m.tier||'matcha_tapsu';
   var tierBadge='<span style="background:var(--blue-light);color:'+(tierColor[tier]||'var(--blue)')+';font-size:.68rem;font-weight:700;padding:.15rem .55rem;border-radius:8px;margin-left:.4rem">'+(tierLabel[tier]||tier)+'</span>';
-
+ 
   // Subscription info
   var subInfo='';
   if(m.subActive){
     subInfo='<div style="background:#e0f2fe;border:1.5px solid #7dd3fc;border-radius:10px;padding:.55rem .75rem;margin:.5rem 0;font-size:.78rem;color:#0369a1;font-weight:600">💙 Subscription đang hoạt động · HH: '+m.subExpiry+'<br/>Đã dùng hôm nay: '+m.subUsedToday+'/2 ly</div>';
   } else if(tier!=='subscription') {
-    subInfo='<button class="btn btn-sm" onclick="activateSub(''+m.phone+'')" style="background:linear-gradient(135deg,#0369a1,#0891b2);width:100%;margin:.5rem 0;font-size:.78rem">💙 Kích hoạt Subscription 49k</button>';
+    subInfo='<button class="btn btn-sm" onclick="activateSub(\'+m.phone+\')" style="background:linear-gradient(135deg,#0369a1,#0891b2);width:100%;margin:.5rem 0;font-size:.78rem">💙 Kích hoạt Subscription 49k</button>';
   } else {
-    subInfo='<div style="background:#fff3cd;border:1.5px solid #f6c90e;border-radius:10px;padding:.5rem .75rem;margin:.5rem 0;font-size:.78rem;color:#856404;font-weight:600">⚠️ Subscription đã hết hạn · '+m.subExpiry+'<br/><button class="btn btn-sm" onclick="activateSub(''+m.phone+'')" style="background:#0369a1;margin-top:.4rem;font-size:.75rem">🔄 Gia hạn thêm 30 ngày</button></div>';
+    subInfo='<div style="background:#fff3cd;border:1.5px solid #f6c90e;border-radius:10px;padding:.5rem .75rem;margin:.5rem 0;font-size:.78rem;color:#856404;font-weight:600">⚠️ Subscription đã hết hạn · '+m.subExpiry+'<br/><button class="btn btn-sm" onclick="activateSub(\'+m.phone+\')" style="background:#0369a1;margin-top:.4rem;font-size:.75rem">🔄 Gia hạn thêm 30 ngày</button></div>';
   }
-
+ 
   // Birthday input for VIP
   var bdayInput='';
   if(tier==='vip'||tier==='matcha_tapsu'){
@@ -880,10 +880,10 @@ async function lookupMem(){
       '<div style="font-size:.73rem;font-weight:700;margin-bottom:.3rem;color:var(--gold-dark)">🎂 Cập nhật sinh nhật (xuất trình CMND):</div>'+
       '<div style="display:flex;gap:.4rem">'+
       '<input type="text" id="bday-input-'+m.phone.slice(-4)+'" placeholder="dd/mm" style="margin:0;flex:1;font-size:.82rem;padding:.4rem .6rem"/>'+
-      '<button class="btn btn-sm" onclick="saveBday(''+m.phone+'','bday-input-'+m.phone.slice(-4)+'')" style="font-size:.75rem">Lưu</button>'+
+      '<button class="btn btn-sm" onclick="saveBday(\'+m.phone+\',\'bday-input-\'+m.phone.slice(-4)+\')" style="font-size:.75rem">Lưu</button>'+
       '</div></div>';
   }
-
+ 
   document.getElementById('mem-result').innerHTML=
     '<div class="card" style="margin:0">'+
     '<div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem">'+
@@ -912,7 +912,7 @@ async function loadMembers(){
   }).join('');
   document.getElementById('mem-table').innerHTML='<div style="overflow-x:auto"><table class="mtable"><tr><th>Tên</th><th>SĐT</th><th>Mốc</th></tr>'+rows+'</table></div>';
 }
-
+ 
 // ── INVENTORY ─────────────────────────────────────────────────
 async function loadInventory(){
   var d=await api({action:'getInventory',password:PWD});
@@ -954,7 +954,7 @@ async function addInvItem(){
   if(d.ok){al('inv-alert','✅ Đã thêm "'+name+'"','ok');['inv-name','inv-unit','inv-min'].forEach(function(id){document.getElementById(id).value='';});loadInventory();}
   else al('inv-alert','Lỗi: '+d.error,'err');
 }
-
+ 
 // ── PURCHASE ORDERS ───────────────────────────────────────────
 async function loadPOs(){
   var d=await api({action:'getPurchaseOrders',password:PWD});
@@ -1021,7 +1021,7 @@ async function updatePOStatus(poID,action){
   if(d.ok){al('po-alert','✅ Đã cập nhật!','ok');loadPOs();}
   else al('po-alert','Lỗi: '+d.error,'err');
 }
-
+ 
 // ── MENU ──────────────────────────────────────────────────────
 async function loadMenuS(){
   var d=await api({action:'getMenu'});if(!d.ok)return;menuS=d.menu;renderMenuS();soRenderMenu();
