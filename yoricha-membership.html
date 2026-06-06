@@ -295,19 +295,30 @@ function showMember(m){
   var stampsWrap=document.getElementById('stamps-wrap');
   if(m.tier==='subscription'){
     stampsWrap.style.display='none';
+  } else if(m.tier==='vip'){
+    // VIP: show monthly progress, no stamps needed
+    stampsWrap.style.display='none';
   } else {
+    // matcha_tapsu: 7 stamps, milestones at 4 and 7
     stampsWrap.style.display='block';
-    var maxStamps=m.tier==='matcha_tapsu'?7:10;
-    document.getElementById('stamps-label').textContent='Dấu mốc: '+m.stamps+'/'+maxStamps;
-    var milestones=m.tier==='matcha_tapsu'?{4:true,7:true}:{};
-    var icons={4:'🎁',7:'🎉'};
+    var maxStamps=7;
+    document.getElementById('stamps-label').textContent='Hành trình: '+m.stamps+'/7 mộc';
+    var milestones={4:'🎁',7:'🎉'};
+    var descs={4:'Ly thứ 4: -10% combo',7:'Ly thứ 7: Free 1 ly S'};
     var dots='';
     for(var i=1;i<=maxStamps;i++){
       var isMs=milestones[i];var isFilled=i<=m.stamps;
-      var cls='sdot'+(isMs?' milestone':'')+(isFilled?(m.tier==='vip'?' vip-on':' on'):'');
-      dots+='<div class="'+cls+'">'+(isFilled?(isMs?icons[i]:'✓'):(isMs?icons[i]||'◎':''))+'</div>';
+      var cls='sdot'+(isMs?' milestone':'')+(isFilled?' on':'');
+      var icon=isFilled?(isMs?milestones[i]:'✓'):(isMs?milestones[i]:'');
+      dots+='<div class="'+cls+'" title="'+(descs[i]||'Mốc '+i)+'">'+icon+'</div>';
     }
     document.getElementById('sdots').innerHTML=dots;
+    // Show milestone rewards below dots
+    var rewardHtml='<div style="display:flex;justify-content:space-between;margin-top:.5rem;font-size:.65rem;opacity:.8">';
+    rewardHtml+='<span style="width:calc(4/7*100%)">🎁 Ly 4: -10%</span>';
+    rewardHtml+='<span style="text-align:right">🎉 Ly 7: Free S</span>';
+    rewardHtml+='</div>';
+    document.getElementById('sdots').innerHTML+=rewardHtml;
   }
 
   // Active privileges today
