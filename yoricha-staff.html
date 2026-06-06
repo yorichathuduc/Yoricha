@@ -1128,7 +1128,7 @@ function renderDash(){
   var dayKeys=Object.keys(dayMap).sort();var maxRev=Math.max.apply(null,Object.values(dayMap).map(function(v){return v.rev;}).concat([1]));
   document.getElementById('d-by-day').innerHTML=dayKeys.length?dayKeys.map(function(day){var v=dayMap[day];var pct=Math.round(v.rev/maxRev*100);return'<div style="margin-bottom:.65rem"><div style="display:flex;justify-content:space-between;font-size:.75rem;margin-bottom:.25rem"><span style="font-weight:700">'+day+'</span><span style="color:var(--blue);font-weight:700">'+fmt(v.rev)+' · '+v.cnt+' đơn</span></div><div style="height:10px;background:#eee;border-radius:5px"><div style="height:100%;width:'+pct+'%;background:var(--blue);border-radius:5px"></div></div></div>';}).join(''):'<div class="empty">Chưa có dữ liệu</div>';
 }
-
+ 
 // ── SHIFTS ────────────────────────────────────────────────────
 async function loadShifts(){
   var d=await api({action:'getShifts',password:PWD});if(!d.ok)return;
@@ -1137,7 +1137,7 @@ async function loadShifts(){
     return'<div class="shift-row"><div><div class="shift-name">'+s.staffName+'</div><div class="shift-time">'+s.date+' · Vào: '+s.clockIn.split(', ')[1]+(s.clockOut?' · Ra: '+s.clockOut.split(', ')[1]:'')+'</div></div><div class="shift-hours">'+(s.hours?s.hours+'h':'Đang làm')+'</div></div>';
   }).join(''):'<div class="empty">Chưa có ca làm nào</div>';
 }
-
+ 
 // ── COUPONS ───────────────────────────────────────────────────
 async function loadCoupons(){
   var d=await api({action:'getCoupons',password:PWD});if(!d.ok)return;couponsList=d.coupons;renderCoupons();
@@ -1178,12 +1178,10 @@ async function checkCoupon(){
   var el=document.getElementById('cp-check-result');
   el.innerHTML=d.ok?'<div style="background:#e6f7ed;border:1px solid #a3d9b1;border-radius:8px;padding:.5rem .75rem;color:#1a7f3c;font-weight:600">✅ Hợp lệ: '+d.coupon.description+(d.coupon.phone?' · Dành cho: '+d.coupon.phone:'')+'</div>':'<div style="background:#fdecea;border:1px solid #fca5a5;border-radius:8px;padding:.5rem .75rem;color:#b91c1c;font-weight:600">❌ '+d.error+'</div>';
 }
-
+ 
 // ── SUBSCRIPTION ACTIVATION ──────────────────────────────────
 async function activateSub(phone){
-  if(!confirm('Kích hoạt gói Subscription 30 ngày cho '+phone+'?
-
-Xác nhận khách đã thanh toán 49.000đ tại quầy.')){return;}
+  if(!confirm('Kích hoạt gói Subscription 30 ngày cho '+phone+'?\n\nXác nhận khách đã thanh toán 49.000đ tại quầy.')){return;}
   var d=await api({action:'activateSubscription',password:PWD,phone:phone});
   if(d.ok){
     al('mem-alert','✅ Đã kích hoạt Subscription cho '+d.member.name+' · HH: '+d.member.subExpiry,'ok');
@@ -1193,7 +1191,7 @@ Xác nhận khách đã thanh toán 49.000đ tại quầy.')){return;}
     al('mem-alert','Lỗi: '+d.error,'err');
   }
 }
-
+ 
 async function saveBday(phone, inputId){
   var bday=document.getElementById(inputId).value.trim();
   if(!bday||!bday.match(/^\d{1,2}\/\d{1,2}$/)){
@@ -1208,13 +1206,13 @@ async function saveBday(phone, inputId){
     al('mem-alert','Lỗi: '+d.error,'err');
   }
 }
-
+ 
 // ── AUTO REFRESH ───────────────────────────────────────────────
 loadOrders=async function(){
   var d=await api({action:'getOrders',password:PWD});
   if(d.ok){checkNewOrders(d.orders);orders=d.orders;try{localStorage.setItem('yoricha_orders_'+PWD,JSON.stringify(d.orders));}catch(e){}renderOrders();}
 };
-
+ 
 // ── INIT ──────────────────────────────────────────────────────
 document.getElementById('logo-login').src='https://drive.google.com/thumbnail?id=1uQD0joy3YQ1PlHSGNZJoy_dFC_oT-miJ&sz=w300';
 if('Notification' in window&&Notification.permission==='default'){document.addEventListener('click',function(){Notification.requestPermission();},{once:true});}
