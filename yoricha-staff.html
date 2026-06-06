@@ -930,19 +930,15 @@ async function lookupMem(){
   var tier=m.tier||'matcha_tapsu';
   var tierBadge='<span style="background:var(--blue-light);color:'+(tierColor[tier]||'var(--blue)')+';font-size:.68rem;font-weight:700;padding:.15rem .55rem;border-radius:8px;margin-left:.4rem">'+(tierLabel[tier]||tier)+'</span>';
  
-  // Subscription info
+  // Format ngày đẹp dd/mm/yyyy
+  function fmtDate(s){if(!s)return'';var d=new Date(s);if(isNaN(d))return s;return('0'+d.getDate()).slice(-2)+'/'+(('0'+(d.getMonth()+1)).slice(-2))+'/'+d.getFullYear();}
+  // Subscription info — chỉ dùng subActive
   var subInfo='';
   if(m.subActive){
-    // Đang hoạt động
-    subInfo='<div style="background:#e0f2fe;border:1.5px solid #7dd3fc;border-radius:10px;padding:.55rem .75rem;margin:.5rem 0;font-size:.78rem;color:#0369a1;font-weight:600">💙 Subscription đang hoạt động · HH: '+m.subExpiry+'<br/>Đã dùng hôm nay: '+m.subUsedToday+'/2 ly</div>';
-  } else if(tier==='subscription'&&m.subExpiry){
-    // Đã từng kích hoạt, nay hết hạn
-    subInfo='<div style="background:#fff3cd;border:1.5px solid #f6c90e;border-radius:10px;padding:.5rem .75rem;margin:.5rem 0;font-size:.78rem;color:#856404;font-weight:600">⚠️ Subscription đã hết hạn · '+m.subExpiry+'<br/><button class="btn btn-sm" onclick="activateSub(currentMemPhone)" style="background:#0369a1;margin-top:.4rem;font-size:.75rem">🔄 Gia hạn thêm 30 ngày (49k)</button></div>';
-  } else if(tier==='subscription'&&!m.subExpiry){
-    // Đã đăng ký gói trên member page, chưa thanh toán/kích hoạt lần đầu
+    subInfo='<div style="background:#e0f2fe;border:1.5px solid #7dd3fc;border-radius:10px;padding:.55rem .75rem;margin:.5rem 0;font-size:.78rem;color:#0369a1;font-weight:600">💙 Subscription đang hoạt động · HH: '+fmtDate(m.subExpiry)+'<br/>Đã dùng hôm nay: '+m.subUsedToday+'/2 ly</div>';
+  } else if(tier==='subscription'){
     subInfo='<div style="background:#f0f9ff;border:1.5px solid #7dd3fc;border-radius:10px;padding:.5rem .75rem;margin:.5rem 0;font-size:.78rem;color:#0369a1;font-weight:600">📋 Khách đã đăng ký Chương trình 2 · Chờ kích hoạt<br/><button class="btn btn-sm" onclick="activateSub(currentMemPhone)" style="background:linear-gradient(135deg,#0369a1,#0891b2);margin-top:.4rem;font-size:.75rem;width:100%">💙 Kích hoạt lần đầu (49k)</button></div>';
   } else {
-    // Chưa đăng ký gói nào
     subInfo='<button class="btn btn-sm" onclick="activateSub(currentMemPhone)" style="background:linear-gradient(135deg,#0369a1,#0891b2);width:100%;margin:.5rem 0;font-size:.78rem">💙 Kích hoạt Subscription 49k</button>';
   }
  
