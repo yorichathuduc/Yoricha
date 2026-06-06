@@ -763,7 +763,7 @@ async function soLookup(){
   var badge=document.getElementById('so-member-badge');
   if(d.ok){
     soMember=d.member;
-    var dots='';for(var i=1;i<=10;i++){var c='sdot'+(i===4||i===7||i===10?' ms':'')+(i<=d.member.stamps?' on':'');dots+='<div class="'+c+'"></div>';}
+    var dots='';for(var i=1;i<=7;i++){var c='sdot'+(i===3||i===5||i===7?' ms':'')+(i<=d.member.stamps?' on':'');dots+='<div class="'+c+'"></div>';}
     badge.innerHTML='<div style="background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:10px;padding:.6rem .8rem;display:flex;align-items:center;gap:.6rem;margin-top:.5rem"><div style="width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-family:Merienda,cursive;flex-shrink:0">'+d.member.name.charAt(0).toUpperCase()+'</div><div><div style="font-weight:700;color:var(--blue);font-size:.85rem">'+d.member.name+'</div><div style="font-size:.72rem;color:#666">'+d.member.stamps+'/10 mốc</div><div class="sdots" style="margin-top:.25rem">'+dots+'</div></div></div>';
     document.getElementById('so-name').value=d.member.name;
   }else{soMember=null;badge.innerHTML='<div style="font-size:.75rem;color:var(--orange);padding:.3rem">Không tìm thấy thành viên.</div>';}
@@ -788,9 +788,9 @@ function soOpenMod(id){
   soCurItem=it;soCurSize=it.price_s?'S':'L';soCurQty=1;
   document.getElementById('so-mod-title').textContent=it.name;
   var sz='';
-  if(it.price_s)sz+='<div class="sz-opt'+(soCurSize==='S'?' on':'')+'" onclick="soSelSz(this,\'S\')"><div class="sz-lbl">Size S</div><div class="sz-price">'+fmt(it.price_s*1000)+'</div></div>';
-  if(it.price_l)sz+='<div class="sz-opt'+(soCurSize==='L'&&!it.price_s?' on':'')+'" onclick="soSelSz(this,\'L\')"><div class="sz-lbl">Size L</div><div class="sz-price">'+fmt(it.price_l*1000)+'</div></div>';
-  document.getElementById('so-sz-grid').innerHTML=sz;
+  var isSub=soMember&&soMember.subActive&&it.category==='Matcha';
+  if(it.price_s)sz+='<div class="sz-opt'+(soCurSize==='S'?' on':'')+'" onclick="soSelSz(this,\'S\')">'+'<div class="sz-lbl">Size S</div><div class="sz-price">'+(isSub?'<span style="text-decoration:line-through;color:#aaa;font-size:.7rem">'+fmt(it.price_s*1000)+'</span> 29.000đ':fmt(it.price_s*1000))+'</div></div>';
+  if(it.price_l)sz+='<div class="sz-opt'+(soCurSize==='L'&&!it.price_s?' on':'')+'" onclick="soSelSz(this,\'L\')">'+'<div class="sz-lbl">Size L</div><div class="sz-price">'+(isSub?'<span style="text-decoration:line-through;color:#aaa;font-size:.7rem">'+fmt(it.price_l*1000)+'</span> 52.000đ':fmt(it.price_l*1000))+'</div></div>';
   var isMatcha=it.category==='Matcha';
   document.getElementById('so-matcha-opts').style.display=isMatcha?'block':'none';
   document.querySelectorAll('#so-modal .chip').forEach(function(c){c.classList.remove('on');});
@@ -806,11 +806,15 @@ function soQty(d){soCurQty=Math.max(1,soCurQty+d);document.getElementById('so-qt
 function closeSoModal(e){if(!e||e.target===document.getElementById('so-modal'))document.getElementById('so-modal').style.display='none';}
 function getSoChip(group){var el=document.querySelector('#so-chips-'+group+' .chip.on');return el?el.textContent:'';}
 function soAddCart(){
-  var pr=(soCurSize==='S'?soCurItem.price_s:soCurItem.price_l)*1000;
   var isMatcha=soCurItem.category==='Matcha';
   var bot=isMatcha?getSoChip('bot'):'';var sua=isMatcha?getSoChip('sua'):'';
-  if(bot.includes('MK4'))pr+=15000;if(sua.includes('Hạt điều'))pr+=10000;if(sua.includes('Đậu nành'))pr+=10000;
-  soCart.push({id:soCurItem.id,name:soCurItem.name,size:soCurSize,price:pr,qty:soCurQty,sweet:getSoChip('sweet'),bot:bot,sua:sua,note:document.getElementById('so-mod-note').value.trim()});
+  // Subscription flat pricing: S=29k, L=52k (chỉ Matcha, extras vẫn tính bình thường)
+  var isSub=soMember&&soMember.subActive&&isMatcha;
+  var basePrice=isSub?(soCurSize==='S'?29000:52000):(soCurSize==='S'?soCurItem.price_s:soCurItem.price_l)*1000;
+  var extras=0;
+  if(bot.includes('MK4'))extras+=15000;if(sua.includes('Hạt điều'))extras+=10000;if(sua.includes('Đậu nành'))extras+=10000;
+  var pr=basePrice+extras;
+  soCart.push({id:soCurItem.id,name:soCurItem.name,size:soCurSize,price:pr,qty:soCurQty,sweet:getSoChip('sweet'),bot:bot,sua:sua,note:document.getElementById('so-mod-note').value.trim(),subPrice:isSub});
   document.getElementById('so-modal').style.display='none';soRenderCart();
 }
 function soRmCart(i){soCart.splice(i,1);soRenderCart();}
@@ -818,7 +822,7 @@ function soRenderCart(){
   var total=soCart.reduce(function(s,i){return s+i.price*i.qty;},0);
   var card=document.getElementById('so-cart-card');card.style.display=soCart.length?'block':'none';
   document.getElementById('so-cart-list').innerHTML=soCart.map(function(it,i){
-    var subs=[];if(it.size)subs.push('Size '+it.size+(it._upsized?' 🆙Free':''));if(it.bot)subs.push(it.bot);if(it.sua)subs.push(it.sua);if(it.sweet)subs.push('Ngọt '+it.sweet);if(it.note)subs.push('📝 '+it.note);subs.push('x'+it.qty);
+    var subs=[];if(it.size)subs.push('Size '+it.size+(it._upsized?' 🆙Free':'')+(it.subPrice?' 💙Sub':''));if(it.bot)subs.push(it.bot);if(it.sua)subs.push(it.sua);if(it.sweet)subs.push('Ngọt '+it.sweet);if(it.note)subs.push('📝 '+it.note);subs.push('x'+it.qty);
     return'<div style="display:flex;align-items:flex-start;gap:.55rem;padding:.55rem 0;border-bottom:1px dashed var(--blue-mid)"><button style="background:none;border:none;color:#ccc;cursor:pointer;font-size:.95rem;padding:.1rem;flex-shrink:0" onclick="soRmCart('+i+')">✕</button><div style="font-weight:700;font-size:.82rem;flex:1"><div style="font-size:.7rem;color:#888;margin-top:.1rem">'+subs.join(' · ')+'</div>'+it.name+'</div><div style="font-weight:700;color:var(--blue);font-size:.82rem">'+fmt(it.price*it.qty)+'</div></div>';
   }).join('');
   var soDiscount=0;
@@ -921,7 +925,7 @@ async function lookupMem(){
   }
   var m=d.member;
   currentMemPhone=m.phone;
-  var dots='';for(var i=1;i<=10;i++){var c='sdot'+(i===4||i===7||i===10?' ms':'')+(i<=m.stamps?' on':'');dots+='<div class="'+c+'"></div>';}
+  var dots='';for(var i=1;i<=7;i++){var c='sdot'+(i===3||i===5||i===7?' ms':'')+(i<=m.stamps?' on':'');dots+='<div class="'+c+'"></div>';}
   var pbns=menuS.filter(function(it){return it.available;}).map(function(it){return'<button class="pbtn" onclick="addPurch(\''+m.phone+'\',\''+it.name+'\')">'+it.name+'</button>';}).join('');
   if(!pbns)pbns='<button class="pbtn" onclick="addPurch(\''+m.phone+'\',\'Matcha\')">Matcha</button>';
   // Build tier badge
@@ -969,14 +973,14 @@ async function lookupMem(){
 async function addPurch(phone,product){
   var d=await api({action:'purchase',password:PWD,phone:phone,product:product});
   if(!d.ok){alert(d.error);return;}
-  al('mem-alert','✅ Đã cộng 1 điểm cho '+d.member.name+' — Tổng: '+d.member.stamps+'/10','ok');
+  al('mem-alert','✅ Đã cộng 1 điểm cho '+d.member.name+' — Tổng: '+d.member.stamps+'/7','ok');
   document.getElementById('mem-phone').value=d.member.phone.replace('84','0');lookupMem();
 }
 async function loadMembers(){
   var d=await api({action:'getMembers',password:PWD});if(!d.ok)return;
   if(!d.members.length){document.getElementById('mem-table').innerHTML='<div class="empty">Chưa có thành viên</div>';return;}
   var rows=d.members.map(function(m){
-    var dots='';for(var i=1;i<=10;i++){var c='sdot'+(i===4||i===7||i===10?' ms':'')+(i<=m.stamps?' on':'');dots+='<div class="'+c+'"></div>';}
+    var dots='';for(var i=1;i<=7;i++){var c='sdot'+(i===3||i===5||i===7?' ms':'')+(i<=m.stamps?' on':'');dots+='<div class="'+c+'"></div>';}
     return'<tr><td>'+m.name+'</td><td style="font-size:.7rem">'+m.phone+'</td><td><div class="sdots">'+dots+'</div></td></tr>';
   }).join('');
   document.getElementById('mem-table').innerHTML='<div style="overflow-x:auto"><table class="mtable"><tr><th>Tên</th><th>SĐT</th><th>Mốc</th></tr>'+rows+'</table></div>';
@@ -1130,7 +1134,7 @@ function editItemImage(i){
   menuS[i].image=url.trim();renderMenuS();
   if(url.trim())api({action:'updateItemImage',password:PWD,itemId:menuS[i].id,imageUrl:url.trim()}).then(function(d){al('menu-alert',d.ok?'✅ Đã lưu ảnh!':'Lỗi: '+d.error,d.ok?'ok':'err');});
 }
-
+ 
 // ── DASHBOARD ─────────────────────────────────────────────────
 function parseVNDate(str){
   if(!str||str==='undefined'||str==='null')return null;
