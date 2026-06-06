@@ -931,11 +931,17 @@ async function lookupMem(){
   // Subscription info
   var subInfo='';
   if(m.subActive){
+    // Đang hoạt động
     subInfo='<div style="background:#e0f2fe;border:1.5px solid #7dd3fc;border-radius:10px;padding:.55rem .75rem;margin:.5rem 0;font-size:.78rem;color:#0369a1;font-weight:600">💙 Subscription đang hoạt động · HH: '+m.subExpiry+'<br/>Đã dùng hôm nay: '+m.subUsedToday+'/2 ly</div>';
-  } else if(tier!=='subscription') {
-    subInfo='<button class="btn btn-sm" onclick="activateSub(\'+m.phone+\')" style="background:linear-gradient(135deg,#0369a1,#0891b2);width:100%;margin:.5rem 0;font-size:.78rem">💙 Kích hoạt Subscription 49k</button>';
+  } else if(tier==='subscription'&&m.subExpiry){
+    // Đã từng kích hoạt, nay hết hạn
+    subInfo='<div style="background:#fff3cd;border:1.5px solid #f6c90e;border-radius:10px;padding:.5rem .75rem;margin:.5rem 0;font-size:.78rem;color:#856404;font-weight:600">⚠️ Subscription đã hết hạn · '+m.subExpiry+'<br/><button class="btn btn-sm" onclick="activateSub(\'+m.phone+\')" style="background:#0369a1;margin-top:.4rem;font-size:.75rem">🔄 Gia hạn thêm 30 ngày (49k)</button></div>';
+  } else if(tier==='subscription'&&!m.subExpiry){
+    // Đã đăng ký gói trên member page, chưa thanh toán/kích hoạt lần đầu
+    subInfo='<div style="background:#f0f9ff;border:1.5px solid #7dd3fc;border-radius:10px;padding:.5rem .75rem;margin:.5rem 0;font-size:.78rem;color:#0369a1;font-weight:600">📋 Khách đã đăng ký Chương trình 2 · Chờ kích hoạt<br/><button class="btn btn-sm" onclick="activateSub(\'+m.phone+\')" style="background:linear-gradient(135deg,#0369a1,#0891b2);margin-top:.4rem;font-size:.75rem;width:100%">💙 Kích hoạt lần đầu (49k)</button></div>';
   } else {
-    subInfo='<div style="background:#fff3cd;border:1.5px solid #f6c90e;border-radius:10px;padding:.5rem .75rem;margin:.5rem 0;font-size:.78rem;color:#856404;font-weight:600">⚠️ Subscription đã hết hạn · '+m.subExpiry+'<br/><button class="btn btn-sm" onclick="activateSub(\'+m.phone+\')" style="background:#0369a1;margin-top:.4rem;font-size:.75rem">🔄 Gia hạn thêm 30 ngày</button></div>';
+    // Chưa đăng ký gói nào
+    subInfo='<button class="btn btn-sm" onclick="activateSub(\'+m.phone+\')" style="background:linear-gradient(135deg,#0369a1,#0891b2);width:100%;margin:.5rem 0;font-size:.78rem">💙 Kích hoạt Subscription 49k</button>';
   }
  
   // Birthday input for VIP
