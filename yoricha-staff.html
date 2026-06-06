@@ -536,6 +536,19 @@ input:checked+.slider::before{transform:translateX(16px)}
 var API='https://script.google.com/macros/s/AKfycbxs-jt4COAvW__D7UFp1gmeiCbPJE7zNCqn7pEGOKUKDYmbcht1Wm765sxZcWH9gF4A/exec';
 var IMGBB_KEY='a0f2439e546f124d0aaa005c639c351b';
 var PWD='',staffInfo=null,orders=[],menuS=[],invData=[],poData=[],couponsList=[];
+ 
+function normalizeMember(m){
+  if(!m) return m;
+  var active = m.subActive || m.sub_active || m.isSubActive || m.subscriptionActive || false;
+  if(!active && (m.tier==='subscription'||m.tier==='Subscription')){
+    if(m.subExpiry){var exp=new Date(m.subExpiry);if(!isNaN(exp)&&exp>new Date())active=true;}
+  }
+  m.subActive=active;
+  m.stamps=Number(m.stamps)||0;
+  m.subUsedToday=m.subUsedToday||m.sub_used_today||0;
+  console.log('member subActive:', m.subActive, 'tier:', m.tier, 'stamps:', m.stamps);
+  return m;
+}
 var soCart=[],soMember=null,soCurItem=null,soCurSize=null,soCurQty=1,soCouponData=null;
 var currentMemPhone='';
 var autoT=null,currentShiftID=localStorage.getItem('yoricha_shiftID')||null;
@@ -1148,8 +1161,7 @@ function parseVNDate(str){
     }
     return null;
   }catch(e){return null;}
-}
-function isSameDay(a,b){return a.getDate()===b.getDate()&&a.getMonth()===b.getMonth()&&a.getFullYear()===b.getFullYear();}
+}function isSameDay(a,b){return a.getDate()===b.getDate()&&a.getMonth()===b.getMonth()&&a.getFullYear()===b.getFullYear();}
 function toDateOnly(d){return new Date(d.getFullYear(),d.getMonth(),d.getDate());}
 function setDateInputs(from,to){
   var pad=function(n){return('0'+n).slice(-2);};var f=function(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());};
