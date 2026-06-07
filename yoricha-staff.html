@@ -270,6 +270,25 @@ input:checked+.slider::before{transform:translateX(16px)}
           <label>Ghi chú đơn</label>
           <textarea id="so-note" placeholder="Ghi chú..."></textarea>
         </div>
+        <!-- PAYMENT -->
+        <div style="margin-bottom:.75rem">
+          <label style="font-size:.75rem;font-weight:700;margin-bottom:.4rem;display:block">💳 Thanh toán</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.6rem">
+            <div id="pay-cash-btn" onclick="soSelPay('cash')" style="border:2px solid var(--blue);background:var(--blue);color:#fff;border-radius:12px;padding:.55rem .4rem;text-align:center;cursor:pointer;font-size:.8rem;font-weight:700;line-height:1.3">💵<br/>Tiền mặt</div>
+            <div id="pay-transfer-btn" onclick="soSelPay('transfer')" style="border:2px solid var(--blue-mid);border-radius:12px;padding:.55rem .4rem;text-align:center;cursor:pointer;font-size:.8rem;font-weight:700;color:var(--green-dark);line-height:1.3">📱<br/>Chuyển khoản</div>
+          </div>
+          <div id="so-cash-row" style="display:flex;align-items:center;gap:.5rem">
+            <div style="flex:1">
+              <label style="font-size:.72rem;margin-bottom:.2rem;display:block">Tiền nhận</label>
+              <input type="number" id="so-cash-received" placeholder="0" inputmode="numeric" oninput="soCalcChange()" style="margin:0;font-size:.95rem;font-weight:700;text-align:right"/>
+            </div>
+            <div style="font-size:1.3rem;color:#aaa;padding-top:1.2rem">→</div>
+            <div style="flex:1;text-align:center;padding-top:1.2rem">
+              <div style="font-size:.72rem;color:#888;margin-bottom:.15rem">Tiền thối</div>
+              <div id="so-change" style="font-size:1.05rem;font-weight:700;color:var(--green2)">—</div>
+            </div>
+          </div>
+        </div>
         <div class="alert" id="so-alert"></div>
         <button class="btn btn-full btn-green" onclick="soPlaceOrder()">✅ Xác nhận đơn</button>
       </div>
@@ -561,6 +580,7 @@ function normalizeMember(m){
   return m;
 }
 var soCart=[],soMember=null,soCurItem=null,soCurSize=null,soCurQty=1,soCouponData=null;
+var soPayMode='cash',soTotalAmount=0;
 var currentMemPhone='';
 var autoT=null,currentShiftID=localStorage.getItem('yoricha_shiftID')||null;
 var dashFrom=null,dashTo=null;
@@ -838,14 +858,14 @@ function soOpenMod(id){
   var it=menuS.find(function(x){return x.id===id;});
   if(!it) return;
   soCurItem=it;
-  soCurSize=(it.price_s>0)?'S':'L';
+  soCurSize=Number(it.price_s)?'S':'L';
   soCurQty=1;
   document.getElementById('so-mod-title').textContent=it.name;
-  var isSub=soMember&&(soMember.subActive||isSubStillActive(soMember.subExpiry));
+  var isSub=soMember&&soMember.subActive;
   // Build size options without inline onclick string issues
   var szEl=document.getElementById('so-sz-grid');
   szEl.innerHTML='';
-  if(it.price_s>0){
+  if(Number(it.price_s)){
     var prS=isSub?'<s style="color:#aaa;font-size:.7rem">'+fmt(it.price_s*1000)+'</s> 29.000đ':fmt(it.price_s*1000);
     var dS=document.createElement('div');
     dS.className='sz-opt'+(soCurSize==='S'?' on':'');
@@ -856,7 +876,7 @@ function soOpenMod(id){
   if(Number(it.price_l)){
     var prL=isSub?'<s style="color:#aaa;font-size:.7rem">'+fmt(it.price_l*1000)+'</s> 52.000đ':fmt(it.price_l*1000);
     var dL=document.createElement('div');
-    dL.className='sz-opt'+(soCurSize==='L'&&!(it.price_s>0)?' on':'');
+    dL.className='sz-opt'+(soCurSize==='L'&&!Number(it.price_s)?' on':'');
     dL.innerHTML='<div class="sz-lbl">Size L</div><div class="sz-price">'+prL+'</div>';
     dL.onclick=function(){soSelSz(this,'L');};
     szEl.appendChild(dL);
@@ -879,7 +899,7 @@ function soAddCart(){
   var isMatcha=soCurItem.category==='Matcha';
   var bot=isMatcha?getSoChip('bot'):'';var sua=isMatcha?getSoChip('sua'):'';
   // Subscription flat pricing: S=29k, L=52k (chỉ Matcha, extras vẫn tính bình thường)
-  var isSub=soMember&&(soMember.subActive||isSubStillActive(soMember.subExpiry));
+  var isSub=soMember&&soMember.subActive;
   var basePrice=isSub?(soCurSize==='S'?29000:52000):(soCurSize==='S'?soCurItem.price_s:soCurItem.price_l)*1000;
   var extras=0;
   if(bot.includes('MK4'))extras+=15000;if(sua.includes('Hạt điều'))extras+=10000;if(sua.includes('Đậu nành'))extras+=10000;
@@ -898,6 +918,7 @@ function soRenderCart(){
   var soDiscount=0;
   if(soCouponData){if(soCouponData.type==='percent')soDiscount=Math.round(total*Number(soCouponData.value)/100);if(soCouponData.type==='fixed')soDiscount=Number(soCouponData.value)*1000;total=Math.max(0,total-soDiscount);}
   document.getElementById('so-total').textContent=fmt(total)+(soDiscount>0?' (giảm '+fmt(soDiscount)+')':'');
+  soTotalAmount=total;soCalcChange();
 }
 async function soApplyCoupon(){
   var code=document.getElementById('so-coupon').value.trim().toUpperCase();
@@ -954,12 +975,37 @@ function doUpsize(idx){
   el.textContent='✅ Đã upsize '+it.name+' lên size L miễn phí!';
   el.style.cssText='display:block;background:#e6f7ed;color:#1a7f3c;border-radius:8px;padding:.4rem .7rem;font-weight:600';
 }
+
+function soSelPay(mode){
+  soPayMode=mode;
+  var cashBtn=document.getElementById('pay-cash-btn');
+  var transBtn=document.getElementById('pay-transfer-btn');
+  var cashRow=document.getElementById('so-cash-row');
+  if(mode==='cash'){
+    cashBtn.style.cssText='border:2px solid var(--blue);background:var(--blue);color:#fff;border-radius:12px;padding:.55rem .4rem;text-align:center;cursor:pointer;font-size:.8rem;font-weight:700;line-height:1.3';
+    transBtn.style.cssText='border:2px solid var(--blue-mid);border-radius:12px;padding:.55rem .4rem;text-align:center;cursor:pointer;font-size:.8rem;font-weight:700;color:var(--green-dark);line-height:1.3';
+    cashRow.style.display='flex';
+  } else {
+    cashBtn.style.cssText='border:2px solid var(--blue-mid);border-radius:12px;padding:.55rem .4rem;text-align:center;cursor:pointer;font-size:.8rem;font-weight:700;color:var(--green-dark);line-height:1.3';
+    transBtn.style.cssText='border:2px solid var(--blue);background:var(--blue);color:#fff;border-radius:12px;padding:.55rem .4rem;text-align:center;cursor:pointer;font-size:.8rem;font-weight:700;line-height:1.3';
+    cashRow.style.display='none';
+  }
+}
+function soCalcChange(){
+  var received=Number(document.getElementById('so-cash-received').value)||0;
+  var change=received-soTotalAmount;
+  var el=document.getElementById('so-change');
+  if(received<=0){el.textContent='—';el.style.color='var(--green2)';return;}
+  if(change<0){el.textContent='Thiếu '+fmt(-change);el.style.color='var(--red)';}
+  else{el.textContent=fmt(change);el.style.color='var(--green2)';}
+}
 async function soPlaceOrder(){
   if(!soCart.length){al('so-alert','Chưa chọn món!','err');return;}
   var name=document.getElementById('so-name').value.trim()||'Khách lẻ';
   var total=soCart.reduce(function(s,i){return s+i.price*i.qty;},0);
   if(soCouponData){var disc=soCouponData.type==='percent'?Math.round(total*Number(soCouponData.value)/100):(Number(soCouponData.value)*1000);total=Math.max(0,total-disc);}
-  var note='[Tại quầy] [NV: '+(staffInfo?staffInfo.name:'?')+'] '+document.getElementById('so-note').value.trim();
+  var payLabel=soPayMode==='transfer'?'[Chuyển khoản]':'[Tiền mặt]';
+  var note='[Tại quầy] '+payLabel+' [NV: '+(staffInfo?staffInfo.name:'?')+'] '+document.getElementById('so-note').value.trim();
   if(soCouponData){
     note+=' [Mã: '+soCouponData.code+']';
     if(soCouponData.type==='free_upsize'){
@@ -977,7 +1023,8 @@ async function soPlaceOrder(){
   await loadOrders();
 }
 function soReset(){
-  soCart=[];soMember=null;soCouponData=null;
+  soCart=[];soMember=null;soCouponData=null;soPayMode='cash';soTotalAmount=0;
+  try{document.getElementById('so-cash-received').value='';document.getElementById('so-change').textContent='—';soSelPay('cash');}catch(e){}
   document.getElementById('so-name').value='';document.getElementById('so-phone').value='';
   document.getElementById('so-member-badge').innerHTML='';document.getElementById('so-note').value='';
   try{document.getElementById('so-coupon').value='';document.getElementById('so-coupon-result').style.display='none';}catch(e){}
