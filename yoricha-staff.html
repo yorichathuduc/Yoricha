@@ -838,14 +838,14 @@ function soOpenMod(id){
   var it=menuS.find(function(x){return x.id===id;});
   if(!it) return;
   soCurItem=it;
-  soCurSize=Number(it.price_s)?'S':'L';
+  soCurSize=(it.price_s>0)?'S':'L';
   soCurQty=1;
   document.getElementById('so-mod-title').textContent=it.name;
-  var isSub=soMember&&soMember.subActive;
+  var isSub=soMember&&(soMember.subActive||isSubStillActive(soMember.subExpiry));
   // Build size options without inline onclick string issues
   var szEl=document.getElementById('so-sz-grid');
   szEl.innerHTML='';
-  if(Number(it.price_s)){
+  if(it.price_s>0){
     var prS=isSub?'<s style="color:#aaa;font-size:.7rem">'+fmt(it.price_s*1000)+'</s> 29.000đ':fmt(it.price_s*1000);
     var dS=document.createElement('div');
     dS.className='sz-opt'+(soCurSize==='S'?' on':'');
@@ -856,7 +856,7 @@ function soOpenMod(id){
   if(Number(it.price_l)){
     var prL=isSub?'<s style="color:#aaa;font-size:.7rem">'+fmt(it.price_l*1000)+'</s> 52.000đ':fmt(it.price_l*1000);
     var dL=document.createElement('div');
-    dL.className='sz-opt'+(soCurSize==='L'&&!Number(it.price_s)?' on':'');
+    dL.className='sz-opt'+(soCurSize==='L'&&!(it.price_s>0)?' on':'');
     dL.innerHTML='<div class="sz-lbl">Size L</div><div class="sz-price">'+prL+'</div>';
     dL.onclick=function(){soSelSz(this,'L');};
     szEl.appendChild(dL);
@@ -879,7 +879,7 @@ function soAddCart(){
   var isMatcha=soCurItem.category==='Matcha';
   var bot=isMatcha?getSoChip('bot'):'';var sua=isMatcha?getSoChip('sua'):'';
   // Subscription flat pricing: S=29k, L=52k (chỉ Matcha, extras vẫn tính bình thường)
-  var isSub=soMember&&soMember.subActive;
+  var isSub=soMember&&(soMember.subActive||isSubStillActive(soMember.subExpiry));
   var basePrice=isSub?(soCurSize==='S'?29000:52000):(soCurSize==='S'?soCurItem.price_s:soCurItem.price_l)*1000;
   var extras=0;
   if(bot.includes('MK4'))extras+=15000;if(sua.includes('Hạt điều'))extras+=10000;if(sua.includes('Đậu nành'))extras+=10000;
