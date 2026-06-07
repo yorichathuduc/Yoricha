@@ -779,14 +779,18 @@ function parseVNExpiry(str){
 }
 function normalizeSOmember(m){
   if(!m) return m;
+  // subActive từ getMemberPrivileges đã được tính đúng bởi backend
+  // Chỉ cần parse lại nếu subActive=false nhưng tier=subscription và subExpiry còn hạn
   var active=m.subActive||false;
-  if(!active&&(m.tier==='subscription'||m.tier==='pending_subscription')){
+  if(!active && m.tier==='subscription' && m.subExpiry){
     var exp=parseVNExpiry(m.subExpiry);
     if(exp&&exp>new Date()) active=true;
   }
+  // pending_subscription = chưa kích hoạt = KHÔNG active
   m.subActive=active;
   m.stamps=Number(m.stamps)||0;
   m.subUsedToday=Number(m.subUsedToday)||0;
+  console.log('[SO] member:', m.name, '| tier:', m.tier, '| subActive:', m.subActive, '| subExpiry:', m.subExpiry);
   return m;
 }
 async function soLookup(){
@@ -838,9 +842,18 @@ function soRenderMenu(){
 function soFilt(el,cat){document.querySelectorAll('#so-cat-tabs div').forEach(function(t){t.style.background='#fff';t.style.color='var(--blue)';});el.style.background='var(--blue)';el.style.color='#fff';soRenderMenuItems(cat);}
 function soRenderMenuItems(cat){
   var items=menuS.filter(function(it){return it.category===cat&&it.available;});
+  var isSub=soMember&&soMember.subActive;
   document.getElementById('so-mgrid').innerHTML=items.map(function(it){
-    var ps='';if(it.price_s)ps+=it.price_s+'k ';if(it.price_l)ps+='/ '+it.price_l+'k';
-    return'<div style="background:#fff;border:1.5px solid var(--blue-mid);border-radius:12px;padding:.75rem;cursor:pointer" onclick="soOpenMod(\''+it.id+'\')"><div style="font-weight:700;font-size:.82rem;margin-bottom:.2rem">'+it.name+'</div><div style="font-size:.75rem;color:var(--blue);font-weight:700">'+ps+'</div></div>';
+    var ps='';
+    if(isSub&&it.category==='Matcha'){
+      if(it.price_s)ps+='<span style="text-decoration:line-through;color:#aaa">'+it.price_s+'k</span> <b style="color:#0369a1">29k</b> ';
+      if(it.price_l)ps+='/ <span style="text-decoration:line-through;color:#aaa">'+it.price_l+'k</span> <b style="color:#0369a1">52k</b>';
+    } else {
+      if(it.price_s)ps+=it.price_s+'k ';
+      if(it.price_l)ps+='/ '+it.price_l+'k';
+    }
+    var border=(isSub&&it.category==='Matcha')?'#7dd3fc':'var(--blue-mid)';
+    return'<div style="background:#fff;border:1.5px solid '+border+';border-radius:12px;padding:.75rem;cursor:pointer" onclick="soOpenMod(\''+it.id+'\')"><div style="font-weight:700;font-size:.82rem;margin-bottom:.2rem">'+it.name+'</div><div style="font-size:.75rem;color:var(--blue);font-weight:700">'+ps+'</div></div>';
   }).join('');
 }
 function soOpenMod(id){
