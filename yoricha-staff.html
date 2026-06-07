@@ -537,18 +537,27 @@ var API='https://script.google.com/macros/s/AKfycbxs-jt4COAvW__D7UFp1gmeiCbPJE7z
 var IMGBB_KEY='a0f2439e546f124d0aaa005c639c351b';
 var PWD='',staffInfo=null,orders=[],menuS=[],invData=[],poData=[],couponsList=[];
  
+function parseSubExpiry(s){
+  if(!s) return null;
+  // Try dd/mm/yyyy first
+  var p=String(s).split('/');
+  if(p.length===3 && p[2].length===4){
+    return new Date(Number(p[2]),Number(p[1])-1,Number(p[0]),23,59,59);
+  }
+  // Fallback: full JS date string e.g. "Tue Jul 07 2026 00:00:00 GMT+0700"
+  var d=new Date(s);
+  return isNaN(d)?null:d;
+}
 function normalizeMember(m){
   if(!m) return m;
-  var active = m.subActive||false;
+  var active=m.subActive||false;
   if(!active && m.tier==='subscription' && m.subExpiry){
-    var exp=parseVNExpiry(m.subExpiry);
-    if(!exp||isNaN(exp)) exp=new Date(m.subExpiry);
-    if(exp&&!isNaN(exp)&&exp>new Date()) active=true;
+    var exp=parseSubExpiry(m.subExpiry);
+    if(exp && exp>new Date()) active=true;
   }
   m.subActive=active;
   m.stamps=Number(m.stamps)||0;
   m.subUsedToday=Number(m.subUsedToday)||0;
-  console.log('member subActive:', m.subActive, 'tier:', m.tier, 'stamps:', m.stamps);
   return m;
 }
 var soCart=[],soMember=null,soCurItem=null,soCurSize=null,soCurQty=1,soCouponData=null;
@@ -772,62 +781,38 @@ async function updOrd(oid,status){
 }
  
 // ── STAFF NEW ORDER ───────────────────────────────────────────
-function parseVNExpiry(str){
-  if(!str) return null;
-  var p=String(str).split('/');
-  if(p.length===3) return new Date(Number(p[2]),Number(p[1])-1,Number(p[0]),23,59,59);
-  return null;
-}
-function normalizeSOmember(m){
-  if(!m) return m;
-  var active=m.subActive||false;
-  if(!active && m.tier==='subscription' && m.subExpiry){
-    // subExpiry có thể là "dd/mm/yyyy" hoặc full JS date string "Tue Jul 07 2026..."
-    var exp=parseVNExpiry(m.subExpiry); // thử dd/mm/yyyy trước
-    if(!exp || isNaN(exp)) exp=new Date(m.subExpiry); // fallback full date string
-    if(exp && !isNaN(exp) && exp>new Date()) active=true;
-  }
-  m.subActive=active;
-  m.stamps=Number(m.stamps)||0;
-  m.subUsedToday=Number(m.subUsedToday)||0;
-  console.log('[SO] member:', m.name, '| tier:', m.tier, '| subActive:', m.subActive, '| subExpiry:', m.subExpiry);
-  return m;
-}
 async function soLookup(){
   var ph=document.getElementById('so-phone').value.trim();if(!ph)return;
   var badge=document.getElementById('so-member-badge');
   badge.innerHTML='<div style="font-size:.75rem;color:#aaa;padding:.3rem">⏳ Đang tìm...</div>';
-  // Dùng getMemberPrivileges để có đủ subActive, tier, subExpiry
   var d=await api({action:'getMemberPrivileges',phone:ph});
-  if(!d.ok){
-    // Fallback lookup
-    var d2=await api({action:'lookup',phone:ph});
-    if(d2.ok) d={ok:true,member:d2.member};
-  }
+  if(!d.ok){var d2=await api({action:'lookup',phone:ph});if(d2.ok)d={ok:true,member:d2.member};}
   if(d.ok){
-    soMember=normalizeSOmember(d.member);
-    var m=soMember;
-    var tierLabel={'matcha_tapsu':'🍃 Tập Sự','vip':'💜 VIP','subscription':'💙 Subscription','pending_subscription':'📋 Chờ kích hoạt Sub'};
-    var tierColor={'matcha_tapsu':'#15803d','vip':'#7c3aed','subscription':'#0369a1','pending_subscription':'#0369a1'};
+    var m=d.member;
+    // Normalize subActive
+    var active=m.subActive||false;
+    if(!active && m.tier==='subscription' && m.subExpiry){
+      var exp=parseSubExpiry(m.subExpiry);
+      if(exp&&exp>new Date()) active=true;
+    }
+    m.subActive=active;
+    m.stamps=Number(m.stamps)||0;
+    m.subUsedToday=Number(m.subUsedToday)||0;
+    soMember=m;
+    var tierLabel={'matcha_tapsu':'🍃 Tập Sự','vip':'💜 VIP','subscription':'💙 Subscription','pending_subscription':'📋 Chờ Sub'};
+    var tierColor={'matcha_tapsu':'#15803d','vip':'#7c3aed','subscription':'#0369a1','pending_subscription':'#888'};
     var tl=tierLabel[m.tier]||m.tier;
     var tc=tierColor[m.tier]||'var(--blue)';
-    var subInfo='';
-    if(m.subActive){
-      subInfo='<div style="font-size:.7rem;color:#0369a1;font-weight:700;margin-top:.2rem">💙 Sub: S=29k · L=52k · Còn '+m.subUsedToday+'/2 ly hôm nay</div>';
-    }
+    var subLine=m.subActive?'<div style="font-size:.7rem;color:#0369a1;font-weight:700;margin-top:.2rem">💙 Sub: S=29k · L=52k · Còn '+m.subUsedToday+'/2 ly hôm nay</div>':'';
     var dots='';
-    if(m.tier==='matcha_tapsu'){
-      for(var i=1;i<=7;i++){var c='sdot'+(i===4||i===7?' ms':'')+(i<=m.stamps?' on':'');dots+='<div class="'+c+'"></div>';}
-    }
+    if(m.tier==='matcha_tapsu'){for(var i=1;i<=7;i++){var c='sdot'+(i===4||i===7?' ms':'')+(i<=m.stamps?' on':'');dots+='<div class="'+c+'"></div>';}}
     badge.innerHTML='<div style="background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:10px;padding:.6rem .8rem;display:flex;align-items:center;gap:.6rem;margin-top:.5rem">'+
       '<div style="width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-family:Merienda,cursive;flex-shrink:0">'+m.name.charAt(0).toUpperCase()+'</div>'+
       '<div><div style="font-weight:700;color:var(--blue);font-size:.85rem">'+m.name+' <span style="font-size:.65rem;font-weight:700;color:'+tc+'">'+tl+'</span></div>'+
-      '<div style="font-size:.72rem;color:#666">'+m.stamps+' mốc</div>'+
-      subInfo+
+      '<div style="font-size:.72rem;color:#666">'+m.stamps+' mốc</div>'+subLine+
       (dots?'<div class="sdots" style="margin-top:.25rem">'+dots+'</div>':'')+
       '</div></div>';
     document.getElementById('so-name').value=m.name;
-    // Re-render menu để áp giá Sub nếu subActive
     soRenderMenu();
   }else{
     soMember=null;
@@ -844,30 +829,38 @@ function soRenderMenu(){
 function soFilt(el,cat){document.querySelectorAll('#so-cat-tabs div').forEach(function(t){t.style.background='#fff';t.style.color='var(--blue)';});el.style.background='var(--blue)';el.style.color='#fff';soRenderMenuItems(cat);}
 function soRenderMenuItems(cat){
   var items=menuS.filter(function(it){return it.category===cat&&it.available;});
-  var isSub=soMember&&soMember.subActive;
   document.getElementById('so-mgrid').innerHTML=items.map(function(it){
-    var ps='';
-    if(isSub){
-      if(it.price_s)ps+='<span style="text-decoration:line-through;color:#aaa">'+it.price_s+'k</span> <b style="color:#0369a1">29k</b> ';
-      if(it.price_l)ps+='/ <span style="text-decoration:line-through;color:#aaa">'+it.price_l+'k</span> <b style="color:#0369a1">52k</b>';
-    } else {
-      if(it.price_s)ps+=it.price_s+'k ';
-      if(it.price_l)ps+='/ '+it.price_l+'k';
-    }
-    var border=isSub?'#7dd3fc':'var(--blue-mid)';
-    return'<div style="background:#fff;border:1.5px solid '+border+';border-radius:12px;padding:.75rem;cursor:pointer" onclick="soOpenMod(\''+it.id+'\')"><div style="font-weight:700;font-size:.82rem;margin-bottom:.2rem">'+it.name+'</div><div style="font-size:.75rem;color:var(--blue);font-weight:700">'+ps+'</div></div>';
+    var ps='';if(it.price_s)ps+=it.price_s+'k ';if(it.price_l)ps+='/ '+it.price_l+'k';
+    return'<div style="background:#fff;border:1.5px solid var(--blue-mid);border-radius:12px;padding:.75rem;cursor:pointer" onclick="soOpenMod(\''+it.id+'\')"><div style="font-weight:700;font-size:.82rem;margin-bottom:.2rem">'+it.name+'</div><div style="font-size:.75rem;color:var(--blue);font-weight:700">'+ps+'</div></div>';
   }).join('');
 }
 function soOpenMod(id){
-  var it=menuS.find(function(x){return x.id===id;});if(!it)return;
-  soCurItem=it;soCurSize=it.price_s?'S':'L';soCurQty=1;
+  var it=menuS.find(function(x){return x.id===id;});
+  if(!it) return;
+  soCurItem=it;
+  soCurSize=Number(it.price_s)?'S':'L';
+  soCurQty=1;
   document.getElementById('so-mod-title').textContent=it.name;
-  var sz='';
-  var isSub=soMember&&soMember.subActive; // Sub áp dụng mọi loại nước
-  if(it.price_s)sz+='<div class="sz-opt'+(soCurSize==='S'?' on':'')+'" onclick="soSelSz(this,\'S\')">'+'<div class="sz-lbl">Size S</div><div class="sz-price">'+(isSub?'<span style="text-decoration:line-through;color:#aaa;font-size:.7rem">'+fmt(it.price_s*1000)+'</span> 29.000đ':fmt(it.price_s*1000))+'</div></div>';
-  if(it.price_l)sz+='<div class="sz-opt'+(soCurSize==='L'&&!it.price_s?' on':'')+'" onclick="soSelSz(this,\'L\')">'+'<div class="sz-lbl">Size L</div><div class="sz-price">'+(isSub?'<span style="text-decoration:line-through;color:#aaa;font-size:.7rem">'+fmt(it.price_l*1000)+'</span> 52.000đ':fmt(it.price_l*1000))+'</div></div>';
-  console.log('[SZ] item:', it.name, 'price_s:', it.price_s, 'price_l:', it.price_l, 'sz len:', sz.length);
-  document.getElementById('so-sz-grid').innerHTML=sz;
+  var isSub=soMember&&soMember.subActive;
+  // Build size options without inline onclick string issues
+  var szEl=document.getElementById('so-sz-grid');
+  szEl.innerHTML='';
+  if(Number(it.price_s)){
+    var prS=isSub?'<s style="color:#aaa;font-size:.7rem">'+fmt(it.price_s*1000)+'</s> 29.000đ':fmt(it.price_s*1000);
+    var dS=document.createElement('div');
+    dS.className='sz-opt'+(soCurSize==='S'?' on':'');
+    dS.innerHTML='<div class="sz-lbl">Size S</div><div class="sz-price">'+prS+'</div>';
+    dS.onclick=function(){soSelSz(this,'S');};
+    szEl.appendChild(dS);
+  }
+  if(Number(it.price_l)){
+    var prL=isSub?'<s style="color:#aaa;font-size:.7rem">'+fmt(it.price_l*1000)+'</s> 52.000đ':fmt(it.price_l*1000);
+    var dL=document.createElement('div');
+    dL.className='sz-opt'+(soCurSize==='L'&&!Number(it.price_s)?' on':'');
+    dL.innerHTML='<div class="sz-lbl">Size L</div><div class="sz-price">'+prL+'</div>';
+    dL.onclick=function(){soSelSz(this,'L');};
+    szEl.appendChild(dL);
+  }
   var isMatcha=it.category==='Matcha';
   document.getElementById('so-matcha-opts').style.display=isMatcha?'block':'none';
   document.querySelectorAll('#so-modal .chip').forEach(function(c){c.classList.remove('on');});
@@ -886,7 +879,7 @@ function soAddCart(){
   var isMatcha=soCurItem.category==='Matcha';
   var bot=isMatcha?getSoChip('bot'):'';var sua=isMatcha?getSoChip('sua'):'';
   // Subscription flat pricing: S=29k, L=52k (chỉ Matcha, extras vẫn tính bình thường)
-  var isSub=soMember&&soMember.subActive; // Sub áp dụng mọi loại nước
+  var isSub=soMember&&soMember.subActive;
   var basePrice=isSub?(soCurSize==='S'?29000:52000):(soCurSize==='S'?soCurItem.price_s:soCurItem.price_l)*1000;
   var extras=0;
   if(bot.includes('MK4'))extras+=15000;if(sua.includes('Hạt điều'))extras+=10000;if(sua.includes('Đậu nành'))extras+=10000;
@@ -1001,73 +994,56 @@ async function lookupMem(){
     d={ok:true,member:Object.assign(d2.member,{tier:'matcha_tapsu',subActive:false,monthlyCount:0,monthlyWeekday:0})};
   }
   var m=d.member;
-
-  // Normalize subActive - parse dd/mm/yyyy đúng cách
-  var subActiveReal = m.subActive || false;
-  if(!subActiveReal && m.subExpiry){
-    var expReal = parseVNExpiry(m.subExpiry);
-    if(expReal && expReal > new Date()) subActiveReal = true;
+  // Normalize subActive
+  if(!m.subActive && m.tier==='subscription' && m.subExpiry){
+    var expM=parseSubExpiry(m.subExpiry);
+    if(expM&&expM>new Date()) m.subActive=true;
   }
-  m.subActive = subActiveReal;
-
-  currentMemPhone = m.phone;
-  var tier = m.tier || 'matcha_tapsu';
-  var isSub = (tier === 'subscription' || tier === 'pending_subscription');
-
-  // Chỉ hiện dots nếu là matcha_tapsu hoặc vip
-  var dots = '';
-  if(!isSub){
-    for(var i=1;i<=7;i++){
-      var c='sdot'+(i===4||i===7?' ms':'')+(i<=m.stamps?' on':'');
-      dots+='<div class="'+c+'"></div>';
-    }
-  }
-
+  m.stamps=Number(m.stamps)||0;
+  m.subUsedToday=Number(m.subUsedToday)||0;
+  currentMemPhone=m.phone;
+  var dots='';for(var i=1;i<=7;i++){var c='sdot'+(i===3||i===5||i===7?' ms':'')+(i<=m.stamps?' on':'');dots+='<div class="'+c+'"></div>';}
   var pbns=menuS.filter(function(it){return it.available;}).map(function(it){return'<button class="pbtn" onclick="addPurch(\''+m.phone+'\',\''+it.name+'\')">'+it.name+'</button>';}).join('');
   if(!pbns)pbns='<button class="pbtn" onclick="addPurch(\''+m.phone+'\',\'Matcha\')">Matcha</button>';
-
-  var tierLabel={'matcha_tapsu':'🍃 Matcha Tập Sự','vip':'💜 VIP','subscription':'💙 Subscription','pending_subscription':'📋 Chờ Sub'};
-  var tierColor={'matcha_tapsu':'#15803d','vip':'#7c3aed','subscription':'#0369a1','pending_subscription':'#0369a1'};
+  // Build tier badge
+  var tierLabel={'matcha_tapsu':'🍃 Matcha Tập Sự','vip':'💜 VIP','subscription':'💙 Subscription'};
+  var tierColor={'matcha_tapsu':'#15803d','vip':'#7c3aed','subscription':'#0369a1'};
+  var tier=m.tier||'matcha_tapsu';
   var tierBadge='<span style="background:var(--blue-light);color:'+(tierColor[tier]||'var(--blue)')+';font-size:.68rem;font-weight:700;padding:.15rem .55rem;border-radius:8px;margin-left:.4rem">'+(tierLabel[tier]||tier)+'</span>';
-
-  // fmtDate parse đúng format dd/mm/yyyy từ backend
-  function fmtDate(s){if(!s)return'';var p=String(s).split('/');if(p.length===3)return p[0]+'/'+p[1]+'/'+p[2];return s;}
-
-  // Subscription info
+ 
+  // Format ngày đẹp dd/mm/yyyy
+  function fmtDate(s){if(!s)return'';var d=new Date(s);if(isNaN(d))return s;return('0'+d.getDate()).slice(-2)+'/'+(('0'+(d.getMonth()+1)).slice(-2))+'/'+d.getFullYear();}
+  // Subscription info — chỉ dùng subActive
   var subInfo='';
   if(m.subActive){
-    subInfo='<div style="background:#e0f2fe;border:1.5px solid #7dd3fc;border-radius:10px;padding:.55rem .75rem;margin:.5rem 0;font-size:.78rem;color:#0369a1;font-weight:600">'+
-      '💙 Subscription đang hoạt động · HH: '+fmtDate(m.subExpiry)+'<br/>Đã dùng hôm nay: '+m.subUsedToday+'/2 ly'+
-      '</div>';
-  } else if(tier==='subscription'||tier==='pending_subscription'){
-    subInfo='<div style="background:#f0f9ff;border:1.5px solid #7dd3fc;border-radius:10px;padding:.5rem .75rem;margin:.5rem 0;font-size:.78rem;color:#0369a1;font-weight:600">'+
-      '📋 Khách đã đăng ký Chương trình 2 · Chờ kích hoạt<br/>'+
-      '<button class="btn btn-sm" onclick="activateSub(currentMemPhone)" style="background:linear-gradient(135deg,#0369a1,#0891b2);margin-top:.4rem;font-size:.75rem;width:100%">💙 Kích hoạt lần đầu (49k)</button>'+
-      '</div>';
+    subInfo='<div style="background:#e0f2fe;border:1.5px solid #7dd3fc;border-radius:10px;padding:.55rem .75rem;margin:.5rem 0;font-size:.78rem;color:#0369a1;font-weight:600">💙 Subscription đang hoạt động · HH: '+fmtDate(m.subExpiry)+'<br/>Đã dùng hôm nay: '+m.subUsedToday+'/2 ly</div>';
+  } else if(tier==='subscription'){
+    subInfo='<div style="background:#f0f9ff;border:1.5px solid #7dd3fc;border-radius:10px;padding:.5rem .75rem;margin:.5rem 0;font-size:.78rem;color:#0369a1;font-weight:600">📋 Khách đã đăng ký Chương trình 2 · Chờ kích hoạt<br/><button class="btn btn-sm" onclick="activateSub(currentMemPhone)" style="background:linear-gradient(135deg,#0369a1,#0891b2);margin-top:.4rem;font-size:.75rem;width:100%">💙 Kích hoạt lần đầu (49k)</button></div>';
   } else {
     subInfo='<button class="btn btn-sm" onclick="activateSub(currentMemPhone)" style="background:linear-gradient(135deg,#0369a1,#0891b2);width:100%;margin:.5rem 0;font-size:.78rem">💙 Kích hoạt Subscription 49k</button>';
   }
-
-  // Birthday input chỉ cho matcha_tapsu và vip
+ 
+  // Birthday input for VIP
   var bdayInput='';
   if(tier==='vip'||tier==='matcha_tapsu'){
     bdayInput='<div style="margin-top:.5rem;padding-top:.5rem;border-top:1px dashed var(--blue-mid)">'+
       '<div style="font-size:.73rem;font-weight:700;margin-bottom:.3rem;color:var(--gold-dark)">🎂 Cập nhật sinh nhật (xuất trình CMND):</div>'+
       '<div style="display:flex;gap:.4rem">'+
       '<input type="text" id="bday-input-'+m.phone.slice(-4)+'" placeholder="dd/mm" style="margin:0;flex:1;font-size:.82rem;padding:.4rem .6rem"/>'+
-      '<button class="btn btn-sm" onclick="saveBday(currentMemPhone,\'bday-input-'+m.phone.slice(-4)+'\')" style="font-size:.75rem">Lưu</button>'+
+      '<button class="btn btn-sm" onclick="saveBday(currentMemPhone,&quot;bday-input-'+m.phone.slice(-4)+'&quot;)" style="font-size:.75rem">Lưu</button>'+
       '</div></div>';
   }
-
+ 
   document.getElementById('mem-result').innerHTML=
     '<div class="card" style="margin:0">'+
     '<div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem">'+
     '<div style="width:40px;height:40px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-family:Merienda,cursive;font-size:.95rem;flex-shrink:0">'+m.name.charAt(0).toUpperCase()+'</div>'+
     '<div><div style="font-weight:700;color:var(--blue);font-size:.88rem">'+m.name+tierBadge+'</div>'+
-    '<div style="font-size:.72rem;color:#888">'+m.phone+' · '+(isSub?'Subscription':m.stamps+' mốc · Tháng này: '+m.monthlyCount+'/4')+'</div></div></div>'+
+    '<div style="font-size:.72rem;color:#888">'+m.phone+' · '+m.stamps+' mốc · Tháng này: '+m.monthlyCount+'/4</div></div></div>'+
     subInfo+
-    (dots?'<div class="sdots" style="margin-bottom:.5rem">'+dots+'</div>':'')+
-    (!isSub?'<div style="font-size:.73rem;font-weight:700;margin-bottom:.3rem">Cộng điểm thủ công:</div><div class="pgrid">'+pbns+'</div>':'')+
+    '<div class="sdots" style="margin-bottom:.5rem">'+dots+'</div>'+
+    '<div style="font-size:.73rem;font-weight:700;margin-bottom:.3rem">Cộng điểm thủ công:</div>'+
+    '<div class="pgrid">'+pbns+'</div>'+
     bdayInput+
     '</div>';
 }
@@ -1085,9 +1061,9 @@ async function loadMembers(){
     var isSub=(tier==='subscription'||tier==='pending_subscription');
     var cell='';
     if(isSub){
-      var tcolor={'subscription':'#0369a1','pending_subscription':'#0369a1'};
-      var tlabel={'subscription':'💙 Subscription','pending_subscription':'📋 Chờ Sub'};
-      cell='<span style="font-size:.68rem;font-weight:700;color:'+(tcolor[tier]||'#0369a1')+';background:#e0f2fe;padding:.1rem .5rem;border-radius:6px">'+(tlabel[tier]||tier)+'</span>';
+      var c2={'subscription':'#0369a1','pending_subscription':'#888'};
+      var lb={'subscription':'💙 Sub','pending_subscription':'📋 Chờ Sub'};
+      cell='<span style="font-size:.68rem;font-weight:700;color:'+(c2[tier]||'#888')+';background:#e0f2fe;padding:.1rem .5rem;border-radius:6px">'+(lb[tier]||tier)+'</span>';
     } else if(tier==='vip'){
       cell='<span style="font-size:.68rem;font-weight:700;color:#7c3aed;background:#f3f0ff;padding:.1rem .5rem;border-radius:6px">💜 VIP</span>';
     } else {
@@ -1371,7 +1347,7 @@ async function activateSub(phone){
   if(d.ok){
     al('mem-alert','✅ Đã kích hoạt Subscription cho '+d.member.name+' · HH: '+d.member.subExpiry,'ok');
     document.getElementById('mem-phone').value=phone.replace('84','0');
-    setTimeout(function(){ lookupMem(); }, 400);
+    setTimeout(function(){lookupMem();},400);
   } else {
     al('mem-alert','Lỗi: '+d.error,'err');
   }
