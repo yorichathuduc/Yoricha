@@ -827,6 +827,8 @@ async function soLookup(){
       (dots?'<div class="sdots" style="margin-top:.25rem">'+dots+'</div>':'')+
       '</div></div>';
     document.getElementById('so-name').value=m.name;
+    // Re-render menu để áp giá Sub nếu subActive
+    soRenderMenu();
   }else{
     soMember=null;
     badge.innerHTML='<div style="font-size:.75rem;color:var(--orange);padding:.3rem">Không tìm thấy thành viên.</div>';
