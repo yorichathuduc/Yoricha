@@ -405,20 +405,48 @@ async function doRegister(prog){
 function registerProg1(){doRegister(1);}
 function registerProg2(){doRegister(2);}
 
+function normalizeMember(m){
+  // Ensure tier is always set correctly
+  var tier=m.tier||'matcha_tapsu';
+  if(!tier||tier===''||tier==='undefined')tier='matcha_tapsu';
+  // Normalize subscription check
+  var subActive=m.subActive||false;
+  if(tier==='subscription'&&!subActive){
+    // Check if subExpiry is still valid
+    if(m.subExpiry&&m.subExpiry.length>3){
+      var p=m.subExpiry.split('/');
+      if(p.length===3){
+        var exp=new Date(Number(p[2]),Number(p[1])-1,Number(p[0]),23,59,59);
+        subActive=new Date()<=exp;
+        if(!subActive)tier='matcha_tapsu'; // expired sub = back to tapsu
+      }
+    }
+  }
+  return Object.assign(m,{
+    tier:tier,
+    subActive:subActive,
+    vipActive:tier==='vip',
+    vipTuesdayMilk:tier==='vip'&&(new Date().getDay()===2),
+    vipWednesdayUpsize:tier==='vip'&&(new Date().getDay()===3),
+    isBirthdayMonth:m.isBirthdayMonth||false,
+    monthlyCount:m.monthlyCount||0,
+    monthlyWeekday:m.monthlyWeekday||0,
+    stamps:Number(m.stamps||0)
+  });
+}
+
 async function lookup(){
   var phone=document.getElementById('look-phone').value.trim();
   if(!phone){al('look-alert','Nhập số điện thoại.','err');return;}
   var btn=document.getElementById('btn-look');btn.disabled=true;btn.textContent='⏳';
   try{
-    // Use getMemberPrivileges for full data
     var d=await api({action:'getMemberPrivileges',phone:phone});
-    if(!d.ok){
-      // Fallback to basic lookup
+    if(d.ok){
+      showMember(normalizeMember(d.member));
+    } else {
       var d2=await api({action:'lookup',phone:phone});
       if(!d2.ok){al('look-alert',d2.error,'err');return;}
-      showMember(Object.assign(d2.member,{tier:'matcha_tapsu',vipActive:false,subActive:false,vipTuesdayMilk:false,vipWednesdayUpsize:false,isBirthdayMonth:false,monthlyCount:0,monthlyWeekday:0}));
-    } else {
-      showMember(d.member);
+      showMember(normalizeMember(d2.member));
     }
   }catch(e){al('look-alert','Lỗi kết nối.','err');}
   finally{btn.disabled=false;btn.textContent='Tra cứu 🔍';}
