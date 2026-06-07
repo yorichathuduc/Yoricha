@@ -539,10 +539,11 @@ var PWD='',staffInfo=null,orders=[],menuS=[],invData=[],poData=[],couponsList=[]
  
 function normalizeMember(m){
   if(!m) return m;
-  var active = m.subActive || false;
-  if(!active&&(m.tier==='subscription'||m.tier==='pending_subscription')){
+  var active = m.subActive||false;
+  if(!active && m.tier==='subscription' && m.subExpiry){
     var exp=parseVNExpiry(m.subExpiry);
-    if(exp&&exp>new Date()) active=true;
+    if(!exp||isNaN(exp)) exp=new Date(m.subExpiry);
+    if(exp&&!isNaN(exp)&&exp>new Date()) active=true;
   }
   m.subActive=active;
   m.stamps=Number(m.stamps)||0;
@@ -779,14 +780,13 @@ function parseVNExpiry(str){
 }
 function normalizeSOmember(m){
   if(!m) return m;
-  // subActive từ getMemberPrivileges đã được tính đúng bởi backend
-  // Chỉ cần parse lại nếu subActive=false nhưng tier=subscription và subExpiry còn hạn
   var active=m.subActive||false;
   if(!active && m.tier==='subscription' && m.subExpiry){
-    var exp=parseVNExpiry(m.subExpiry);
-    if(exp&&exp>new Date()) active=true;
+    // subExpiry có thể là "dd/mm/yyyy" hoặc full JS date string "Tue Jul 07 2026..."
+    var exp=parseVNExpiry(m.subExpiry); // thử dd/mm/yyyy trước
+    if(!exp || isNaN(exp)) exp=new Date(m.subExpiry); // fallback full date string
+    if(exp && !isNaN(exp) && exp>new Date()) active=true;
   }
-  // pending_subscription = chưa kích hoạt = KHÔNG active
   m.subActive=active;
   m.stamps=Number(m.stamps)||0;
   m.subUsedToday=Number(m.subUsedToday)||0;
