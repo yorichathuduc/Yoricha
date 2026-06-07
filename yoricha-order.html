@@ -381,9 +381,11 @@ function normalizeMember(m){
   // Nếu tier là subscription nhưng không có subActive field rõ ràng
   // thì check thêm subExpiry còn hạn không
   if(!active && (m.tier==='subscription'||m.tier==='Subscription')){
-    if(m.subExpiry){
-      var exp=new Date(m.subExpiry);
-      if(!isNaN(exp) && exp>new Date()) active=true;
+    if(m.subExpiry&&m.subExpiry.length>3){
+      var p=m.subExpiry.split('/');
+      var exp=p.length===3?new Date(Number(p[2]),Number(p[1])-1,Number(p[0]),23,59,59):new Date(m.subExpiry);
+      if(!isNaN(exp)&&exp>new Date()) active=true;
+      else if(p.length===3&&exp<=new Date()) m.tier='matcha_tapsu'; // expired
     }
   }
   m.subActive=active;
@@ -402,7 +404,7 @@ function renderBadge(){
   var html='<div class="mbadge"><div class="mbav">'+member.name.charAt(0).toUpperCase()+'</div><div style="flex:1">';
   html+='<div class="mb-name">Chào, '+member.name+'! 👋</div>';
   if(isSub){
-    html+='<div class="mb-sub">💙 Subscription · S=29k · L=52k · Còn '+member.subUsedToday+'/2 ly hôm nay</div>';
+    html+='<div class="mb-sub">💙 Subscription · S=32k · L=58k · Còn '+member.subUsedToday+'/2 ly hôm nay</div>';
   } else if(member.tier==='vip'){
     html+='<div class="mb-stamps" style="color:#7c3aed">💜 VIP Chữa Lành</div>';
   } else {
@@ -479,7 +481,7 @@ function openMod(id){
     modImgWrap.style.display='none';
   }
   // Giá trong modal: hiện giá sub nếu có
-  var isSub=member&&member.subActive&&it.category==='Matcha';
+  var isSub=member&&member.subActive&&it.isMatcha;
   var sz='';
   if(it.price_s){
     var priceS=isSub?'<span style="text-decoration:line-through;color:#aaa;font-size:.7rem">'+fmt(it.price_s*1000)+'</span><br/><strong style="color:#0369a1">29.000đ 💙</strong>':fmt(it.price_s*1000);
@@ -518,9 +520,9 @@ function addCart(){
   var isMatcha=curItem.category==='Matcha';
   var bot=isMatcha?getChip('bot'):'';
   var sua=isMatcha?getChip('sua'):'';
-  // Subscription flat pricing: S=29k, L=52k cho Matcha. Extras vẫn tính bình thường.
+  // Subscription flat pricing: S=32k, L=58k cho tất cả Matcha
   var isSub=member&&member.subActive&&isMatcha;
-  var basePrice=isSub?(curSize==='S'?29000:52000):(curSize==='S'?curItem.price_s:curItem.price_l)*1000;
+  var basePrice=isSub?(curSize==='S'?32000:58000):(curSize==='S'?curItem.price_s:curItem.price_l)*1000;
   var pr=basePrice;
   if(bot.includes('MK4'))pr+=15000;
   if(sua.includes('Hạt điều'))pr+=10000;
@@ -745,7 +747,7 @@ function showStatus(oid,items,total,isTransfer){
   if(pollT)clearInterval(pollT);
   pollT=setInterval(function(){pollStatus(oid);},10000);
   if(member){
-    api({action:'lookup',phone:member.phone}).then(function(d){if(d.ok){member=d.member;renderMemberStatus();}});
+    api({action:'getMemberPrivileges',phone:member.phone}).then(function(d){if(d.ok){member=normalizeMember(d.member);renderMemberStatus();}});
   }
 }
 
@@ -783,7 +785,7 @@ async function pollStatus(oid){
       pill.className='st-pill '+(cls[d.status]||'new');
       if(d.status==='Xong'){
         clearInterval(pollT);
-        if(member)api({action:'lookup',phone:member.phone}).then(function(r){if(r.ok){member=r.member;renderMemberStatus();}});
+        if(member)api({action:'getMemberPrivileges',phone:member.phone}).then(function(r){if(r.ok){member=normalizeMember(r.member);renderMemberStatus();}});
       }
     }
   }catch(e){}
