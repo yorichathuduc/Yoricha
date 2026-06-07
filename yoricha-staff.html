@@ -1064,8 +1064,20 @@ async function loadMembers(){
   var d=await api({action:'getMembers',password:PWD});if(!d.ok)return;
   if(!d.members.length){document.getElementById('mem-table').innerHTML='<div class="empty">Chưa có thành viên</div>';return;}
   var rows=d.members.map(function(m){
-    var dots='';for(var i=1;i<=7;i++){var c='sdot'+(i===3||i===5||i===7?' ms':'')+(i<=m.stamps?' on':'');dots+='<div class="'+c+'"></div>';}
-    return'<tr><td>'+m.name+'</td><td style="font-size:.7rem">'+m.phone+'</td><td><div class="sdots">'+dots+'</div></td></tr>';
+    var tier=m.tier||'matcha_tapsu';
+    var isSub=(tier==='subscription'||tier==='pending_subscription');
+    var cell='';
+    if(isSub){
+      var tcolor={'subscription':'#0369a1','pending_subscription':'#0369a1'};
+      var tlabel={'subscription':'💙 Subscription','pending_subscription':'📋 Chờ Sub'};
+      cell='<span style="font-size:.68rem;font-weight:700;color:'+(tcolor[tier]||'#0369a1')+';background:#e0f2fe;padding:.1rem .5rem;border-radius:6px">'+(tlabel[tier]||tier)+'</span>';
+    } else if(tier==='vip'){
+      cell='<span style="font-size:.68rem;font-weight:700;color:#7c3aed;background:#f3f0ff;padding:.1rem .5rem;border-radius:6px">💜 VIP</span>';
+    } else {
+      var dots='';for(var i=1;i<=7;i++){var c='sdot'+(i===4||i===7?' ms':'')+(i<=m.stamps?' on':'');dots+='<div class="'+c+'"></div>';}
+      cell='<div class="sdots">'+dots+'</div>';
+    }
+    return'<tr><td>'+m.name+'</td><td style="font-size:.7rem">'+m.phone+'</td><td>'+cell+'</td></tr>';
   }).join('');
   document.getElementById('mem-table').innerHTML='<div style="overflow-x:auto"><table class="mtable"><tr><th>Tên</th><th>SĐT</th><th>Mốc</th></tr>'+rows+'</table></div>';
 }
@@ -1342,7 +1354,7 @@ async function activateSub(phone){
   if(d.ok){
     al('mem-alert','✅ Đã kích hoạt Subscription cho '+d.member.name+' · HH: '+d.member.subExpiry,'ok');
     document.getElementById('mem-phone').value=phone.replace('84','0');
-    lookupMem();
+    setTimeout(function(){ lookupMem(); }, 400);
   } else {
     al('mem-alert','Lỗi: '+d.error,'err');
   }
