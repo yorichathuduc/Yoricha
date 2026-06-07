@@ -539,13 +539,14 @@ var PWD='',staffInfo=null,orders=[],menuS=[],invData=[],poData=[],couponsList=[]
  
 function normalizeMember(m){
   if(!m) return m;
-  var active = m.subActive || m.sub_active || m.isSubActive || m.subscriptionActive || false;
-  if(!active && (m.tier==='subscription'||m.tier==='Subscription')){
-    if(m.subExpiry){var exp=new Date(m.subExpiry);if(!isNaN(exp)&&exp>new Date())active=true;}
+  var active = m.subActive || false;
+  if(!active&&(m.tier==='subscription'||m.tier==='pending_subscription')){
+    var exp=parseVNExpiry(m.subExpiry);
+    if(exp&&exp>new Date()) active=true;
   }
   m.subActive=active;
   m.stamps=Number(m.stamps)||0;
-  m.subUsedToday=m.subUsedToday||m.sub_used_today||0;
+  m.subUsedToday=Number(m.subUsedToday)||0;
   console.log('member subActive:', m.subActive, 'tier:', m.tier, 'stamps:', m.stamps);
   return m;
 }
@@ -770,16 +771,62 @@ async function updOrd(oid,status){
 }
  
 // ── STAFF NEW ORDER ───────────────────────────────────────────
+function parseVNExpiry(str){
+  if(!str) return null;
+  var p=String(str).split('/');
+  if(p.length===3) return new Date(Number(p[2]),Number(p[1])-1,Number(p[0]),23,59,59);
+  return null;
+}
+function normalizeSOmember(m){
+  if(!m) return m;
+  var active=m.subActive||false;
+  if(!active&&(m.tier==='subscription'||m.tier==='pending_subscription')){
+    var exp=parseVNExpiry(m.subExpiry);
+    if(exp&&exp>new Date()) active=true;
+  }
+  m.subActive=active;
+  m.stamps=Number(m.stamps)||0;
+  m.subUsedToday=Number(m.subUsedToday)||0;
+  return m;
+}
 async function soLookup(){
   var ph=document.getElementById('so-phone').value.trim();if(!ph)return;
-  var d=await api({action:'lookup',phone:ph});
   var badge=document.getElementById('so-member-badge');
+  badge.innerHTML='<div style="font-size:.75rem;color:#aaa;padding:.3rem">⏳ Đang tìm...</div>';
+  // Dùng getMemberPrivileges để có đủ subActive, tier, subExpiry
+  var d=await api({action:'getMemberPrivileges',phone:ph});
+  if(!d.ok){
+    // Fallback lookup
+    var d2=await api({action:'lookup',phone:ph});
+    if(d2.ok) d={ok:true,member:d2.member};
+  }
   if(d.ok){
-    soMember=d.member;
-    var dots='';for(var i=1;i<=7;i++){var c='sdot'+(i===3||i===5||i===7?' ms':'')+(i<=d.member.stamps?' on':'');dots+='<div class="'+c+'"></div>';}
-    badge.innerHTML='<div style="background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:10px;padding:.6rem .8rem;display:flex;align-items:center;gap:.6rem;margin-top:.5rem"><div style="width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-family:Merienda,cursive;flex-shrink:0">'+d.member.name.charAt(0).toUpperCase()+'</div><div><div style="font-weight:700;color:var(--blue);font-size:.85rem">'+d.member.name+'</div><div style="font-size:.72rem;color:#666">'+d.member.stamps+'/10 mốc</div><div class="sdots" style="margin-top:.25rem">'+dots+'</div></div></div>';
-    document.getElementById('so-name').value=d.member.name;
-  }else{soMember=null;badge.innerHTML='<div style="font-size:.75rem;color:var(--orange);padding:.3rem">Không tìm thấy thành viên.</div>';}
+    soMember=normalizeSOmember(d.member);
+    var m=soMember;
+    var tierLabel={'matcha_tapsu':'🍃 Tập Sự','vip':'💜 VIP','subscription':'💙 Subscription','pending_subscription':'📋 Chờ kích hoạt Sub'};
+    var tierColor={'matcha_tapsu':'#15803d','vip':'#7c3aed','subscription':'#0369a1','pending_subscription':'#0369a1'};
+    var tl=tierLabel[m.tier]||m.tier;
+    var tc=tierColor[m.tier]||'var(--blue)';
+    var subInfo='';
+    if(m.subActive){
+      subInfo='<div style="font-size:.7rem;color:#0369a1;font-weight:700;margin-top:.2rem">💙 Sub: S=29k · L=52k · Còn '+m.subUsedToday+'/2 ly hôm nay</div>';
+    }
+    var dots='';
+    if(m.tier==='matcha_tapsu'){
+      for(var i=1;i<=7;i++){var c='sdot'+(i===4||i===7?' ms':'')+(i<=m.stamps?' on':'');dots+='<div class="'+c+'"></div>';}
+    }
+    badge.innerHTML='<div style="background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:10px;padding:.6rem .8rem;display:flex;align-items:center;gap:.6rem;margin-top:.5rem">'+
+      '<div style="width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-family:Merienda,cursive;flex-shrink:0">'+m.name.charAt(0).toUpperCase()+'</div>'+
+      '<div><div style="font-weight:700;color:var(--blue);font-size:.85rem">'+m.name+' <span style="font-size:.65rem;font-weight:700;color:'+tc+'">'+tl+'</span></div>'+
+      '<div style="font-size:.72rem;color:#666">'+m.stamps+' mốc</div>'+
+      subInfo+
+      (dots?'<div class="sdots" style="margin-top:.25rem">'+dots+'</div>':'')+
+      '</div></div>';
+    document.getElementById('so-name').value=m.name;
+  }else{
+    soMember=null;
+    badge.innerHTML='<div style="font-size:.75rem;color:var(--orange);padding:.3rem">Không tìm thấy thành viên.</div>';
+  }
 }
 function soRenderMenu(){
   if(!menuS.length)return;
