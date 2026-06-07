@@ -847,14 +847,14 @@ function soRenderMenuItems(cat){
   var isSub=soMember&&soMember.subActive;
   document.getElementById('so-mgrid').innerHTML=items.map(function(it){
     var ps='';
-    if(isSub&&it.category==='Matcha'){
+    if(isSub){
       if(it.price_s)ps+='<span style="text-decoration:line-through;color:#aaa">'+it.price_s+'k</span> <b style="color:#0369a1">29k</b> ';
       if(it.price_l)ps+='/ <span style="text-decoration:line-through;color:#aaa">'+it.price_l+'k</span> <b style="color:#0369a1">52k</b>';
     } else {
       if(it.price_s)ps+=it.price_s+'k ';
       if(it.price_l)ps+='/ '+it.price_l+'k';
     }
-    var border=(isSub&&it.category==='Matcha')?'#7dd3fc':'var(--blue-mid)';
+    var border=isSub?'#7dd3fc':'var(--blue-mid)';
     return'<div style="background:#fff;border:1.5px solid '+border+';border-radius:12px;padding:.75rem;cursor:pointer" onclick="soOpenMod(\''+it.id+'\')"><div style="font-weight:700;font-size:.82rem;margin-bottom:.2rem">'+it.name+'</div><div style="font-size:.75rem;color:var(--blue);font-weight:700">'+ps+'</div></div>';
   }).join('');
 }
@@ -863,9 +863,11 @@ function soOpenMod(id){
   soCurItem=it;soCurSize=it.price_s?'S':'L';soCurQty=1;
   document.getElementById('so-mod-title').textContent=it.name;
   var sz='';
-  var isSub=soMember&&soMember.subActive&&it.category==='Matcha';
+  var isSub=soMember&&soMember.subActive; // Sub áp dụng mọi loại nước
   if(it.price_s)sz+='<div class="sz-opt'+(soCurSize==='S'?' on':'')+'" onclick="soSelSz(this,\'S\')">'+'<div class="sz-lbl">Size S</div><div class="sz-price">'+(isSub?'<span style="text-decoration:line-through;color:#aaa;font-size:.7rem">'+fmt(it.price_s*1000)+'</span> 29.000đ':fmt(it.price_s*1000))+'</div></div>';
   if(it.price_l)sz+='<div class="sz-opt'+(soCurSize==='L'&&!it.price_s?' on':'')+'" onclick="soSelSz(this,\'L\')">'+'<div class="sz-lbl">Size L</div><div class="sz-price">'+(isSub?'<span style="text-decoration:line-through;color:#aaa;font-size:.7rem">'+fmt(it.price_l*1000)+'</span> 52.000đ':fmt(it.price_l*1000))+'</div></div>';
+  console.log('[SZ] item:', it.name, 'price_s:', it.price_s, 'price_l:', it.price_l, 'sz len:', sz.length);
+  document.getElementById('so-sz-grid').innerHTML=sz;
   var isMatcha=it.category==='Matcha';
   document.getElementById('so-matcha-opts').style.display=isMatcha?'block':'none';
   document.querySelectorAll('#so-modal .chip').forEach(function(c){c.classList.remove('on');});
@@ -884,7 +886,7 @@ function soAddCart(){
   var isMatcha=soCurItem.category==='Matcha';
   var bot=isMatcha?getSoChip('bot'):'';var sua=isMatcha?getSoChip('sua'):'';
   // Subscription flat pricing: S=29k, L=52k (chỉ Matcha, extras vẫn tính bình thường)
-  var isSub=soMember&&soMember.subActive&&isMatcha;
+  var isSub=soMember&&soMember.subActive; // Sub áp dụng mọi loại nước
   var basePrice=isSub?(soCurSize==='S'?29000:52000):(soCurSize==='S'?soCurItem.price_s:soCurItem.price_l)*1000;
   var extras=0;
   if(bot.includes('MK4'))extras+=15000;if(sua.includes('Hạt điều'))extras+=10000;if(sua.includes('Đậu nành'))extras+=10000;
