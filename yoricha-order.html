@@ -320,6 +320,24 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
 <footer><strong style="color:var(--blue)">Yoricha</strong> · 24/10 Đường số 6, khu phố 13, Thủ Đức · 6:30–21:00</footer>
 
 <script>
+function normalizeMember(m){
+  if(!m) return m;
+  // Backend getMemberPrivileges đã tính subActive đúng - tin vào đó
+  var active = (m.subActive === true || m.subActive === 'true');
+  // Fallback: tự parse subExpiry (dd/mm/yyyy)
+  if(!active && m.subExpiry && String(m.subExpiry).length > 4){
+    var parts = String(m.subExpiry).split('/');
+    if(parts.length === 3){
+      var exp = new Date(Number(parts[2]), Number(parts[1])-1, Number(parts[0]), 23, 59, 59);
+      if(!isNaN(exp) && exp > new Date()) active = true;
+    }
+  }
+  m.subActive = active;
+  m.stamps = Number(m.stamps) || 0;
+  m.subUsedToday = Number(m.subUsedToday) || 0;
+  console.log('[Yoricha Order] member:', m.name, '| tier:', m.tier, '| subActive:', m.subActive, '| subExpiry:', m.subExpiry);
+  return m;
+}
 var API='https://script.google.com/macros/s/AKfycbxs-jt4COAvW__D7UFp1gmeiCbPJE7zNCqn7pEGOKUKDYmbcht1Wm765sxZcWH9gF4A/exec';
 var menu=[],cart=[],member=null,curItem=null,curSize=null,curQty=1,pollT=null;
 var delMode='pickup',shipFee=0,couponData=null,payMode='cash';
@@ -354,51 +372,33 @@ async function goMenu(){
   var ph=document.getElementById('inp-phone').value.trim();
   show('pg-menu');
   document.getElementById('mgrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:2rem"><div style="font-size:1.5rem">🍵</div><div style="font-size:.82rem;color:#aaa;margin-top:.5rem">Đang tải menu...</div></div>';
+  // Load member TRƯỚC, rồi mới load menu để đảm bảo giá sub hiện đúng
   if(ph){
     try{
       var d=await api({action:'getMemberPrivileges',phone:ph});
-      console.log('getMemberPrivileges response:', JSON.stringify(d));
       if(d.ok){
         member=normalizeMember(d.member);
       } else {
         var d2=await api({action:'lookup',phone:ph});
-        console.log('lookup response:', JSON.stringify(d2));
         if(d2.ok) member=normalizeMember(d2.member);
       }
       if(member) renderBadge();
-    }catch(e){console.error(e);}
+    }catch(e){}
   } else {
     member=null;
   }
+  // Load menu sau khi đã có member → renderMenu dùng đúng subActive
   try{await loadMenu();}catch(e){}
-}
-
-// Chuẩn hóa member data từ backend
-function parseVNExpiry(str){
-  // Parse dd/mm/yyyy → Date
-  if(!str) return null;
-  var p=String(str).split('/');
-  if(p.length===3) return new Date(Number(p[2]),Number(p[1])-1,Number(p[0]),23,59,59);
-  return null;
-}
-function normalizeMember(m){
-  if(!m) return m;
-  var active = m.subActive || false;
-  // Nếu backend trả subActive=false nhưng tier=subscription → parse subExpiry thủ công
-  if(!active && (m.tier==='subscription'||m.tier==='pending_subscription')){
-    var exp=parseVNExpiry(m.subExpiry);
-    if(exp && exp>new Date()) active=true;
-  }
-  m.subActive=active;
-  m.stamps=Number(m.stamps)||0;
-  m.subUsedToday=Number(m.subUsedToday)||0;
-  return m;
+  // Re-render tab hiện tại phòng trường hợp menu đã cached
+  var activeCat=document.querySelector('.ctab.on');
+  if(activeCat&&menu.length) renderMenu(activeCat.textContent);
 }
 
 function renderBadge(){
   var el=document.getElementById('member-preview');
   if(!member){el.innerHTML='';return;}
   var isSub=member.subActive;
+  console.log('[Yoricha] renderBadge: isSub=', isSub, 'tier=', member.tier, 'subExpiry=', member.subExpiry);
   var html='<div class="mbadge"><div class="mbav">'+member.name.charAt(0).toUpperCase()+'</div><div style="flex:1">';
   html+='<div class="mb-name">Chào, '+member.name+'! 👋</div>';
   if(isSub){
@@ -437,7 +437,6 @@ async function loadMenu(){
   }catch(e){
     document.getElementById('mgrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#aaa;font-size:.85rem">⚠️ Lỗi kết nối.<br/><button onclick="loadMenu()" style="margin-top:.5rem;background:var(--blue);color:#fff;border:none;border-radius:8px;padding:.5rem 1rem;cursor:pointer;font-size:.82rem">Thử lại</button></div>';
   }
-}
 function filt(el,cat){
   document.querySelectorAll('.ctab').forEach(function(t){t.classList.remove('on');});
   el.classList.add('on');
@@ -655,7 +654,6 @@ function copySTK(){
   } else {
     prompt('Copy số tài khoản:',stk);
   }
-}
 
 // ── COUPON ───────────────────────────────────────────────────
 async function applyCoupon(){
@@ -747,7 +745,6 @@ function showStatus(oid,items,total,isTransfer){
   if(member){
     api({action:'lookup',phone:member.phone}).then(function(d){if(d.ok){member=d.member;renderMemberStatus();}});
   }
-}
 
 function renderMemberStatus(){
   if(!member||member.tier==='subscription')return;
@@ -801,6 +798,10 @@ function resetAll(){
   document.getElementById('member-preview').innerHTML='';
   document.getElementById('mst-wrap').style.display='none';
   show('pg-phone');
+}
+
+}
+}
 }
 </script>
 </body>
