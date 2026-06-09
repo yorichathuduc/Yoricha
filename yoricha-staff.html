@@ -1297,7 +1297,7 @@ function renderDash(){
   document.getElementById('d-done').textContent=done.length;
   document.getElementById('d-avg').textContent=done.length?fmt(avg):'--';
   var rankCls=['gold','silver','bronze','',''];
-  var itemMap={};done.forEach(function(o){(o.items||'').split(' | ').forEach(function(p){var n=p.split(' (')[0].trim();if(n)itemMap[n]=(itemMap[n]||0)+1;});});
+  var itemMap={}; done.forEach(function(o){   (o.items||'').split(' | ').forEach(function(p){     var n=p.split(' (')[0].trim();     if(!n) return;     var qm=p.match(/x(\d+)\s*$/);     var qty=qm?Number(qm[1]):1;     itemMap[n]=(itemMap[n]||0)+qty;   }); });
   var topItems=Object.keys(itemMap).map(function(k){return{name:k,count:itemMap[k]};}).sort(function(a,b){return b.count-a.count;}).slice(0,5);
   document.getElementById('d-top-items').innerHTML=topItems.length?topItems.map(function(it,i){return'<div class="top-item"><div style="display:flex;align-items:center"><div class="top-rank '+(rankCls[i]||'')+'">'+(i+1)+'</div>'+it.name+'</div><div style="font-weight:700;color:var(--blue)">'+it.count+' ly</div></div>';}).join(''):'<div class="empty">Chưa có dữ liệu</div>';
   var custMap={};done.forEach(function(o){var k=o.name&&o.name!=='Khách lẻ'&&o.name!=='Khach'?o.name:'';if(!k)return;if(!custMap[k])custMap[k]={name:k,orders:0,revenue:0};custMap[k].orders++;custMap[k].revenue+=Number(o.total||0);});
