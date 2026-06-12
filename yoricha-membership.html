@@ -132,7 +132,7 @@ footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
         Trở thành<br/>Matchaholic
       </button>
       <button class="btn" id="btn-prog2" onclick="registerProg2()" style="background:linear-gradient(135deg,#0369a1,#0891b2);font-size:.82rem;padding:.8rem .5rem;line-height:1.35">
-        💙 Tham gia hội<br/>Yoricha Bétti
+        Hội<br/>Yoricha Béttie
       </button>
     </div>
     <div style="margin-top:.85rem;border-top:1px dashed var(--blue-mid);padding-top:.85rem">
@@ -219,17 +219,16 @@ footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
     <div id="prog1-info" style="border:2px solid #86efac;border-radius:14px;overflow:hidden;margin-bottom:.75rem">
       <div style="background:linear-gradient(135deg,#3971b8,#27ae60);padding:.75rem 1rem;color:#fff">
         <div style="font-family:'Merienda',cursive;font-size:.95rem;margin-bottom:.1rem">Matchaholic</div>
-        <div style="font-family:'Merienda',cursive;font-size:.85rem">Miễn phí tham gia</div>
+        <div style="font-size:.72rem;opacity:.85;margin-top:.2rem">Miễn phí tham gia</div>
       </div>
       <div style="padding:.85rem 1rem;background:#fff">
-        <div style="font-weight:700;font-size:.8rem;color:#15803d;margin-bottom:.5rem">Newbie Matcha"</div>
-        <div style="font-size:.72rem;color:#888;margin-bottom:.4rem">Thu thập 7 ly = 7 dấu mộc</div>
+        <div style="font-weight:700;font-size:.8rem;color:#15803d;margin-bottom:.5rem">Newbie Matcha</div> <span style="color:#888">Thu thập 7 ly = 7 dấu mộc</span><br
         <div style="font-size:.78rem;color:var(--green-dark);line-height:1.85">
-          📸 <b>Review Google Maps:</b> Tặng voucher giảm 10% ly tiếp theo <span style="color:#888">(1 lần/tài khoản)</span><br
+          📸 <b>Để lại review:</b> Tặng voucher giảm 10% <span style="color:#888">(1 lần/sđt)</span><br
           🎁 <b>Ly thứ 4:</b> Giảm 10% khi mua 2 ly trở lên = +2 mộc <br/>
           🎉 <b>Ly thứ 7:</b> Tặng 1 ly Size S miễn phí
         </div>
-        <div style="font-weight:700;font-size:.8rem;color:var(--vip);margin:.75rem 0 .5rem">Senior Matcha"</div>
+        <div style="font-weight:700;font-size:.8rem;color:var(--vip);margin:.75rem 0 .5rem">Senior Matcha</div>
         <div style="font-size:.72rem;color:#888;margin-bottom:.4rem">Tự động nâng hạng sau khi hoàn thành ly thứ 7</div>
         <div style="font-size:.78rem;color:var(--green-dark);line-height:1.85">
           🥛 <b>Thứ 3:</b> Đổi nền sữa hạt miễn phí (1 ly/ngày)<br/>
@@ -243,22 +242,21 @@ footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
     <!-- PROGRAM 2 -->
     <div id="prog2-info" style="border:2px solid #7dd3fc;border-radius:14px;overflow:hidden">
       <div style="background:linear-gradient(135deg,#0369a1,#0891b2);padding:.75rem 1rem;color:#fff">
-        <div style="font-family:'Merienda',cursive;font-size:.95rem;margin-bottom:.1rem">Chương trình 2</div>
-        <div style="font-family:'Merienda',cursive;font-size:1.05rem">💙 Hội Yoricha Bétti</div>
+        <div style="font-family:'Merienda',cursive;font-size:1.05rem">Hội Yoricha Béttie</div>
         <div style="font-size:.72rem;opacity:.85;margin-top:.2rem">Uống thả ga với 49.000đ / 30 ngày</div>
       </div>
       <div style="padding:.85rem 1rem;background:#fff">
         <div style="font-size:.78rem;color:var(--green-dark);line-height:1.85">
           💚 <b>Đồng giá Size S = 29.000đ</b> (Menu matcha)<br/>
-          💚 <b>Đồng giá Size L = 52.000đ</b> (Menumatcha)<br/>
-          🎂 Phù hợp làm quà tặng cho bạn bè thích uống matcha<br/>
-          📍 <b>Cách tham gia:</b> Để lại thông tin tại đây → Thanh toán tại cửa hàng để nhân viên kích hoạt tài khoản của bạn.<br/>
+          💚 <b>Đồng giá Size L = 52.000đ</b> (Menu matcha)<br/>
+          🎂 Phù hợp làm quà tặng<br/>
+          📍 <b>Cách tham gia:</b> Để lại thông tin tại đây → Thanh toán tại cửa hàng → Nhân viên kích hoạt số điện thoại.<br/>
         </div>
         <div style="background:#e0f2fe;border-radius:8px;padding:.55rem .75rem;margin-top:.65rem;font-size:.75rem;color:#0369a1;line-height:1.6">
-          📍 <b>Lưu ý:</b> 
+          📍 <b>Lưu ý:</b> <br/>
           📌 Tối đa 2 ly/ngày<br/>
-          🔄 Hiệu lực 10 ngày kể từ ngày kích hoạt (có thể gia hạn nhiều lần)
-          ⚠️ Hội Yoricha Bétti không áp dụng chung với Matchaholic
+          🔄 Hiệu lực 30 ngày kể từ ngày kích hoạt (có thể gia hạn nhiều lần)<br/>
+          ⚠️ Không áp dụng song song 2 chương trình
         </div>
       </div>
     </div>
@@ -278,14 +276,14 @@ async function api(p){
 function al(id,msg,type){var e=document.getElementById(id);e.textContent=msg;e.className='alert '+type;e.style.display='block';setTimeout(function(){e.style.display='none';},5000);}
 
 
-var TIER_LABELS={'Newbie':'Matcha Newbie','Senior':'Matcha Senior','Hội Yoricha Bétti':'Hội Yoricha Bétti};
-var TIER_CARD={'Newbie':'newbie','Senior':'senior','Hội Yoricha Bétti':'Bétti'};
+var TIER_LABELS={'Newbie':'Newbie Matcha','Senior':'Senior Matcha','Hội Yoricha Béttie':'Hội Yoricha Béttie};
+var TIER_CARD={'Newbie':'newbie','Senior':'senior','Hội Yoricha Béttie':'Béttie'};
 
 function showMember(m){
   document.getElementById('member-result').style.display='block';
   // Card
   var card=document.getElementById('mc-card');
-  card.className='member-card '+(TIER_CARD[m.tier]||'mc-tapsu');
+  card.className='member-card '+(TIER_CARD[m.tier]||'newbie');
   document.getElementById('mc-av').textContent=m.name.charAt(0).toUpperCase();
   document.getElementById('mc-name').textContent=m.name;
   document.getElementById('mc-phone').textContent=m.phone;
@@ -293,16 +291,16 @@ function showMember(m){
 
   // Stamps
   var stampsWrap=document.getElementById('stamps-wrap');
-  if(m.tier==='subscription'){
+  if(m.tier==='Béttie'){
     stampsWrap.style.display='none';
-  } else if(m.tier==='vip'){
+  } else if(m.tier==='senior'){
     // VIP: show monthly progress, no stamps needed
     stampsWrap.style.display='none';
   } else {
-    // matcha_tapsu: 7 stamps, milestones at 4 and 7
+    // Newbie: 7 stamps, milestones at 4 and 7
     stampsWrap.style.display='block';
     var maxStamps=7;
-    document.getElementById('stamps-label').textContent='Hành trình: '+m.stamps+'/7 mộc';
+    document.getElementById('stamps-label').textContent='Bạn đã được: '+m.stamps+'/7 mộc';
     var milestones={4:'🎁',7:'🎉'};
     var descs={4:'Ly thứ 4: -10% combo',7:'Ly thứ 7: Free 1 ly S'};
     var dots='';
@@ -324,7 +322,7 @@ function showMember(m){
   // Active privileges today
   var privs='';
   if(m.subActive){
-    privs+='<div class="priv-active">💙 Subscription đang hoạt động · Còn '+m.subUsedToday+'/2 ly hôm nay · HH: '+m.subExpiry+'</div>';
+    privs+='<div class="priv-active">Yoricha Béttie đang hoạt động · Còn '+m.subUsedToday+'/2 ly hôm nay · HH: '+m.subExpiry+'</div>';
   }
   if(m.vipTuesdayMilk){
     privs+='<div class="priv-active" style="background:#f3f0ff;border-color:#c4b5fd;color:var(--vip)">🥛 Hôm nay T3 · Đổi sữa hạt MIỄN PHÍ (1 ly)</div>';
