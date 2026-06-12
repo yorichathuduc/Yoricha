@@ -10,7 +10,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Merienda:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--blue:#3971b8;--blue-light:#e8f0fb;--blue-mid:#b5d0f0;--green-dark:#343b1b;--cream:#fbfcee;--gold:#f6e6a5;--gold-dark:#d4a017;--red:#e74c3c;--green2:#27ae60;--vip:#7c3aed;--vip-light:#f3f0ff;--sub:#0369a1;--sub-light:#e0f2fe}
+:root{--blue:#3971b8;--blue-light:#e8f0fb;--blue-mid:#b5d0f0;--green-dark:#343b1b;--cream:#fbfcee;--gold:#f6e6a5;--gold-dark:#d4a017;--red:#e74c3c;--green2:#27ae60;--vip:#7c3aed;--vip-light:#f3f0ff;--sub:#0369a1;--sub-light:#e0f2fe;
+  --prog1:#8ba888;--prog1-dark:#6a9472;--prog1-light:#edf4ee;--prog1-border:#b5d4b3;
+  --prog2:#44624a;--prog2-dark:#2f4534;--prog2-light:#e6efe7;--prog2-border:#7aaa80;
+}
 html,body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--green-dark);min-height:100vh;-webkit-tap-highlight-color:transparent}
 
 /* HEADER */
@@ -107,6 +110,22 @@ input:focus{border-color:var(--blue);background:#fff}
 .monthly-bar{background:#eee;border-radius:10px;height:8px;margin:.4rem 0 .2rem;overflow:hidden}
 .monthly-fill{height:100%;border-radius:10px;background:var(--green2);transition:width .4s}
 
+/* ── PROGRAM BLOCKS (chỉ 2 khung này đổi màu) ── */
+/* Matchaholic — màu nhạt #8ba888 */
+.prog1-header{background:linear-gradient(135deg,var(--prog1),var(--prog1-dark));padding:.75rem 1rem;color:#fff}
+.prog1-wrap{border:2px solid var(--prog1-border);border-radius:14px;overflow:hidden;margin-bottom:.75rem}
+.prog1-newbie{font-weight:700;font-size:.8rem;color:var(--prog1-dark);margin-bottom:.5rem}
+.prog1-senior{font-weight:700;font-size:.8rem;color:var(--prog1);margin:.75rem 0 .5rem}
+
+/* Béttie — màu đậm #44624a */
+.prog2-header{background:linear-gradient(135deg,var(--prog2),var(--prog2-dark));padding:.75rem 1rem;color:#fff}
+.prog2-wrap{border:2px solid var(--prog2-border);border-radius:14px;overflow:hidden}
+.prog2-note{background:var(--prog2-light);border-radius:8px;padding:.55rem .75rem;margin-top:.65rem;font-size:.75rem;color:var(--prog2);line-height:1.6;border:1px solid var(--prog2-border)}
+
+/* Register buttons — theo màu chương trình */
+.btn-prog1{background:var(--prog1)!important}
+.btn-prog2{background:var(--prog2)!important}
+
 footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
 </style>
 </head>
@@ -126,12 +145,11 @@ footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
     <input type="text" id="reg-name" placeholder="Nguyễn Văn A"/>
     <label>Số điện thoại (Zalo)</label>
     <input type="tel" id="reg-phone" placeholder="0901 234 567" inputmode="tel"/>
-    <!-- 2 program buttons -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-top:.25rem">
-      <button class="btn" id="btn-prog1" onclick="registerProg1()" style="background:linear-gradient(135deg,#3971b8,#27ae60);font-size:.82rem;padding:.8rem .5rem;line-height:1.35">
+      <button class="btn btn-prog1" id="btn-prog1" onclick="registerProg1()" style="font-size:.82rem;padding:.8rem .5rem;line-height:1.35">
         Trở thành<br/>Matchaholic
       </button>
-      <button class="btn" id="btn-prog2" onclick="registerProg2()" style="background:linear-gradient(135deg,#0369a1,#0891b2);font-size:.82rem;padding:.8rem .5rem;line-height:1.35">
+      <button class="btn btn-prog2" id="btn-prog2" onclick="registerProg2()" style="font-size:.82rem;padding:.8rem .5rem;line-height:1.35">
         Hội<br/>Yoricha Béttie
       </button>
     </div>
@@ -146,7 +164,6 @@ footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
   </div>
 
   <div id="member-result" style="display:none">
-    <!-- Member card -->
     <div class="member-card" id="mc-card">
       <div class="mc-deco"></div><div class="mc-deco2"></div>
       <div class="mc-av" id="mc-av"></div>
@@ -160,10 +177,8 @@ footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
       </div>
     </div>
 
-    <!-- Active privileges today -->
     <div id="active-privs"></div>
 
-    <!-- Subscription CTA -->
     <div id="sub-cta-wrap" style="display:none">
       <div class="sub-cta">
         <div class="sub-price">Hội Yoricha Béttie</div>
@@ -177,7 +192,6 @@ footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
       </div>
     </div>
 
-    <!-- Order CTA -->
     <a class="order-cta" id="order-cta" href="#">
       <div class="octa-icon">🍵</div>
       <div>
@@ -187,7 +201,6 @@ footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
       <div class="octa-arrow">›</div>
     </a>
 
-    <!-- Monthly stats (VIP only) -->
     <div id="monthly-stats" style="display:none" class="card">
       <div class="card-title">📊 Hoạt động tháng này</div>
       <div style="font-size:.82rem;color:var(--green-dark)">
@@ -204,7 +217,6 @@ footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
       </div>
     </div>
 
-    <!-- History -->
     <div class="card">
       <div class="card-title">Lịch sử mua hàng</div>
       <div id="hist-list"></div>
@@ -215,21 +227,21 @@ footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
   <div class="card">
     <div style="font-family:'Merienda',cursive;color:var(--blue);font-size:1rem;margin-bottom:1rem">Chương trình thành viên</div>
 
-    <!-- PROGRAM 1 -->
-    <div id="prog1-info" style="border:2px solid #86efac;border-radius:14px;overflow:hidden;margin-bottom:.75rem">
-      <div style="background:linear-gradient(135deg,#8ba888);padding:.75rem 1rem;color:#fff">
+    <!-- PROGRAM 1 — Matchaholic (màu nhạt) -->
+    <div id="prog1-info" class="prog1-wrap">
+      <div class="prog1-header">
         <div style="font-family:'Merienda',cursive;font-size:.95rem;margin-bottom:.1rem">Matchaholic</div>
         <div style="font-size:.72rem;opacity:.85;margin-top:.2rem">Miễn phí tham gia</div>
       </div>
       <div style="padding:.85rem 1rem;background:#fff">
-        <div style="font-weight:700;font-size:.8rem;color:#15803d;margin-bottom:.5rem">Matcha Newbie</div>
+        <div class="prog1-newbie">Matcha Newbie</div>
         <div style="font-size:.72rem;color:#888;margin-bottom:.4rem">Thu thập 7 ly = 7 dấu mộc</div>
         <div style="font-size:.78rem;color:var(--green-dark);line-height:1.85">
           📸 <b>Để lại review:</b> Tặng voucher giảm 10% <span style="color:#888">(1 lần/sđt)</span><br/>
-          🎁 <b>Ly thứ 4:</b> Giảm 10% khi mua 2 ly trở lên = +2 mộc <br/>
+          🎁 <b>Ly thứ 4:</b> Giảm 10% khi mua 2 ly trở lên = +2 mộc<br/>
           🎉 <b>Ly thứ 7:</b> Tặng 1 ly Size S miễn phí
         </div>
-        <div style="font-weight:700;font-size:.8rem;color:var(--vip);margin:.75rem 0 .5rem">Matcha Senior</div>
+        <div class="prog1-senior">Matcha Senior</div>
         <div style="font-size:.72rem;color:#888;margin-bottom:.4rem">Tự động nâng hạng sau khi hoàn thành ly thứ 7</div>
         <div style="font-size:.78rem;color:var(--green-dark);line-height:1.85">
           🥛 <b>Thứ 3:</b> Đổi nền sữa hạt miễn phí (1 ly/ngày)<br/>
@@ -240,11 +252,11 @@ footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
       </div>
     </div>
 
-    <!-- PROGRAM 2 -->
-    <div id="prog2-info" style="border:2px solid #7dd3fc;border-radius:14px;overflow:hidden">
-      <div style="background:linear-gradient(135deg,#44624a);padding:.75rem 1rem;color:#fff">
+    <!-- PROGRAM 2 — Béttie (màu đậm) -->
+    <div id="prog2-info" class="prog2-wrap">
+      <div class="prog2-header">
         <div style="font-family:'Merienda',cursive;font-size:1.05rem">Hội Yoricha Béttie</div>
-        <div style="font-size:.72rem;opacity:.85;margin-top:.2rem">Uống thả ga với giá 49K/tháng</div>
+        <div style="font-size:.72rem;opacity:.85;margin-top:.2rem">Uống thả ga với giá Béttie</div>
       </div>
       <div style="padding:.85rem 1rem;background:#fff">
         <div style="font-size:.78rem;color:var(--green-dark);line-height:1.85">
@@ -253,7 +265,7 @@ footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
           🎂 Phù hợp làm quà tặng<br/>
           📍 <b>Cách tham gia:</b> Để lại thông tin tại đây → Đến cửa hàng → Nhân viên kích hoạt giá Béttie.<br/>
         </div>
-        <div style="background:#e0f2fe;border-radius:8px;padding:.55rem .75rem;margin-top:.65rem;font-size:.75rem;color:#0369a1;line-height:1.6">
+        <div class="prog2-note">
           📌 <b>Lưu ý:</b><br/>
           📋 Áp dụng tối đa 2 ly/ngày<br/>
           ⏰ Sử dụng 30 ngày kể từ ngày khích hoạt<br/>
@@ -277,7 +289,6 @@ async function api(p){
 }
 function al(id,msg,type){var e=document.getElementById(id);e.textContent=msg;e.className='alert '+type;e.style.display='block';setTimeout(function(){e.style.display='none';},5000);}
 
-
 var TIER_LABELS={
   'matcha_tapsu':'Matcha Newbie',
   'vip':'Matcha Senior',
@@ -293,7 +304,6 @@ var TIER_CARD={
 
 function showMember(m){
   document.getElementById('member-result').style.display='block';
-  // Card
   var card=document.getElementById('mc-card');
   card.className='member-card '+(TIER_CARD[m.tier]||'newbie');
   document.getElementById('mc-av').textContent=m.name.charAt(0).toUpperCase();
@@ -301,29 +311,24 @@ function showMember(m){
   document.getElementById('mc-phone').textContent=m.phone;
   document.getElementById('mc-tier-name').textContent=TIER_LABELS[m.tier]||m.tier;
 
-  // Stamps
   var stampsWrap=document.getElementById('stamps-wrap');
   if(m.tier==='subscription'||m.tier==='pending_subscription'){
     stampsWrap.style.display='none';
   } else if(m.tier==='vip'){
-    // Matcha Senior: show monthly progress, no stamps needed
     stampsWrap.style.display='none';
   } else {
-    // Matcha Newbie: 7 stamps, milestones at 4 and 7
     stampsWrap.style.display='block';
-    var maxStamps=7;
     document.getElementById('stamps-label').textContent='Bạn đã được: '+m.stamps+'/7 mộc';
     var milestones={4:'🎁',7:'🎉'};
     var descs={4:'Ly thứ 4: -10% combo',7:'Ly thứ 7: Free 1 ly S'};
     var dots='';
-    for(var i=1;i<=maxStamps;i++){
+    for(var i=1;i<=7;i++){
       var isMs=milestones[i];var isFilled=i<=m.stamps;
       var cls='sdot'+(isMs?' milestone':'')+(isFilled?' on':'');
       var icon=isFilled?(isMs?milestones[i]:'✓'):(isMs?milestones[i]:'');
       dots+='<div class="'+cls+'" title="'+(descs[i]||'Mốc '+i)+'">'+icon+'</div>';
     }
     document.getElementById('sdots').innerHTML=dots;
-    // Show milestone rewards below dots
     var rewardHtml='<div style="display:flex;justify-content:space-between;margin-top:.5rem;font-size:.65rem;opacity:.8">';
     rewardHtml+='<span style="width:calc(4/7*100%)">🎁 Ly 4: -10%</span>';
     rewardHtml+='<span style="text-align:right">🎉 Ly 7: Free S</span>';
@@ -331,7 +336,6 @@ function showMember(m){
     document.getElementById('sdots').innerHTML+=rewardHtml;
   }
 
-  // Active privileges today
   var privs='';
   if(m.subActive){
     privs+='<div class="priv-active">💙 Giá Béttie đang được áp dụng · Còn '+m.subUsedToday+'/2 ly hôm nay · HH: '+m.subExpiry+'</div>';
@@ -356,10 +360,8 @@ function showMember(m){
   }
   document.getElementById('active-privs').innerHTML=privs;
 
-  // Sub CTA
   document.getElementById('sub-cta-wrap').style.display=(m.tier!=='subscription'&&m.tier!=='pending_subscription')?'block':'none';
 
-  // Monthly stats (VIP)
   var monthly=document.getElementById('monthly-stats');
   if(m.tier==='vip'){
     monthly.style.display='block';
@@ -371,25 +373,22 @@ function showMember(m){
     monthly.style.display='none';
   }
 
-  // Order link
   document.getElementById('order-cta').href='yoricha-order.html?phone='+encodeURIComponent(m.phone)+'&name='+encodeURIComponent(m.name);
   if(m.subActive) document.getElementById('octa-sub').textContent='Giá Béttie đang được áp dụng 💙';
 
-  // History
   var hist=m.history||[];
   document.getElementById('hist-list').innerHTML=hist.length
     ?[...hist].reverse().slice(0,8).map(function(h){return'<div class="hist-item"><div><div style="font-weight:700">'+h.product+'</div><div style="font-size:.7rem;color:#888">'+h.date+'</div></div><div style="color:var(--blue);font-weight:700">Mốc #'+h.stamp+'</div></div>';}).join('')
     :'<div style="color:#aaa;text-align:center;padding:.75rem;font-size:.82rem">Chưa có lịch sử</div>';
-  // Chỉ hiện chương trình phù hợp với tier của member
-  var p1 = document.getElementById('prog1-info');
-  var p2 = document.getElementById('prog2-info');
-  if (m.tier === 'subscription' || m.tier === 'pending_subscription') {
-    if (p1) p1.style.display = 'none';
-    if (p2) p2.style.display = '';
+
+  var p1=document.getElementById('prog1-info');
+  var p2=document.getElementById('prog2-info');
+  if(m.tier==='subscription'||m.tier==='pending_subscription'){
+    if(p1)p1.style.display='none';
+    if(p2)p2.style.display='';
   } else {
-    // Matcha Newbie hoặc Matcha Senior → Matchaholic
-    if (p1) p1.style.display = '';
-    if (p2) p2.style.display = 'none';
+    if(p1)p1.style.display='';
+    if(p2)p2.style.display='none';
   }
 }
 
@@ -402,7 +401,6 @@ async function doRegister(prog){
   try{
     var d=await api({action:'register',name:name,phone:phone,program:String(prog)});
     if(!d.ok&&d.error.indexOf('đã được đăng ký')<0){al('reg-alert',d.error,'err');return;}
-    // If already registered, just proceed
     var memberPhone=d.ok?d.member.phone:phone;
     var memberName=d.ok?d.member.name:name;
     if(prog===2){
@@ -432,14 +430,11 @@ function normalizeMember(m){
     }
   }
   return Object.assign(m,{
-    tier:tier,
-    subActive:subActive,
-    vipActive:tier==='vip',
+    tier:tier,subActive:subActive,vipActive:tier==='vip',
     vipTuesdayMilk:tier==='vip'&&(new Date().getDay()===2),
     vipWednesdayUpsize:tier==='vip'&&(new Date().getDay()===3),
     isBirthdayMonth:m.isBirthdayMonth||false,
-    monthlyCount:m.monthlyCount||0,
-    monthlyWeekday:m.monthlyWeekday||0,
+    monthlyCount:m.monthlyCount||0,monthlyWeekday:m.monthlyWeekday||0,
     stamps:Number(m.stamps||0)
   });
 }
@@ -450,9 +445,8 @@ async function lookup(){
   var btn=document.getElementById('btn-look');btn.disabled=true;btn.textContent='⏳';
   try{
     var d=await api({action:'getMemberPrivileges',phone:phone});
-    if(d.ok){
-      showMember(normalizeMember(d.member));
-    } else {
+    if(d.ok){showMember(normalizeMember(d.member));}
+    else{
       var d2=await api({action:'lookup',phone:phone});
       if(!d2.ok){al('look-alert',d2.error,'err');return;}
       showMember(normalizeMember(d2.member));
