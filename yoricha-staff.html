@@ -817,11 +817,11 @@ async function soLookup(){
     m.stamps=Number(m.stamps)||0;
     m.subUsedToday=Number(m.subUsedToday)||0;
     soMember=m;
-    var tierLabel={'matcha_tapsu':'🍃 Tập Sự','vip':'💜 VIP','subscription':'💙 Subscription','pending_subscription':'📋 Chờ Sub'};
+    var tierLabel={'matcha_tapsu':'🍃 Matcha Newbie','vip':'💜 Matcha Senior','subscription':'💙 Béttie','pending_subscription':'📋 Chờ duyệt Béttie'};
     var tierColor={'matcha_tapsu':'#15803d','vip':'#7c3aed','subscription':'#0369a1','pending_subscription':'#888'};
     var tl=tierLabel[m.tier]||m.tier;
     var tc=tierColor[m.tier]||'var(--blue)';
-    var subLine=m.subActive?'<div style="font-size:.7rem;color:#0369a1;font-weight:700;margin-top:.2rem">💙 Sub: S=29k · L=52k · Còn '+m.subUsedToday+'/2 ly hôm nay</div>':'';
+    var subLine=m.subActive?'<div style="font-size:.7rem;color:#0369a1;font-weight:700;margin-top:.2rem">💙 Béttie: S=29k · L=52k · Còn '+m.subUsedToday+'/2 ly hôm nay</div>':'';
     var dots='';
     if(m.tier==='matcha_tapsu'){for(var i=1;i<=7;i++){var c='sdot'+(i===4||i===7?' ms':'')+(i<=m.stamps?' on':'');dots+='<div class="'+c+'"></div>';}}
     badge.innerHTML='<div style="background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:10px;padding:.6rem .8rem;display:flex;align-items:center;gap:.6rem;margin-top:.5rem">'+
@@ -1024,8 +1024,8 @@ async function lookupMem(){
   var pbns=menuS.filter(function(it){return it.available;}).map(function(it){return'<button class="pbtn" onclick="addPurch(\''+m.phone+'\',\''+it.name+'\')">'+it.name+'</button>';}).join('');
   if(!pbns)pbns='<button class="pbtn" onclick="addPurch(\''+m.phone+'\',\'Matcha\')">Matcha</button>';
   // Build tier badge
-  var tierLabel={'matcha_tapsu':'🍃 Matcha Tập Sự','vip':'💜 VIP','subscription':'💙 Subscription'};
-  var tierColor={'matcha_tapsu':'#15803d','vip':'#7c3aed','subscription':'#0369a1'};
+  var tierLabel={'matcha_tapsu':'🍃 Matcha Newbie','vip':'💜 Matcha Senior','subscription':'💙 Béttie','pending_subscription':'📋 Chờ duyệt Béttie'};
+  var tierColor={'matcha_tapsu':'#15803d','vip':'#7c3aed','subscription':'#0369a1','pending_subscription':'#888'};
   var tier=m.tier||'matcha_tapsu';
   var tierBadge='<span style="background:var(--blue-light);color:'+(tierColor[tier]||'var(--blue)')+';font-size:.68rem;font-weight:700;padding:.15rem .55rem;border-radius:8px;margin-left:.4rem">'+(tierLabel[tier]||tier)+'</span>';
  
@@ -1034,11 +1034,13 @@ async function lookupMem(){
   // Subscription info — chỉ dùng subActive
   var subInfo='';
   if(m.subActive){
-    subInfo='<div style="background:#e0f2fe;border:1.5px solid #7dd3fc;border-radius:10px;padding:.55rem .75rem;margin:.5rem 0;font-size:.78rem;color:#0369a1;font-weight:600">💙 Subscription đang hoạt động · HH: '+fmtDate(m.subExpiry)+'<br/>Đã dùng hôm nay: '+m.subUsedToday+'/2 ly</div>';
+    subInfo='<div style="background:#e0f2fe;border:1.5px solid #7dd3fc;border-radius:10px;padding:.55rem .75rem;margin:.5rem 0;font-size:.78rem;color:#0369a1;font-weight:600">💙 Đã áp dụng giá Béttie · HH: '+fmtDate(m.subExpiry)+'<br/>Đã dùng hôm nay: '+m.subUsedToday+'/2 ly</div>';
   } else if(tier==='subscription'){
-    subInfo='<div style="background:#f0f9ff;border:1.5px solid #7dd3fc;border-radius:10px;padding:.5rem .75rem;margin:.5rem 0;font-size:.78rem;color:#0369a1;font-weight:600">📋 Khách đã đăng ký Chương trình 2 · Chờ kích hoạt<br/><button class="btn btn-sm" onclick="activateSub(currentMemPhone)" style="background:linear-gradient(135deg,#0369a1,#0891b2);margin-top:.4rem;font-size:.75rem;width:100%">💙 Kích hoạt lần đầu (49k)</button></div>';
+    subInfo='<div style="background:#f0f9ff;border:1.5px solid #7dd3fc;border-radius:10px;padding:.5rem .75rem;margin:.5rem 0;font-size:.78rem;color:#0369a1;font-weight:600">📋 Đăng ký Béttie · Đang chờ duyệt<br/><button class="btn btn-sm" onclick="activateSub(currentMemPhone)" style="background:linear-gradient(135deg,#0369a1,#0891b2);margin-top:.4rem;font-size:.75rem;width:100%">💙 Kích hoạt giá Béttie</button></div>';
+  } else if(tier==='pending_subscription'){
+    subInfo='<div style="background:#f0f9ff;border:1.5px solid #7dd3fc;border-radius:10px;padding:.5rem .75rem;margin:.5rem 0;font-size:.78rem;color:#0369a1;font-weight:600">📋 Đăng ký Béttie · Đang chờ duyệt<br/><button class="btn btn-sm" onclick="activateSub(currentMemPhone)" style="background:linear-gradient(135deg,#0369a1,#0891b2);margin-top:.4rem;font-size:.75rem;width:100%">💙 Kích hoạt giá Béttie</button></div>';
   } else {
-    subInfo='<button class="btn btn-sm" onclick="activateSub(currentMemPhone)" style="background:linear-gradient(135deg,#0369a1,#0891b2);width:100%;margin:.5rem 0;font-size:.78rem">💙 Kích hoạt Subscription 49k</button>';
+    subInfo='<button class="btn btn-sm" onclick="activateSub(currentMemPhone)" style="background:linear-gradient(135deg,#0369a1,#0891b2);width:100%;margin:.5rem 0;font-size:.78rem">💙 Kích hoạt giá Béttie</button>';
   }
  
   // Birthday input for VIP
@@ -1080,10 +1082,10 @@ async function loadMembers(){
     var cell='';
     if(isSub){
       var c2={'subscription':'#0369a1','pending_subscription':'#888'};
-      var lb={'subscription':'💙 Sub','pending_subscription':'📋 Chờ Sub'};
+      var lb={'subscription':'💙 Béttie','pending_subscription':'📋 Chờ duyệt Béttie'};
       cell='<span style="font-size:.68rem;font-weight:700;color:'+(c2[tier]||'#888')+';background:#e0f2fe;padding:.1rem .5rem;border-radius:6px">'+(lb[tier]||tier)+'</span>';
     } else if(tier==='vip'){
-      cell='<span style="font-size:.68rem;font-weight:700;color:#7c3aed;background:#f3f0ff;padding:.1rem .5rem;border-radius:6px">💜 VIP</span>';
+      cell='<span style="font-size:.68rem;font-weight:700;color:#7c3aed;background:#f3f0ff;padding:.1rem .5rem;border-radius:6px">💜 Matcha Senior</span>';
     } else {
       var dots='';for(var i=1;i<=7;i++){var c='sdot'+(i===4||i===7?' ms':'')+(i<=m.stamps?' on':'');dots+='<div class="'+c+'"></div>';}
       cell='<div class="sdots">'+dots+'</div>';
@@ -1358,12 +1360,12 @@ async function checkCoupon(){
   el.innerHTML=d.ok?'<div style="background:#e6f7ed;border:1px solid #a3d9b1;border-radius:8px;padding:.5rem .75rem;color:#1a7f3c;font-weight:600">✅ Hợp lệ: '+d.coupon.description+(d.coupon.phone?' · Dành cho: '+d.coupon.phone:'')+'</div>':'<div style="background:#fdecea;border:1px solid #fca5a5;border-radius:8px;padding:.5rem .75rem;color:#b91c1c;font-weight:600">❌ '+d.error+'</div>';
 }
  
-// ── SUBSCRIPTION ACTIVATION ──────────────────────────────────
+// ── BÉTTIE ACTIVATION ──────────────────────────────────────
 async function activateSub(phone){
-  if(!confirm('Kích hoạt gói Subscription 30 ngày cho '+phone+'?\n\nXác nhận khách đã thanh toán 49.000đ tại quầy.')){return;}
+  if(!confirm('Kích hoạt giá Béttie cho '+phone+'?\n\nXác nhận đã duyệt và đồng ý kích hoạt tài khoản Béttie.')){return;}
   var d=await api({action:'activateSubscription',password:PWD,phone:phone});
   if(d.ok){
-    al('mem-alert','✅ Đã kích hoạt Subscription cho '+d.member.name+' · HH: '+d.member.subExpiry,'ok');
+    al('mem-alert','✅ Đã kích hoạt giá Béttie cho '+d.member.name+' · HH: '+d.member.subExpiry,'ok');
     document.getElementById('mem-phone').value=phone.replace('84','0');
     setTimeout(function(){lookupMem();},400);
   } else {
