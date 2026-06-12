@@ -278,8 +278,8 @@ async function api(p){
 function al(id,msg,type){var e=document.getElementById(id);e.textContent=msg;e.className='alert '+type;e.style.display='block';setTimeout(function(){e.style.display='none';},5000);}
 
 
-var TIER_LABELS={'matcha_tapsu':'🍃 Matcha Tập Sự','vip':'💜 VIP Chữa Lành','subscription':'💙 Subscription'};
-var TIER_CARD={'matcha_tapsu':'mc-tapsu','vip':'mc-vip','subscription':'mc-sub'};
+var TIER_LABELS={'Newbie':'Matcha Newbie','Senior':'Matcha Senior','Hội Yoricha Bétti':'Hội Yoricha Bétti};
+var TIER_CARD={'Newbie':'newbie','Senior':'senior','Hội Yoricha Bétti':'Bétti'};
 
 function showMember(m){
   document.getElementById('member-result').style.display='block';
@@ -330,7 +330,7 @@ function showMember(m){
     privs+='<div class="priv-active" style="background:#f3f0ff;border-color:#c4b5fd;color:var(--vip)">🥛 Hôm nay T3 · Đổi sữa hạt MIỄN PHÍ (1 ly)</div>';
   }
   if(m.vipWednesdayUpsize){
-    privs+='<div class="priv-active" style="background:#f3f0ff;border-color:#c4b5fd;color:var(--vip)">📏 Hôm nay T4 · Upsize S→L MIỄN PHÍ (1 ly)</div>';
+    privs+='<div class="priv-active" style="background:#f3f0ff;border-color:#c4b5fd;color:var(--vip)">📏 Hôm nay T5 · Upsize S→L MIỄN PHÍ (1 ly)</div>';
   }
   if(m.isBirthdayMonth&&m.tier==='vip'){
     privs+='<div class="priv-active" style="background:#fff8e1;border-color:#f6c90e;color:#856404">🎂 Tháng sinh nhật · Kiểm tra ví để nhận voucher!</div>';
@@ -360,7 +360,7 @@ function showMember(m){
 
   // Order link
   document.getElementById('order-cta').href='yoricha-order.html?phone='+encodeURIComponent(m.phone)+'&name='+encodeURIComponent(m.name);
-  if(m.subActive) document.getElementById('octa-sub').textContent='Giá Subscription đang được áp dụng 💙';
+  if(m.subActive) document.getElementById('octa-sub').textContent='Gía Hội Yoricha Bétti đang được áp dụng 💙';
 
   // History
   var hist=m.history||[];
@@ -374,7 +374,7 @@ function showMember(m){
     if (p1) p1.style.display = 'none';
     if (p2) p2.style.display = '';
   } else {
-    // matcha_tapsu hoặc vip → Chương trình 1
+    // Newbiw hoặc Senior → Chương trình 1
     if (p1) p1.style.display = '';
     if (p2) p2.style.display = 'none';
   }
@@ -394,7 +394,7 @@ async function doRegister(prog){
     var memberName=d.ok?d.member.name:name;
     if(prog===2){
       // Program 2: show subscription info
-      al('reg-alert','✅ Tài khoản đã sẵn sàng! Vui lòng đến cửa hàng thanh toán 49.000đ để nhân viên kích hoạt gói Subscription.','ok');
+      al('reg-alert','✅ Tài khoản đã sẵn sàng! Vui lòng đến cửa hàng thanh toán 49.000đ để nhân viên kích hoạt Hội Yoricha Bétti.','ok');
       document.getElementById('reg-alert').style.display='block';
     } else {
       window.location.href='yoricha-order.html?phone='+encodeURIComponent(memberPhone)+'&name='+encodeURIComponent(memberName);
@@ -407,8 +407,8 @@ function registerProg2(){doRegister(2);}
 
 function normalizeMember(m){
   // Ensure tier is always set correctly
-  var tier=m.tier||'matcha_tapsu';
-  if(!tier||tier===''||tier==='undefined')tier='matcha_tapsu';
+  var tier=m.tier||'mNewbiew';
+  if(!tier||tier===''||tier==='undefined')tier='Newbiew';
   // Normalize subscription check
   var subActive=m.subActive||false;
   if(tier==='subscription'&&!subActive){
@@ -418,7 +418,7 @@ function normalizeMember(m){
       if(p.length===3){
         var exp=new Date(Number(p[2]),Number(p[1])-1,Number(p[0]),23,59,59);
         subActive=new Date()<=exp;
-        if(!subActive)tier='matcha_tapsu'; // expired sub = back to tapsu
+        if(!subActive)tier='Newbiew'; // expired sub = back to Newbiew
       }
     }
   }
