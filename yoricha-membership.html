@@ -129,10 +129,10 @@ footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
     <!-- 2 program buttons -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-top:.25rem">
       <button class="btn" id="btn-prog1" onclick="registerProg1()" style="background:linear-gradient(135deg,#3971b8,#27ae60);font-size:.82rem;padding:.8rem .5rem;line-height:1.35">
-        Trở thành Matchaholic<br/>Chương trình 1
+        Trở thành<br/>Matchaholic
       </button>
       <button class="btn" id="btn-prog2" onclick="registerProg2()" style="background:linear-gradient(135deg,#0369a1,#0891b2);font-size:.82rem;padding:.8rem .5rem;line-height:1.35">
-        💙 Tham gia<br/>Chương trình 2
+        💙 Tham gia hội<br/>Yoricha Bétti
       </button>
     </div>
     <div style="margin-top:.85rem;border-top:1px dashed var(--blue-mid);padding-top:.85rem">
@@ -213,31 +213,29 @@ footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
 
   <!-- Program info -->
   <div class="card">
-    <div style="font-family:'Merienda',cursive;color:var(--blue);font-size:1rem;margin-bottom:1rem">🌿 Chương trình thành viên</div>
+    <div style="font-family:'Merienda',cursive;color:var(--blue);font-size:1rem;margin-bottom:1rem">Chương trình thành viên</div>
 
     <!-- PROGRAM 1 -->
     <div id="prog1-info" style="border:2px solid #86efac;border-radius:14px;overflow:hidden;margin-bottom:.75rem">
       <div style="background:linear-gradient(135deg,#3971b8,#27ae60);padding:.75rem 1rem;color:#fff">
-        <div style="font-family:'Merienda',cursive;font-size:.95rem;margin-bottom:.1rem">Trở Thành Matchaholic</div>
-        <div style="font-family:'Merienda',cursive;font-size:1.05rem">với quyền lợi</div>
-        <div style="font-size:.72rem;opacity:.85;margin-top:.2rem">Miễn phí tham gia · Tích lũy mộc theo từng ly</div>
+        <div style="font-family:'Merienda',cursive;font-size:.95rem;margin-bottom:.1rem">Matchaholic</div>
+        <div style="font-family:'Merienda',cursive;font-size:.85rem">Miễn phí tham gia</div>
       </div>
       <div style="padding:.85rem 1rem;background:#fff">
-        <div style="font-weight:700;font-size:.8rem;color:#15803d;margin-bottom:.5rem">Giai đoạn — Newbie Matcha </div>
+        <div style="font-weight:700;font-size:.8rem;color:#15803d;margin-bottom:.5rem">Newbie Matcha"</div>
+        <div style="font-size:.72rem;color:#888;margin-bottom:.4rem">Thu thập 7 ly = 7 dấu mộc</div>
         <div style="font-size:.78rem;color:var(--green-dark);line-height:1.85">
-          📸 Review Google Maps = Giảm 10% ly tiếp theo <span style="color:#888">(1 lần/tài khoản)</span><br/>
-          ☕ Mỗi ly = 1 mộc tích lũy<br/>
-          🎯 Mốc 4th tặng voucher khi mua 2 ly nước <br/>
-          🎁 <b>Ly thứ 4:</b> Giảm 10% khi mua từ 2 ly trở lên = +2 mộc <br/>
+          📸 <b>Review Google Maps:</b> Tặng voucher giảm 10% ly tiếp theo <span style="color:#888">(1 lần/tài khoản)</span><br
+          🎁 <b>Ly thứ 4:</b> Giảm 10% khi mua 2 ly trở lên = +2 mộc <br/>
           🎉 <b>Ly thứ 7:</b> Tặng 1 ly Size S miễn phí
         </div>
-        <div style="font-weight:700;font-size:.8rem;color:var(--vip);margin:.75rem 0 .5rem">Giai đoạn 2 — VIP "Chữa Lành Bằng Matcha"</div>
+        <div style="font-weight:700;font-size:.8rem;color:var(--vip);margin:.75rem 0 .5rem">Senior Matcha"</div>
         <div style="font-size:.72rem;color:#888;margin-bottom:.4rem">Tự động nâng hạng sau khi hoàn thành ly thứ 7</div>
         <div style="font-size:.78rem;color:var(--green-dark);line-height:1.85">
           🥛 <b>Thứ 3:</b> Đổi nền sữa hạt miễn phí (1 ly/ngày)<br/>
-          📏 <b>Thứ 4:</b> Upsize S → L miễn phí (1 ly/ngày)<br/>
-          🎂 <b>Sinh nhật:</b> Xuất trình CMND/CCCD tháng sinh nhật → nhận voucher 1 ly bất kỳ<br/>
-          ⚠️ <b>Duy trì:</b> Tối thiểu 4 ly/tháng, ít nhất 2 ly vào ngày thường
+          📏 <b>Thứ 5:</b> Upsize S → L miễn phí (1 ly/ngày)<br/>
+          🎂 <b>Tháng sinh nhật:</b> Tặng voucher giảm 30% tổng bill<br/>
+          ⚠️ <b>Duy trì:</b> Tối thiểu 4 ly/tháng (2 ly vào ngày thường)
         </div>
       </div>
     </div>
@@ -246,19 +244,21 @@ footer{text-align:center;padding:1rem .75rem 3rem;font-size:.72rem;color:#aaa}
     <div id="prog2-info" style="border:2px solid #7dd3fc;border-radius:14px;overflow:hidden">
       <div style="background:linear-gradient(135deg,#0369a1,#0891b2);padding:.75rem 1rem;color:#fff">
         <div style="font-family:'Merienda',cursive;font-size:.95rem;margin-bottom:.1rem">Chương trình 2</div>
-        <div style="font-family:'Merienda',cursive;font-size:1.05rem">💙 Gói Subscription Trả Trước</div>
-        <div style="font-size:.72rem;opacity:.85;margin-top:.2rem">49.000đ / 30 ngày · Thanh toán tại cửa hàng</div>
+        <div style="font-family:'Merienda',cursive;font-size:1.05rem">💙 Hội Yoricha Bétti</div>
+        <div style="font-size:.72rem;opacity:.85;margin-top:.2rem">Uống thả ga với 49.000đ / 30 ngày</div>
       </div>
       <div style="padding:.85rem 1rem;background:#fff">
         <div style="font-size:.78rem;color:var(--green-dark);line-height:1.85">
-          💚 <b>Đồng giá Size S = 29.000đ</b> (mọi loại nước)<br/>
-          💚 <b>Đồng giá Size L = 52.000đ</b> (mọi loại nước)<br/>
-          📌 Tối đa 2 ly/ngày · Hiệu lực 30 ngày<br/>
-          🔄 Gia hạn tiếp 49.000đ sau mỗi 30 ngày
+          💚 <b>Đồng giá Size S = 29.000đ</b> (Menu matcha)<br/>
+          💚 <b>Đồng giá Size L = 52.000đ</b> (Menumatcha)<br/>
+          🎂 Phù hợp làm quà tặng cho bạn bè thích uống matcha<br/>
+          📍 <b>Cách tham gia:</b> Để lại thông tin tại đây → Thanh toán tại cửa hàng để nhân viên kích hoạt tài khoản của bạn.<br/>
         </div>
         <div style="background:#e0f2fe;border-radius:8px;padding:.55rem .75rem;margin-top:.65rem;font-size:.75rem;color:#0369a1;line-height:1.6">
-          📍 <b>Cách tham gia:</b> Đến cửa hàng thanh toán 49.000đ → Nhân viên kích hoạt số điện thoại của bạn ngay tại quầy.<br/>
-          ⚠️ Gói Subscription không tích mộc Chương trình 1.
+          📍 <b>Lưu ý:</b> 
+          📌 Tối đa 2 ly/ngày<br/>
+          🔄 Hiệu lực 10 ngày kể từ ngày kích hoạt (có thể gia hạn nhiều lần)
+          ⚠️ Hội Yoricha Bétti không áp dụng chung với Matchaholic
         </div>
       </div>
     </div>
