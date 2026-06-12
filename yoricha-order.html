@@ -429,9 +429,9 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
     var html = '<div class="mbadge"><div class="mbav">' + member.name.charAt(0).toUpperCase() + '</div><div style="flex:1">';
     html += '<div class="mb-name">Chào, ' + member.name + '! 👋</div>';
     if (isSub) {
-      html += '<div class="mb-sub">💙 Subscription · S=29k · L=52k · Còn ' + member.subUsedToday + '/2 ly hôm nay</div>';
+      html += '<div class="mb-sub">💙 Giá Béttie đang áp dụng · S=29k · L=52k · Còn ' + member.subUsedToday + '/2 ly hôm nay</div>';
     } else if (member.tier === 'vip') {
-      html += '<div style="font-size:.75rem;color:#7c3aed;font-weight:700;margin-top:.15rem">💜 VIP Chữa Lành</div>';
+      html += '<div style="font-size:.75rem;color:#7c3aed;font-weight:700;margin-top:.15rem">💜 Matcha Senior</div>';
     } else {
       var dots = '';
       for (var i = 1; i <= 7; i++) {
@@ -934,7 +934,7 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
     var total = Math.max(0, sub - discount) + shipFee;
     var note = document.getElementById('inp-note').value.trim();
     var payLabel   = payMode === 'transfer' ? '[Chuyển khoản]' : '[Tiền mặt]';
-    var subLabel   = member && member.subActive ? '[Subscription]' : '';
+    var subLabel   = member && member.subActive ? '[Béttie]' : '';
     var couponLabel = couponData ? '[Mã: ' + couponData.code + ']' : '';
     var msLabel    = ms.amount > 0 ? '[Milestone: ' + ms.label + ']' : '';
     note = payLabel + ' ' + (cphone ? '[SĐT:' + cphone + ']' : '') + ' ' + subLabel + ' ' + couponLabel + ' ' + msLabel + ' ' + note;
