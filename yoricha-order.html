@@ -143,7 +143,7 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
       <label>Nhập SĐT để nhận điểm (không bắt buộc)</label>
       <input type="tel" id="inp-phone" placeholder="0901 234 567" inputmode="tel"/>
       <div id="member-preview"></div>
-      <button class="btn" id="btn-go-menu" onclick="goMenu()">Xem menu & đặt hàng →</button>
+      <button class="btn" id="btn-go-menu">Xem menu & đặt hàng →</button>
     </div>
   </div>
 
@@ -312,6 +312,15 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
           <div class="chip" data-group="sua">Đậu nành mè đen (+10k)</div>
         </div>
       </div>
+      <div class="opt-group">
+        <div class="opt-label">Thêm bột matcha (tùy chọn)</div>
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <input type="number" id="mod-extragam" min="0" step="1" placeholder="0" value="0" style="margin-bottom:0;width:90px;text-align:center"/>
+          <span style="font-size:.8rem;color:#888">gam</span>
+          <span id="extragam-price" style="font-size:.78rem;color:var(--blue);font-weight:700;margin-left:auto"></span>
+        </div>
+        <div style="font-size:.68rem;color:#aaa;margin-top:.3rem">Kagoshima: +4.000đ/gam · MK4: +5.000đ/gam</div>
+      </div>
     </div>
     <div class="opt-group">
       <div class="opt-label">Độ ngọt</div>
@@ -442,7 +451,27 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
       c.classList.remove('on');
     });
     chip.classList.add('on');
+    if (group === 'bot') updateExtraGamPrice();
   });
+
+  function getGamPricePerUnit() {
+    var bot = getChip('bot');
+    return bot.indexOf('MK4') >= 0 ? 5000 : 4000;
+  }
+
+  function updateExtraGamPrice() {
+    var el = document.getElementById('mod-extragam');
+    var priceEl = document.getElementById('extragam-price');
+    if (!el || !priceEl) return;
+    var gam = Math.max(0, Number(el.value) || 0);
+    if (gam > 0) {
+      priceEl.textContent = '+' + fmt(gam * getGamPricePerUnit());
+    } else {
+      priceEl.textContent = '';
+    }
+  }
+
+  document.getElementById('mod-extragam').addEventListener('input', updateExtraGamPrice);
 
   // ─── Member badge ─────────────────────────────────────────────────────────
 
@@ -639,6 +668,8 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
     if (sweetDefault) sweetDefault.classList.add('on');
 
     document.getElementById('mod-note').value = '';
+    document.getElementById('mod-extragam').value = 0;
+    document.getElementById('extragam-price').textContent = '';
     document.getElementById('qty-n').textContent = 1;
     document.getElementById('modal').style.display = 'flex';
   }
@@ -671,12 +702,16 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
     if (bot.includes('MK4')) pr += 15000;
     if (sua.includes('Hạt điều')) pr += 10000;
     if (sua.includes('Đậu nành')) pr += 10000;
+    var extraGam = isMatcha ? Math.max(0, Number(document.getElementById('mod-extragam').value) || 0) : 0;
+    var extraGamCost = extraGam * getGamPricePerUnit();
+    pr += extraGamCost;
     var sweet = getChip('sweet');
     var note = document.getElementById('mod-note').value.trim();
     cart.push({
       id: curItem.id, name: curItem.name, size: curSize,
       price: pr, qty: curQty, sweet: sweet,
       bot: bot, sua: sua, note: note,
+      extraGam: extraGam, extraGamCost: extraGamCost,
       isMatcha: isMatcha, subPrice: isSub
     });
     document.getElementById('modal').style.display = 'none';
@@ -904,6 +939,7 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
       if (it.size)  subs.push('Size ' + it.size + (it.subPrice ? ' 💙' : ''));
       if (it.bot)   subs.push(it.bot);
       if (it.sua)   subs.push(it.sua);
+      if (it.extraGam) subs.push('+' + it.extraGam + 'g bột (+' + fmt(it.extraGamCost) + ')');
       if (it.sweet) subs.push('Ngọt ' + it.sweet);
       if (it.note)  subs.push('📝 ' + it.note);
       subs.push('x' + it.qty);
