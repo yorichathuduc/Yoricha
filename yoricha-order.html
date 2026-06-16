@@ -85,6 +85,7 @@ textarea{resize:none;height:56px}
 .ci-sub{font-size:.72rem;color:#888;margin-top:.1rem;line-height:1.4}
 .ci-price{font-weight:700;color:var(--blue);font-size:.85rem;white-space:nowrap}
 .total-row{display:flex;justify-content:space-between;align-items:center;padding:.85rem 0 .5rem;font-weight:700;font-size:.95rem;border-top:2px solid var(--blue-mid)}
+.subtotal-row{display:flex;justify-content:space-between;align-items:center;padding:.35rem 0;font-size:.85rem;color:#555}
 .disc-box{background:var(--gold);border-radius:10px;padding:.6rem .85rem;font-size:.8rem;font-weight:700;text-align:center;margin-bottom:.6rem}
 .del-opts{display:flex;gap:.5rem;margin-bottom:.85rem}
 .del-opt{flex:1;border:2px solid var(--blue-mid);border-radius:12px;padding:.65rem .4rem;text-align:center;cursor:pointer;font-size:.78rem;font-weight:700;color:var(--green-dark);line-height:1.3}
@@ -116,6 +117,12 @@ textarea{resize:none;height:56px}
 .alert.ok{background:#e6f7ed;color:#1a7f3c;border:1px solid #a3d9b1}
 .alert.err{background:#fdecea;color:#b91c1c;border:1px solid #fca5a5}
 .page{display:none}.page.on{display:block}
+.qr-box{background:var(--cream);border:1.5px solid var(--blue-mid);border-radius:12px;padding:1rem;text-align:center;margin-bottom:.85rem}
+.qr-box img{width:100%;max-width:220px;border-radius:10px;display:block;margin:0 auto .5rem}
+.bank-info{background:var(--cream);border:1.5px solid var(--blue-mid);border-radius:12px;padding:.85rem 1rem;line-height:2}
+.bank-row{display:flex;justify-content:space-between;font-size:.85rem}
+.notice-card{text-align:center;padding:1.5rem 1.1rem}
+.notice-icon{font-size:2.5rem;margin-bottom:.75rem}
 footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
 </style>
 </head>
@@ -147,34 +154,34 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
     <div style="height:80px"></div>
   </div>
 
-  <!-- PAGE: CART -->
+  <!-- PAGE: CART (4-step checkout) -->
   <div class="page" id="pg-cart">
     <button class="btn-sm btn-outline" id="btn-back-menu" style="margin-bottom:.75rem">← Thêm món</button>
+
+    <!-- STEP 1: Thông tin đơn hàng / giao nhận -->
     <div class="card">
-      <div class="card-title">🛒 Giỏ hàng</div>
-      <div id="cart-list"></div>
-      <div class="total-row"><span>Tạm tính</span><span id="cart-subtotal">0đ</span></div>
-    </div>
-    <div class="card">
-      <div class="card-title">🎟️ Mã giảm giá</div>
-      <input type="text" id="inp-coupon" placeholder="Nhập mã..." style="text-transform:uppercase"/>
-      <button class="btn-sm" id="btn-coupon">Áp dụng</button>
-      <div id="coupon-result" style="display:none;margin-top:.5rem;font-size:.82rem;font-weight:600;padding:.5rem .75rem;border-radius:8px"></div>
-    </div>
-    <div id="disc-notice"></div>
-    <div class="card">
-      <div class="card-title">🚚 Hình thức nhận hàng</div>
+      <div class="card-title">📝 Thông tin đơn hàng</div>
       <div class="del-opts">
-        <div class="del-opt on" id="del-opt-pickup">🏃<br/>Pick-up</div>
+        <div class="del-opt on" id="del-opt-pickup">🏃<br/>Đến lấy</div>
         <div class="del-opt" id="del-opt-ship">🛵<br/>Giao hàng</div>
         <div class="del-opt" id="del-opt-dine">🪑<br/>Tại chỗ</div>
       </div>
+
+      <label>Tên</label>
+      <input type="text" id="inp-name" placeholder="Nguyễn Văn A"/>
+
+      <div id="cphone-wrap">
+        <label>Số điện thoại <span style="color:var(--red)">*</span></label>
+        <input type="tel" id="inp-cphone" placeholder="0901 234 567" inputmode="tel"/>
+      </div>
+
       <div id="del-pickup">
         <label>Giờ đến lấy</label>
         <input type="time" id="inp-pickuptime" placeholder="14:30"/>
       </div>
+
       <div id="del-ship" style="display:none">
-        <label>Địa chỉ giao hàng</label>
+        <label>Địa chỉ giao hàng <span style="color:var(--red)">*</span></label>
         <input type="text" id="inp-address" placeholder="Số nhà, tên đường, phường..."/>
         <label>Khoảng cách từ tiệm</label>
         <div class="dist-opts">
@@ -185,22 +192,36 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
         </div>
         <div class="ship-fee-box" id="ship-fee-box" style="display:none"></div>
       </div>
+
       <div id="del-dine" style="display:none">
         <div style="font-size:.82rem;color:#666;padding:.3rem 0;line-height:1.6">🪑 Uống tại quán<br/><span style="font-size:.75rem">24/10 Đường số 6, khu phố 13, Thủ Đức</span></div>
       </div>
-    </div>
-    <div class="card">
-      <div class="card-title">📝 Thông tin đặt hàng</div>
-      <label>Tên</label>
-      <input type="text" id="inp-name" placeholder="Nguyễn Văn A"/>
-      <div id="cphone-wrap" style="display:none">
-        <label>Số điện thoại <span style="color:var(--red)">*</span></label>
-        <input type="tel" id="inp-cphone" placeholder="0901 234 567" inputmode="tel"/>
-      </div>
+
       <label>Ghi chú chung</label>
       <textarea id="inp-note" placeholder="Ghi chú thêm..."></textarea>
+    </div>
+
+    <!-- STEP 2: Giỏ hàng -->
+    <div class="card">
+      <div class="card-title">🛒 Giỏ hàng</div>
+      <div id="cart-list"></div>
+      <div class="subtotal-row"><span>Tạm tính</span><span id="cart-subtotal">0đ</span></div>
+      <div class="subtotal-row" id="ship-row" style="display:none"><span>Phí ship</span><span id="cart-shipfee">0đ</span></div>
+
+      <div style="margin-top:.5rem">
+        <label>🎟️ Mã giảm giá</label>
+        <div style="display:flex;gap:.5rem;margin-bottom:.5rem">
+          <input type="text" id="inp-coupon" placeholder="Nhập mã..." style="text-transform:uppercase;margin-bottom:0;flex:1"/>
+          <button class="btn-sm" id="btn-coupon">Áp dụng</button>
+        </div>
+        <div id="coupon-result" style="display:none;font-size:.82rem;font-weight:600;padding:.5rem .75rem;border-radius:8px;margin-bottom:.5rem"></div>
+      </div>
+      <div id="disc-notice"></div>
+
       <div class="total-row"><span>Tổng cộng</span><span id="cart-total-final">0đ</span></div>
     </div>
+
+    <!-- STEP 3: Thanh toán -->
     <div class="card">
       <div class="card-title">💳 Thanh toán</div>
       <div class="del-opts">
@@ -208,12 +229,17 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
         <div class="del-opt" id="pay-opt-transfer">📱<br/>Chuyển khoản</div>
       </div>
       <div id="pay-qr" style="display:none">
-        <div style="margin-bottom:1rem">
-          <div style="font-size:.8rem;font-weight:700;color:var(--green-dark);margin-bottom:.6rem">Cách 1: Điền thông tin chuyển khoản</div>
-          <div style="background:var(--cream);border:1.5px solid var(--blue-mid);border-radius:12px;padding:.85rem 1rem;line-height:2">
-            <div style="display:flex;justify-content:space-between;font-size:.85rem"><span style="color:#888">Ngân hàng</span><span style="font-weight:700">Vietcombank</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:.85rem"><span style="color:#888">Chủ tài khoản</span><span style="font-weight:700;text-align:right;max-width:60%">VO NGUYEN THANH PHUONG</span></div>
-            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.85rem">
+        <div class="qr-box">
+          <div style="font-size:.8rem;font-weight:700;color:var(--green-dark);margin-bottom:.6rem">Quét mã QR để chuyển khoản</div>
+          <img src="https://i.ibb.co/DfgNwbG8/F06-C3-B7-E-A71-D-421-C-A5-CC-8-D95-C421-B9-B3-1-105-c.jpg" alt="QR thanh toán Yoricha"/>
+          <div style="font-size:.72rem;color:#888">Mở app ngân hàng / Momo / ZaloPay để quét</div>
+        </div>
+        <div style="margin-bottom:.75rem">
+          <div style="font-size:.8rem;font-weight:700;color:var(--green-dark);margin-bottom:.6rem">Hoặc chuyển khoản theo thông tin</div>
+          <div class="bank-info">
+            <div class="bank-row"><span style="color:#888">Ngân hàng</span><span style="font-weight:700">Vietcombank</span></div>
+            <div class="bank-row"><span style="color:#888">Chủ tài khoản</span><span style="font-weight:700;text-align:right;max-width:60%">VO NGUYEN THANH PHUONG</span></div>
+            <div class="bank-row" style="align-items:center">
               <span style="color:#888">Số tài khoản</span>
               <div style="display:flex;align-items:center;gap:.5rem">
                 <span style="font-weight:700;color:var(--blue);font-size:1rem;letter-spacing:.5px">1043660648</span>
@@ -222,14 +248,6 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
             </div>
           </div>
         </div>
-        <div style="background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:12px;padding:.85rem 1rem;text-align:center">
-          <div style="font-size:.8rem;font-weight:700;color:var(--green-dark);margin-bottom:.3rem">Cách 2: Quét mã thanh toán tại cửa hàng</div>
-          <div style="font-size:.75rem;color:#888">Nhân viên sẽ xuất mã QR khi bạn đến lấy hàng</div>
-        </div>
-      </div>
-      <div id="transfer-warning" style="display:none;background:#fff8e1;border:1.5px solid #f6c90e;border-radius:12px;padding:.85rem 1rem;margin-bottom:.75rem">
-        <div style="font-size:.88rem;font-weight:700;color:#856404;margin-bottom:.3rem">📸 Lưu ý quan trọng!</div>
-        <div style="font-size:.82rem;color:#856404;line-height:1.6">Sau khi chuyển khoản, vui lòng <strong>chụp màn hình xác nhận giao dịch</strong> và xuất trình cho nhân viên khi nhận hàng.<br/><span style="color:#c0392b;font-weight:700">⚠️ Không có ảnh giao dịch, nhân viên không thể giao món.</span></div>
       </div>
       <div id="order-alert" class="alert"></div>
       <button class="btn" id="btn-order">Đặt hàng 🍵</button>
@@ -244,10 +262,17 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
       <div class="st-pill new" id="st-pill">Đang chờ xác nhận</div>
       <div id="st-items" style="font-size:.82rem;color:#555;line-height:1.7;margin-bottom:.5rem"></div>
       <div id="st-total" style="font-weight:700;color:var(--blue);margin-bottom:1rem"></div>
-      <div id="st-transfer-reminder" style="display:none;background:#fff8e1;border:1.5px solid #f6c90e;border-radius:12px;padding:.85rem;margin-bottom:1rem;text-align:left">
-        <div style="font-size:.85rem;font-weight:700;color:#856404;margin-bottom:.3rem">📸 Nhớ chụp màn hình!</div>
-        <div style="font-size:.8rem;color:#856404;line-height:1.6">Chụp màn hình xác nhận chuyển khoản và xuất trình cho nhân viên khi nhận hàng.<br/><strong style="color:#c0392b">Không có ảnh = không nhận được món.</strong></div>
+
+      <!-- STEP 4: Lưu ý -->
+      <div id="st-transfer-reminder" class="notice-card" style="display:none;background:#fff8e1;border:1.5px solid #f6c90e;border-radius:12px;margin-bottom:1rem">
+        <div class="notice-icon">📸</div>
+        <div style="font-size:.9rem;font-weight:700;color:#856404;margin-bottom:.5rem">Lưu ý</div>
+        <div style="font-size:.85rem;color:#856404;line-height:1.7">
+          Cho nhân viên xem hình ảnh giao dịch ngân hàng của bạn khi lấy nước.<br/><br/>
+          <strong>Chúc bạn thưởng thức nước vui vẻ! 🍵💚</strong>
+        </div>
       </div>
+
       <button class="btn btn-outline" id="btn-reset">Đặt thêm</button>
     </div>
     <div id="mst-wrap" style="display:none">
@@ -750,8 +775,7 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
     payMode = mode;
     document.getElementById('pay-opt-cash').classList.toggle('on', mode === 'cash');
     document.getElementById('pay-opt-transfer').classList.toggle('on', mode === 'transfer');
-    document.getElementById('transfer-warning').style.display = mode === 'transfer' ? 'block' : 'none';
-    document.getElementById('pay-qr').style.display           = mode === 'transfer' ? 'block' : 'none';
+    document.getElementById('pay-qr').style.display = mode === 'transfer' ? 'block' : 'none';
   }
 
   document.getElementById('btn-copy-stk').addEventListener('click', function() {
@@ -776,7 +800,7 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
     var resEl = document.getElementById('coupon-result');
     if (!code) {
       resEl.textContent = 'Nhập mã trước!';
-      resEl.style.cssText = 'display:block;background:#fdecea;color:#b91c1c;border:1px solid #fca5a5;padding:.5rem .75rem;border-radius:8px';
+      resEl.style.cssText = 'display:block;background:#fdecea;color:#b91c1c;border:1px solid #fca5a5;padding:.5rem .75rem;border-radius:8px;margin-bottom:.5rem';
       return;
     }
     var btn = document.getElementById('btn-coupon');
@@ -788,20 +812,20 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
         if (!d.ok) {
           couponData = null;
           resEl.textContent = '❌ ' + d.error;
-          resEl.style.cssText = 'display:block;background:#fdecea;color:#b91c1c;border:1px solid #fca5a5;padding:.5rem .75rem;border-radius:8px';
+          resEl.style.cssText = 'display:block;background:#fdecea;color:#b91c1c;border:1px solid #fca5a5;padding:.5rem .75rem;border-radius:8px;margin-bottom:.5rem';
         } else {
           couponData = d.coupon;
           var msg = '✅ ' + d.coupon.description;
           if (d.coupon.type === 'free_upsize') msg = '✅ ' + d.coupon.description + ' — nhân viên sẽ áp dụng khi đến lấy';
           if (d.coupon.type === 'free_drink')  msg = '✅ ' + d.coupon.description + ' — nhân viên sẽ tặng thêm 1 ly';
           resEl.textContent = msg;
-          resEl.style.cssText = 'display:block;background:#e6f7ed;color:#1a7f3c;border:1px solid #a3d9b1;padding:.5rem .75rem;border-radius:8px';
+          resEl.style.cssText = 'display:block;background:#e6f7ed;color:#1a7f3c;border:1px solid #a3d9b1;padding:.5rem .75rem;border-radius:8px;margin-bottom:.5rem';
           calcTotal();
         }
       })
       .catch(function() {
         resEl.textContent = '❌ Lỗi kết nối';
-        resEl.style.cssText = 'display:block;background:#fdecea;color:#b91c1c;border:1px solid #fca5a5;padding:.5rem .75rem;border-radius:8px';
+        resEl.style.cssText = 'display:block;background:#fdecea;color:#b91c1c;border:1px solid #fca5a5;padding:.5rem .75rem;border-radius:8px;margin-bottom:.5rem';
       })
       .finally(function() {
         btn.disabled = false;
@@ -855,8 +879,18 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
       if (couponData.type === 'fixed')   discount += Number(couponData.value);
     }
     var total = Math.max(0, sub - discount) + shipFee;
+
+    document.getElementById('cart-subtotal').textContent = fmt(sub);
+
+    var shipRow = document.getElementById('ship-row');
+    if (shipFee > 0) {
+      shipRow.style.display = 'flex';
+      document.getElementById('cart-shipfee').textContent = fmt(shipFee);
+    } else {
+      shipRow.style.display = 'none';
+    }
+
     var parts = [];
-    if (shipFee > 0) parts.push('ship ' + fmt(shipFee));
     if (discount > 0) parts.push('giảm ' + fmt(discount));
     document.getElementById('cart-total-final').textContent = fmt(total) + (parts.length ? ' (' + parts.join(', ') + ')' : '');
   }
@@ -890,7 +924,7 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
     document.getElementById('disc-notice').innerHTML = ms.label
       ? '<div class="disc-box">' + ms.label + '</div>'
       : '';
-    document.getElementById('cart-subtotal').textContent = fmt(sub);
+
     calcTotal();
 
     if (member && !document.getElementById('inp-name').value)
