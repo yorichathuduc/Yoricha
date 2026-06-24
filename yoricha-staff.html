@@ -13,14 +13,14 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--blue:#3971b8;--blue-light:#e8f0fb;--blue-mid:#b5d0f0;--green-dark:#343b1b;--cream:#fbfcee;--gold:#f6e6a5;--gold-dark:#d4a017;--red:#e74c3c;--orange:#f39c12;--green2:#27ae60}
 html,body{font-family:'Nunito',sans-serif;background:#f0f4fa;color:#222;min-height:100vh;-webkit-tap-highlight-color:transparent}
- 
+
 /* ── LOGIN ── */
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;background:var(--blue)}
 .login-card{background:#fff;border-radius:20px;padding:2rem 1.5rem;width:100%;max-width:320px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.15)}
 .login-logo img{height:64px;object-fit:contain;border-radius:14px;padding:8px;background:var(--blue);margin-bottom:1rem}
 .login-title{font-family:'Merienda',cursive;color:var(--blue);font-size:1.1rem;margin-bottom:.25rem}
 .login-subtitle{font-size:.78rem;color:#aaa;margin-bottom:1.25rem}
- 
+
 /* ── LAYOUT ── */
 .app{display:flex;flex-direction:column;min-height:100vh}
 .header{background:var(--blue);padding:.7rem 1rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:80;flex-shrink:0}
@@ -31,7 +31,7 @@ html,body{font-family:'Nunito',sans-serif;background:#f0f4fa;color:#222;min-heig
 .header-role{font-size:.65rem;opacity:.7}
 .header-clock{color:#fff;font-size:.78rem;font-weight:700;background:rgba(255,255,255,.15);border-radius:8px;padding:.3rem .65rem;cursor:pointer;border:none;font-family:'Nunito',sans-serif}
 .header-clock.active{background:var(--green2)}
- 
+
 /* ── BOTTOM NAV ── */
 .content{flex:1;padding-bottom:70px;overflow-y:auto}
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1.5px solid #e8edf5;display:flex;z-index:80;padding-bottom:env(safe-area-inset-bottom)}
@@ -40,15 +40,15 @@ html,body{font-family:'Nunito',sans-serif;background:#f0f4fa;color:#222;min-heig
 .nav-item .nav-icon{font-size:1.25rem;line-height:1;margin-bottom:.15rem}
 .nav-item .nav-label{font-size:.6rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .nav-badge{position:absolute;top:4px;right:calc(50% - 18px);background:var(--red);color:#fff;font-size:.58rem;font-weight:700;border-radius:10px;padding:.05rem .35rem;min-width:16px;text-align:center;display:none}
- 
+
 /* ── PANELS ── */
 .panel{display:none;padding:.75rem;max-width:600px;margin:0 auto}
 .panel.on{display:block}
- 
+
 /* ── CARDS ── */
 .card{background:#fff;border-radius:14px;padding:1rem;margin-bottom:.65rem;box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .card-title{font-family:'Merienda',cursive;color:var(--blue);font-size:.88rem;margin-bottom:.75rem;display:flex;align-items:center;justify-content:space-between}
- 
+
 /* ── FORM ── */
 label{display:block;font-size:.75rem;font-weight:700;color:var(--green-dark);margin-bottom:.2rem}
 input,select,textarea{width:100%;border:1.5px solid var(--blue-mid);border-radius:10px;padding:.6rem .85rem;font-family:'Nunito',sans-serif;font-size:.88rem;color:var(--green-dark);background:#fafafa;outline:none;-webkit-appearance:none;margin-bottom:.6rem}
@@ -56,7 +56,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--blue);background:#fff
 textarea{resize:none;height:52px}
 .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
 .fgrid .full{grid-column:1/-1}
- 
+
 /* ── BUTTONS ── */
 .btn{display:inline-block;background:var(--blue);color:#fff;font-family:'Merienda',cursive;font-size:.85rem;border:none;border-radius:11px;padding:.6rem 1rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .btn:active{filter:brightness(.9)}
@@ -67,7 +67,7 @@ textarea{resize:none;height:52px}
 .btn-green{background:var(--green2)}.btn-orange{background:var(--orange);color:#fff}
 .btn-red{background:var(--red);color:#fff}
 .btn-row{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.55rem}
- 
+
 /* ── ORDERS ── */
 .ocard{background:#fff;border-radius:12px;padding:.85rem;margin-bottom:.5rem;box-shadow:0 2px 6px rgba(0,0,0,.06);border-left:4px solid #ddd}
 .ocard.new{border-left-color:var(--orange)}.ocard.making{border-left-color:var(--blue)}.ocard.done{border-left-color:var(--green2);opacity:.6}
@@ -82,7 +82,7 @@ textarea{resize:none;height:52px}
 .opill{display:inline-block;padding:.16rem .65rem;border-radius:20px;font-size:.68rem;font-weight:700}
 .opill.new{background:#fff3cd;color:#856404}.opill.making{background:#cfe2ff;color:#084298}.opill.done{background:#d1e7dd;color:#0a3622}
 .mbadge{display:inline-block;background:var(--blue-light);color:var(--blue);font-size:.62rem;font-weight:700;padding:.08rem .4rem;border-radius:6px;margin-left:.3rem}
- 
+
 /* ── INVENTORY ── */
 .inv-item{display:flex;align-items:center;gap:.5rem;padding:.6rem 0;border-bottom:1px solid #eee}
 .inv-item:last-child{border-bottom:none}
@@ -93,7 +93,7 @@ textarea{resize:none;height:52px}
 .inv-qty{width:60px;text-align:center;margin:0;padding:.35rem .4rem;font-size:.85rem;font-weight:700}
 .inv-qty.low{border-color:var(--red);color:var(--red)}
 .low-badge{background:#fdecea;color:var(--red);font-size:.65rem;font-weight:700;padding:.1rem .4rem;border-radius:6px}
- 
+
 /* ── PURCHASE ORDERS ── */
 .po-card{background:#fff;border-radius:12px;padding:.85rem;margin-bottom:.55rem;box-shadow:0 2px 6px rgba(0,0,0,.06);border-left:4px solid var(--blue-mid)}
 .po-card.ordered{border-left-color:var(--orange)}
@@ -105,14 +105,14 @@ textarea{resize:none;height:52px}
 .po-status.paid{background:#d1e7dd;color:#0a3622}
 .upload-btn{background:var(--blue-light);border:1.5px dashed var(--blue-mid);border-radius:10px;padding:.5rem;text-align:center;cursor:pointer;font-size:.75rem;color:var(--blue);font-weight:700;display:block;margin-top:.4rem}
 .upload-img{width:100%;max-height:120px;object-fit:cover;border-radius:8px;margin-top:.4rem}
- 
+
 /* ── SHIFT ── */
 .shift-row{display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid #eee;font-size:.78rem}
 .shift-row:last-child{border-bottom:none}
 .shift-name{font-weight:700;color:var(--green-dark)}
 .shift-time{color:#666;font-size:.72rem}
 .shift-hours{font-weight:700;color:var(--blue)}
- 
+
 /* ── MEMBERS TABLE ── */
 .mtable{width:100%;border-collapse:collapse;font-size:.76rem}
 .mtable th{text-align:left;padding:.5rem .6rem;background:var(--blue);color:#fff;font-family:'Merienda',cursive;font-weight:400}
@@ -120,7 +120,7 @@ textarea{resize:none;height:52px}
 .sdots{display:flex;gap:2px}
 .sdot{width:10px;height:10px;border-radius:50%;background:#dde;border:1px solid #bbc;flex-shrink:0}
 .sdot.on{background:var(--blue);border-color:var(--blue)}.sdot.ms.on{background:var(--gold-dark);border-color:var(--gold-dark)}
- 
+
 /* ── MENU EDITOR ── */
 .mrow{display:flex;align-items:center;gap:.5rem;padding:.5rem 0;border-bottom:1px solid #eee}
 .mrow:last-child{border-bottom:none}
@@ -134,7 +134,7 @@ textarea{resize:none;height:52px}
 .slider::before{content:'';position:absolute;width:14px;height:14px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.25s}
 input:checked+.slider{background:var(--blue)}
 input:checked+.slider::before{transform:translateX(16px)}
- 
+
 /* ── DASHBOARD ── */
 .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:.75rem}
 .dash-card{background:#fff;border-radius:14px;padding:1rem;box-shadow:0 2px 8px rgba(0,0,0,.06);text-align:center}
@@ -149,11 +149,11 @@ input:checked+.slider::before{transform:translateX(16px)}
 .top-item:last-child{border-bottom:none}
 .top-rank{width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;font-size:.68rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-right:.5rem}
 .top-rank.gold{background:var(--gold-dark)}.top-rank.silver{background:#888}.top-rank.bronze{background:#cd7f32}
- 
+
 /* ── COUPON ── */
 .cp-row{display:flex;align-items:flex-start;gap:.5rem;padding:.6rem 0;border-bottom:1px solid #eee}
 .cp-code{font-family:monospace;font-weight:700;font-size:.85rem;background:var(--blue-light);color:var(--blue);padding:.15rem .55rem;border-radius:6px}
- 
+
 /* ── MODAL ── */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end;justify-content:center}
 .modal{background:#fff;border-radius:20px 20px 0 0;padding:1.25rem 1rem calc(1.25rem + env(safe-area-inset-bottom));width:100%;max-width:520px;max-height:88vh;overflow-y:auto}
@@ -171,7 +171,7 @@ input:checked+.slider::before{transform:translateX(16px)}
 .qty-row{display:flex;align-items:center;gap:.65rem;margin-bottom:.85rem}
 .qty-btn{width:36px;height:36px;border-radius:50%;border:2px solid var(--blue);background:#fff;color:var(--blue);font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
 .qty-n{font-size:1rem;font-weight:700;min-width:24px;text-align:center}
- 
+
 /* ── MISC ── */
 .alert{border-radius:10px;padding:.55rem .8rem;font-size:.78rem;font-weight:600;margin-bottom:.6rem;display:none}
 .alert.ok{background:#e6f7ed;color:#1a7f3c;border:1px solid #a3d9b1}
@@ -184,7 +184,7 @@ input:checked+.slider::before{transform:translateX(16px)}
 </style>
 </head>
 <body>
- 
+
 <!-- ── LOGIN ── -->
 <div id="login-screen">
   <div class="login-wrap">
@@ -199,10 +199,10 @@ input:checked+.slider::before{transform:translateX(16px)}
     </div>
   </div>
 </div>
- 
+
 <!-- ── MAIN APP ── -->
 <div id="app" class="app" style="display:none">
- 
+
   <!-- Header -->
   <div class="header">
     <a class="header-left" href="index.html">
@@ -214,10 +214,10 @@ input:checked+.slider::before{transform:translateX(16px)}
     </a>
     <button class="header-clock" id="clock-btn" onclick="toggleShift()">⏱ Bắt đầu ca</button>
   </div>
- 
+
   <!-- Content -->
   <div class="content">
- 
+
     <!-- ORDERS -->
     <div class="panel on" id="panel-orders">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem">
@@ -235,7 +235,7 @@ input:checked+.slider::before{transform:translateX(16px)}
       <div id="orders-alert" class="alert"></div>
       <div id="orders-list"></div>
     </div>
- 
+
     <!-- NEW ORDER -->
     <div class="panel" id="panel-neworder">
       <div class="card">
@@ -282,7 +282,7 @@ input:checked+.slider::before{transform:translateX(16px)}
         </div>
       </div>
     </div>
- 
+
     <!-- MEMBERS -->
     <div class="panel" id="panel-members">
       <div class="card">
@@ -299,10 +299,9 @@ input:checked+.slider::before{transform:translateX(16px)}
         <div id="mem-table"><div class="empty">Nhấn 🔄 để tải</div></div>
       </div>
     </div>
- 
+
     <!-- INVENTORY -->
     <div class="panel" id="panel-inventory">
-      <!-- Low stock alert -->
       <div id="inv-low-alert" style="display:none;background:#fdecea;border:1.5px solid #fca5a5;border-radius:12px;padding:.75rem 1rem;margin-bottom:.65rem">
         <div style="font-weight:700;color:var(--red);font-size:.85rem;margin-bottom:.3rem">⚠️ Hàng sắp hết!</div>
         <div id="inv-low-list" style="font-size:.78rem;color:#b91c1c;line-height:1.7"></div>
@@ -319,7 +318,6 @@ input:checked+.slider::before{transform:translateX(16px)}
         <div id="inv-alert" class="alert"></div>
         <div id="inv-list"></div>
       </div>
-      <!-- Purchase Orders -->
       <div class="card">
         <div class="card-title"><span>📦 Phiếu nhập hàng</span><button class="refresh" onclick="loadPOs()">🔄</button></div>
         <div id="po-alert" class="alert"></div>
@@ -337,7 +335,6 @@ input:checked+.slider::before{transform:translateX(16px)}
         </div>
         <div id="po-list"></div>
       </div>
-      <!-- Add inventory item -->
       <div class="card">
         <div class="card-title">➕ Thêm mặt hàng</div>
         <div class="fgrid">
@@ -348,7 +345,7 @@ input:checked+.slider::before{transform:translateX(16px)}
         <button class="btn btn-sm" onclick="addInvItem()">+ Thêm</button>
       </div>
     </div>
- 
+
     <!-- MENU -->
     <div class="panel" id="panel-menu">
       <div class="card">
@@ -373,17 +370,15 @@ input:checked+.slider::before{transform:translateX(16px)}
         <button class="btn btn-sm" onclick="addMenuItem()">+ Thêm món</button>
       </div>
     </div>
- 
-    <!-- MORE (Dashboard + Coupons + Shifts) -->
+
+    <!-- MORE -->
     <div class="panel" id="panel-more">
-      <!-- Sub tabs -->
       <div style="display:flex;gap:.5rem;margin-bottom:.75rem;overflow-x:auto;scrollbar-width:none">
         <button class="ptab on" onclick="swMore(this,'dash')">📊 Doanh thu</button>
         <button class="ptab" onclick="swMore(this,'shifts')">⏱ Ca làm</button>
         <button class="ptab" onclick="swMore(this,'coupons')">🎟️ Mã KM</button>
       </div>
- 
-      <!-- Dashboard -->
+
       <div id="more-dash">
         <div style="margin-bottom:.85rem">
           <div class="period-tabs">
@@ -410,16 +405,14 @@ input:checked+.slider::before{transform:translateX(16px)}
         <div class="card"><div class="card-title">👥 Khách thân thiết</div><div id="d-top-customers"><div class="empty">Đang tải...</div></div></div>
         <div class="card"><div class="card-title">📅 Doanh thu theo ngày</div><div id="d-by-day"></div></div>
       </div>
- 
-      <!-- Shifts -->
+
       <div id="more-shifts" style="display:none">
         <div class="card">
           <div class="card-title"><span>Lịch sử ca làm</span><button class="refresh" onclick="loadShifts()">🔄</button></div>
           <div id="shifts-list"><div class="empty">Nhấn 🔄 để tải</div></div>
         </div>
       </div>
- 
-      <!-- Coupons -->
+
       <div id="more-coupons" style="display:none">
         <div class="card">
           <div class="card-title"><span>Danh sách mã KM</span><button class="refresh" onclick="loadCoupons()">🔄</button></div>
@@ -457,9 +450,9 @@ input:checked+.slider::before{transform:translateX(16px)}
         </div>
       </div>
     </div>
- 
+
   </div><!-- content -->
- 
+
   <!-- ── BOTTOM NAV ── -->
   <nav class="bottom-nav">
     <button class="nav-item on" onclick="swPanel(this,'orders')">
@@ -490,7 +483,7 @@ input:checked+.slider::before{transform:translateX(16px)}
     </button>
   </nav>
 </div><!-- app -->
- 
+
 <!-- Item Modal -->
 <div class="overlay" id="so-modal" style="display:none" onclick="closeSoModal(event)">
   <div class="modal" onclick="event.stopPropagation()">
@@ -499,8 +492,8 @@ input:checked+.slider::before{transform:translateX(16px)}
     <div id="so-matcha-opts" style="display:none">
       <div class="opt-group"><div class="opt-label">Loại bột matcha</div>
         <div class="opt-chips" id="so-chips-bot">
-          <div class="chip on" onclick="soSelChip(this,'bot')">Kagoshima</div>
-          <div class="chip" onclick="soSelChip(this,'bot')">MK4 (+15k)</div>
+          <div class="chip on" onclick="soSelChip(this,'bot');soUpdateExtraGamPrice()">Kagoshima</div>
+          <div class="chip" onclick="soSelChip(this,'bot');soUpdateExtraGamPrice()">MK4 (+15k)</div>
         </div>
       </div>
       <div class="opt-group"><div class="opt-label">Nền sữa</div>
@@ -509,6 +502,18 @@ input:checked+.slider::before{transform:translateX(16px)}
           <div class="chip" onclick="soSelChip(this,'sua')">Hạt điều bí đỏ (+10k)</div>
           <div class="chip" onclick="soSelChip(this,'sua')">Đậu nành mè đen (+10k)</div>
         </div>
+      </div>
+      <!-- ── THÊM BỘT MATCHA TÙY CHỌN ── -->
+      <div class="opt-group">
+        <div class="opt-label">Thêm bột matcha (tùy chọn)</div>
+        <div style="display:flex;align-items:center;gap:.55rem">
+          <input type="number" id="so-extragam" min="0" step="1" value="0" placeholder="0"
+            oninput="soUpdateExtraGamPrice()"
+            style="margin-bottom:0;width:80px;text-align:center;padding:.4rem .5rem;font-size:.88rem"/>
+          <span style="font-size:.78rem;color:#888">gam</span>
+          <span id="so-extragam-price" style="font-size:.75rem;color:var(--blue);font-weight:700;margin-left:auto"></span>
+        </div>
+        <div style="font-size:.66rem;color:#aaa;margin-top:.25rem">Kagoshima: +4.000đ/gam · MK4: +5.000đ/gam</div>
       </div>
     </div>
     <div class="opt-group"><div class="opt-label">Độ ngọt</div>
@@ -531,20 +536,18 @@ input:checked+.slider::before{transform:translateX(16px)}
     <button class="btn btn-full" onclick="soAddCart()">Thêm vào giỏ →</button>
   </div>
 </div>
- 
+
 <script>
 var API='https://script.google.com/macros/s/AKfycbxs-jt4COAvW__D7UFp1gmeiCbPJE7zNCqn7pEGOKUKDYmbcht1Wm765sxZcWH9gF4A/exec';
 var IMGBB_KEY='a0f2439e546f124d0aaa005c639c351b';
 var PWD='',staffInfo=null,orders=[],menuS=[],invData=[],poData=[],couponsList=[];
- 
+
 function parseSubExpiry(s){
   if(!s) return null;
-  // Try dd/mm/yyyy first
   var p=String(s).split('/');
   if(p.length===3 && p[2].length===4){
     return new Date(Number(p[2]),Number(p[1])-1,Number(p[0]),23,59,59);
   }
-  // Fallback: full JS date string e.g. "Tue Jul 07 2026 00:00:00 GMT+0700"
   var d=new Date(s);
   return isNaN(d)?null:d;
 }
@@ -564,7 +567,7 @@ var soCart=[],soMember=null,soCurItem=null,soCurSize=null,soCurQty=1,soCouponDat
 var currentMemPhone='';
 var autoT=null,currentShiftID=localStorage.getItem('yoricha_shiftID')||null;
 var dashFrom=null,dashTo=null;
- 
+
 function fmt(n){return Number(n).toLocaleString('vi-VN')+'đ';}
 async function api(p){
   var params=new URLSearchParams();
@@ -573,7 +576,7 @@ async function api(p){
   return res.json();
 }
 function al(id,msg,type){var e=document.getElementById(id);if(!e)return;e.textContent=msg;e.className='alert '+type;e.style.display='block';setTimeout(function(){e.style.display='none';},5000);}
- 
+
 // ── LOGIN ─────────────────────────────────────────────────────
 async function login(){
   var p=document.getElementById('inp-pwd').value;
@@ -602,13 +605,12 @@ async function login(){
     showApp();
   }catch(e){al('login-alert','Lỗi kết nối.','err');btn.disabled=false;btn.textContent='Đăng nhập';}
 }
- 
+
 function showApp(){
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='flex';
   document.getElementById('hd-name').textContent=staffInfo?staffInfo.name:'Staff';
   document.getElementById('hd-role').textContent=staffInfo&&staffInfo.role==='owner'?'👑 Chủ cửa hàng':'👤 Nhân viên';
-  // Restore shift state
   if(currentShiftID){
     var cb=document.getElementById('clock-btn');
     cb.textContent='✅ Đang làm';cb.classList.add('active');
@@ -619,17 +621,7 @@ function showApp(){
   requestNotifPermission();
   document.getElementById('logo-main').src='https://drive.google.com/thumbnail?id=1uQD0joy3YQ1PlHSGNZJoy_dFC_oT-miJ&sz=w300';
 }
- 
-function logout(){
-  if(autoT)clearInterval(autoT);
-  PWD='';staffInfo=null;
-  document.getElementById('app').style.display='none';
-  document.getElementById('login-screen').style.display='block';
-  document.getElementById('inp-pwd').value='';
-  var btn=document.querySelector('#login-screen .btn');
-  btn.disabled=false;btn.textContent='Đăng nhập';
-}
- 
+
 // ── SHIFT ─────────────────────────────────────────────────────
 async function toggleShift(){
   var btn=document.getElementById('clock-btn');
@@ -648,7 +640,7 @@ async function toggleShift(){
     if(d.ok)alert('✅ Kết thúc ca!\nTổng: '+d.hours+' giờ');
   }
 }
- 
+
 // ── NAV ───────────────────────────────────────────────────────
 function swPanel(el,name){
   document.querySelectorAll('.nav-item').forEach(function(b){b.classList.remove('on');});
@@ -660,7 +652,7 @@ function swPanel(el,name){
   if(name==='inventory'){loadInventory();loadPOs();}
   if(name==='more'){if(!dashFrom)selQuick(document.querySelector('#panel-more .ptab'),'today');}
 }
- 
+
 function swMore(el,name){
   document.querySelectorAll('#panel-more .ptab').forEach(function(t){t.classList.remove('on');});
   el.classList.add('on');
@@ -671,7 +663,7 @@ function swMore(el,name){
   if(name==='coupons')loadCoupons();
   if(name==='dash')renderDash();
 }
- 
+
 // ── NOTIFICATIONS ─────────────────────────────────────────────
 var lastOrderIDs=[];
 function requestNotifPermission(){
@@ -708,15 +700,12 @@ function showBrowserNotif(count){
     if(Notification.permission!=='granted')return;
     new Notification('🍵 Yoricha — Có đơn mới!',{
       body:count>1?'Có '+count+' đơn mới đang chờ xử lý!':'Có 1 đơn mới đang chờ xử lý!',
-      requireInteraction:true,
-      tag:'yoricha-new-order'
+      requireInteraction:true,tag:'yoricha-new-order'
     });
   }
   if(Notification.permission==='default'){
     Notification.requestPermission().then(function(p){if(p==='granted')_show();});
-  } else {
-    _show();
-  }
+  } else {_show();}
 }
 function checkNewOrders(newOrders){
   if(!lastOrderIDs.length){lastOrderIDs=newOrders.map(function(o){return o.orderID;});return;}
@@ -732,7 +721,7 @@ function checkNewOrders(newOrders){
   }
   lastOrderIDs=newOrders.map(function(o){return o.orderID;});
 }
- 
+
 // ── ORDERS ────────────────────────────────────────────────────
 async function loadOrders(){
   var d=await api({action:'getOrders',password:PWD});
@@ -743,7 +732,6 @@ async function loadOrders(){
   }
 }
 function renderOrders(){
-  // Clear new badge when viewing orders
   document.getElementById('new-order-badge').style.display='none';
   var f=document.getElementById('ofilter').value;
   var list=f==='all'?orders:orders.filter(function(o){return o.status===f;});
@@ -752,7 +740,6 @@ function renderOrders(){
   document.getElementById('orders-list').innerHTML=list.map(function(o){
     var cls=cm[o.status]||'';
     var note=o.note&&o.note!='undefined'&&o.note!='null'?o.note:'';
-    // Extract phone, payment, delivery from note
     var phoneM=note.match(/\[SĐT:([^\]]+)\]/);
     var payM=note.match(/\[(Tiền mặt|Chuyển khoản)\]/);
     var delM=note.match(/\[(Pick-up[^\]]*|Ship đến[^\]]*|Tại quầy[^\]]*|Uống tại chỗ[^\]]*)\]/);
@@ -783,7 +770,6 @@ function renderOrders(){
 
 async function markPaid(oid){
   if(!confirm('Xác nhận đã nhận đủ tiền chuyển khoản cho đơn #'+oid+'?'))return;
-  // Lưu trạng thái đã nhận tiền vào localStorage
   try{
     var paid=JSON.parse(localStorage.getItem('yoricha_paid')||'{}');
     paid[oid]=true;
@@ -797,7 +783,7 @@ async function updOrd(oid,status){
   await loadOrders();
   if(status==='Xong')alert('✅ Đơn #'+oid+' hoàn thành!');
 }
- 
+
 // ── STAFF NEW ORDER ───────────────────────────────────────────
 async function soLookup(){
   var ph=document.getElementById('so-phone').value.trim();if(!ph)return;
@@ -807,20 +793,16 @@ async function soLookup(){
   if(!d.ok){var d2=await api({action:'lookup',phone:ph});if(d2.ok)d={ok:true,member:d2.member};}
   if(d.ok){
     var m=d.member;
-    // Normalize subActive
     var active=m.subActive||false;
     if(!active && m.tier==='subscription' && m.subExpiry){
       var exp=parseSubExpiry(m.subExpiry);
       if(exp&&exp>new Date()) active=true;
     }
-    m.subActive=active;
-    m.stamps=Number(m.stamps)||0;
-    m.subUsedToday=Number(m.subUsedToday)||0;
+    m.subActive=active;m.stamps=Number(m.stamps)||0;m.subUsedToday=Number(m.subUsedToday)||0;
     soMember=m;
     var tierLabel={'matcha_tapsu':'🍃 Matcha Newbie','vip':'💜 Matcha Senior','subscription':'💙 Béttie','pending_subscription':'📋 Chờ duyệt Béttie'};
     var tierColor={'matcha_tapsu':'#15803d','vip':'#7c3aed','subscription':'#0369a1','pending_subscription':'#888'};
-    var tl=tierLabel[m.tier]||m.tier;
-    var tc=tierColor[m.tier]||'var(--blue)';
+    var tl=tierLabel[m.tier]||m.tier;var tc=tierColor[m.tier]||'var(--blue)';
     var subLine=m.subActive?'<div style="font-size:.7rem;color:#0369a1;font-weight:700;margin-top:.2rem">💙 Béttie: S=29k · L=52k · Còn '+m.subUsedToday+'/2 ly hôm nay</div>':'';
     var dots='';
     if(m.tier==='matcha_tapsu'){for(var i=1;i<=7;i++){var c='sdot'+(i===4||i===7?' ms':'')+(i<=m.stamps?' on':'');dots+='<div class="'+c+'"></div>';}}
@@ -855,29 +837,21 @@ function soRenderMenuItems(cat){
 function soOpenMod(id){
   var it=menuS.find(function(x){return x.id===id;});
   if(!it) return;
-  soCurItem=it;
-  soCurSize=Number(it.price_s)?'S':'L';
-  soCurQty=1;
+  soCurItem=it;soCurSize=Number(it.price_s)?'S':'L';soCurQty=1;
   document.getElementById('so-mod-title').textContent=it.name;
   var isSub=soMember&&soMember.subActive;
-  // Build size options without inline onclick string issues
-  var szEl=document.getElementById('so-sz-grid');
-  szEl.innerHTML='';
+  var szEl=document.getElementById('so-sz-grid');szEl.innerHTML='';
   if(Number(it.price_s)){
     var prS=isSub?'<s style="color:#aaa;font-size:.7rem">'+fmt(it.price_s*1000)+'</s> 29.000đ':fmt(it.price_s*1000);
-    var dS=document.createElement('div');
-    dS.className='sz-opt'+(soCurSize==='S'?' on':'');
+    var dS=document.createElement('div');dS.className='sz-opt'+(soCurSize==='S'?' on':'');
     dS.innerHTML='<div class="sz-lbl">Size S</div><div class="sz-price">'+prS+'</div>';
-    dS.onclick=function(){soSelSz(this,'S');};
-    szEl.appendChild(dS);
+    dS.onclick=function(){soSelSz(this,'S');};szEl.appendChild(dS);
   }
   if(Number(it.price_l)){
     var prL=isSub?'<s style="color:#aaa;font-size:.7rem">'+fmt(it.price_l*1000)+'</s> 52.000đ':fmt(it.price_l*1000);
-    var dL=document.createElement('div');
-    dL.className='sz-opt'+(soCurSize==='L'&&!Number(it.price_s)?' on':'');
+    var dL=document.createElement('div');dL.className='sz-opt'+(soCurSize==='L'&&!Number(it.price_s)?' on':'');
     dL.innerHTML='<div class="sz-lbl">Size L</div><div class="sz-price">'+prL+'</div>';
-    dL.onclick=function(){soSelSz(this,'L');};
-    szEl.appendChild(dL);
+    dL.onclick=function(){soSelSz(this,'L');};szEl.appendChild(dL);
   }
   var isMatcha=it.category==='Matcha';
   document.getElementById('so-matcha-opts').style.display=isMatcha?'block':'none';
@@ -885,6 +859,9 @@ function soOpenMod(id){
   if(isMatcha){document.querySelector('#so-chips-bot .chip').classList.add('on');document.querySelector('#so-chips-sua .chip').classList.add('on');}
   document.querySelectorAll('#so-chips-sweet .chip')[2].classList.add('on');
   document.getElementById('so-mod-note').value='';
+  // Reset extra gam
+  var _eg=document.getElementById('so-extragam');if(_eg){_eg.value=0;}
+  var _egp=document.getElementById('so-extragam-price');if(_egp){_egp.textContent='';}
   document.getElementById('so-qty-n').textContent=1;
   document.getElementById('so-modal').style.display='flex';
 }
@@ -893,16 +870,37 @@ function soSelChip(el,group){document.querySelectorAll('#so-chips-'+group+' .chi
 function soQty(d){soCurQty=Math.max(1,soCurQty+d);document.getElementById('so-qty-n').textContent=soCurQty;}
 function closeSoModal(e){if(!e||e.target===document.getElementById('so-modal'))document.getElementById('so-modal').style.display='none';}
 function getSoChip(group){var el=document.querySelector('#so-chips-'+group+' .chip.on');return el?el.textContent:'';}
+
+// ── EXTRA GAM HELPERS (NEW) ───────────────────────────────────
+function soGetGamPrice(){
+  var bot=getSoChip('bot');
+  return bot.indexOf('MK4')>-1?5000:4000;
+}
+function soUpdateExtraGamPrice(){
+  var el=document.getElementById('so-extragam');
+  var pr=document.getElementById('so-extragam-price');
+  if(!el||!pr)return;
+  var g=Math.max(0,Number(el.value)||0);
+  pr.textContent=g>0?'+'+fmt(g*soGetGamPrice()):'';
+}
+
+// ── CART (UPDATED with extraGam) ─────────────────────────────
 function soAddCart(){
   var isMatcha=soCurItem.category==='Matcha';
   var bot=isMatcha?getSoChip('bot'):'';var sua=isMatcha?getSoChip('sua'):'';
-  // Subscription flat pricing: S=29k, L=52k (chỉ Matcha, extras vẫn tính bình thường)
   var isSub=soMember&&soMember.subActive;
   var basePrice=isSub?(soCurSize==='S'?29000:52000):(soCurSize==='S'?soCurItem.price_s:soCurItem.price_l)*1000;
   var extras=0;
   if(bot.includes('MK4'))extras+=15000;if(sua.includes('Hạt điều'))extras+=10000;if(sua.includes('Đậu nành'))extras+=10000;
-  var pr=basePrice+extras;
-  soCart.push({id:soCurItem.id,name:soCurItem.name,size:soCurSize,price:pr,qty:soCurQty,sweet:getSoChip('sweet'),bot:bot,sua:sua,note:document.getElementById('so-mod-note').value.trim(),subPrice:isSub});
+  var extraGam=isMatcha?Math.max(0,Number(document.getElementById('so-extragam').value)||0):0;
+  var extraGamCost=extraGam*soGetGamPrice();
+  var pr=basePrice+extras+extraGamCost;
+  soCart.push({
+    id:soCurItem.id,name:soCurItem.name,size:soCurSize,price:pr,qty:soCurQty,
+    sweet:getSoChip('sweet'),bot:bot,sua:sua,
+    extraGam:extraGam,extraGamCost:extraGamCost,
+    note:document.getElementById('so-mod-note').value.trim(),subPrice:isSub
+  });
   document.getElementById('so-modal').style.display='none';soRenderCart();
 }
 function soRmCart(i){soCart.splice(i,1);soRenderCart();}
@@ -910,13 +908,24 @@ function soRenderCart(){
   var total=soCart.reduce(function(s,i){return s+i.price*i.qty;},0);
   var card=document.getElementById('so-cart-card');card.style.display=soCart.length?'block':'none';
   document.getElementById('so-cart-list').innerHTML=soCart.map(function(it,i){
-    var subs=[];if(it.size)subs.push('Size '+it.size+(it._upsized?' 🆙Free':'')+(it.subPrice?' 💙Sub':''));if(it.bot)subs.push(it.bot);if(it.sua)subs.push(it.sua);if(it.sweet)subs.push('Ngọt '+it.sweet);if(it.note)subs.push('📝 '+it.note);subs.push('x'+it.qty);
-    return'<div style="display:flex;align-items:flex-start;gap:.55rem;padding:.55rem 0;border-bottom:1px dashed var(--blue-mid)"><button style="background:none;border:none;color:#ccc;cursor:pointer;font-size:.95rem;padding:.1rem;flex-shrink:0" onclick="soRmCart('+i+')">✕</button><div style="font-weight:700;font-size:.82rem;flex:1"><div style="font-size:.7rem;color:#888;margin-top:.1rem">'+subs.join(' · ')+'</div>'+it.name+'</div><div style="font-weight:700;color:var(--blue);font-size:.82rem">'+fmt(it.price*it.qty)+'</div></div>';
+    var subs=[];
+    if(it.size)subs.push('Size '+it.size+(it._upsized?' 🆙Free':'')+(it.subPrice?' 💙Sub':''));
+    if(it.bot)subs.push(it.bot);
+    if(it.sua)subs.push(it.sua);
+    if(it.extraGam)subs.push('+'+it.extraGam+'g bột (+'+fmt(it.extraGamCost)+')');
+    if(it.sweet)subs.push('Ngọt '+it.sweet);
+    if(it.note)subs.push('📝 '+it.note);
+    subs.push('x'+it.qty);
+    return'<div style="display:flex;align-items:flex-start;gap:.55rem;padding:.55rem 0;border-bottom:1px dashed var(--blue-mid)">'+
+      '<button style="background:none;border:none;color:#ccc;cursor:pointer;font-size:.95rem;padding:.1rem;flex-shrink:0" onclick="soRmCart('+i+')">✕</button>'+
+      '<div style="font-weight:700;font-size:.82rem;flex:1">'+it.name+'<div style="font-size:.7rem;color:#888;margin-top:.1rem;font-weight:400">'+subs.join(' · ')+'</div></div>'+
+      '<div style="font-weight:700;color:var(--blue);font-size:.82rem">'+fmt(it.price*it.qty)+'</div></div>';
   }).join('');
   var soDiscount=0;
   if(soCouponData){if(soCouponData.type==='percent')soDiscount=Math.round(total*Number(soCouponData.value)/100);if(soCouponData.type==='fixed')soDiscount=Number(soCouponData.value)*1000;total=Math.max(0,total-soDiscount);}
   document.getElementById('so-total').textContent=fmt(total)+(soDiscount>0?' (giảm '+fmt(soDiscount)+')':'');
 }
+
 async function soApplyCoupon(){
   var code=document.getElementById('so-coupon').value.trim().toUpperCase();
   var el=document.getElementById('so-coupon-result');
@@ -924,35 +933,29 @@ async function soApplyCoupon(){
   var d=await api({action:'validateCoupon',code:code,phone:soMember?soMember.phone:''});
   if(d.ok){
     soCouponData=d.coupon;
-    if(d.coupon.type==='free_upsize'){
-      // Show picker after a short delay so coupon result UI shows first
-      setTimeout(showUpsizePicker, 200);
-    }
+    if(d.coupon.type==='free_upsize'){setTimeout(showUpsizePicker,200);}
     el.textContent='✅ '+d.coupon.description;el.style.cssText='display:block;background:#e6f7ed;color:#1a7f3c;border-radius:8px;padding:.4rem .7rem;font-weight:600';soRenderCart();
   }
   else{soCouponData=null;el.textContent='❌ '+d.error;el.style.cssText='display:block;background:#fdecea;color:#b91c1c;border-radius:8px;padding:.4rem .7rem;font-weight:600';}
 }
- 
+
 function showUpsizePicker(){
   var eligibleItems=soCart.filter(function(it){return it.size==='S';});
   if(!eligibleItems.length){
     var el=document.getElementById('so-coupon-result');
     el.textContent='⚠️ Không có ly size S nào trong giỏ để upsize';
     el.style.cssText='display:block;background:#fff3cd;color:#856404;border-radius:8px;padding:.4rem .7rem;font-weight:600';
-    soCouponData=null;
-    return;
+    soCouponData=null;return;
   }
   var list=document.getElementById('upsize-list');
   list.innerHTML=eligibleItems.map(function(it,i){
     var realIdx=soCart.indexOf(it);
     var subs=[];if(it.bot)subs.push(it.bot);if(it.sua)subs.push(it.sua);if(it.sweet)subs.push('Ngọt '+it.sweet);
-    return'<div onclick="doUpsize('+realIdx+')" style="display:flex;align-items:center;gap:.75rem;padding:.7rem .85rem;border:1.5px solid var(--blue-mid);border-radius:12px;margin-bottom:.5rem;cursor:pointer;background:var(--blue-light)" >'+
+    return'<div onclick="doUpsize('+realIdx+')" style="display:flex;align-items:center;gap:.75rem;padding:.7rem .85rem;border:1.5px solid var(--blue-mid);border-radius:12px;margin-bottom:.5rem;cursor:pointer;background:var(--blue-light)">'+
       '<div style="width:36px;height:36px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.88rem;flex-shrink:0">S</div>'+
       '<div style="flex:1"><div style="font-weight:700;font-size:.85rem">'+it.name+'</div>'+
       (subs.length?'<div style="font-size:.72rem;color:#888">'+subs.join(' · ')+'</div>':'')+
-      '</div>'+
-      '<div style="font-size:.75rem;font-weight:700;color:var(--blue)">→ L 🆙</div>'+
-      '</div>';
+      '</div><div style="font-size:.75rem;font-weight:700;color:var(--blue)">→ L 🆙</div></div>';
   }).join('');
   document.getElementById('upsize-modal').style.display='flex';
 }
@@ -960,18 +963,15 @@ function doUpsize(idx){
   var it=soCart[idx];
   if(!it||it.size!=='S')return;
   var menuItem=menuS.find(function(m){return m.id===it.id;});
-  if(menuItem){
-    var extras=it.price-(menuItem.price_s*1000);
-    it.price=menuItem.price_l*1000+extras;
-  }
-  it.size='L';
-  it._upsized=true;
+  if(menuItem){var extras=it.price-(menuItem.price_s*1000);it.price=menuItem.price_l*1000+extras;}
+  it.size='L';it._upsized=true;
   document.getElementById('upsize-modal').style.display='none';
   soRenderCart();
   var el=document.getElementById('so-coupon-result');
   el.textContent='✅ Đã upsize '+it.name+' lên size L miễn phí!';
   el.style.cssText='display:block;background:#e6f7ed;color:#1a7f3c;border-radius:8px;padding:.4rem .7rem;font-weight:600';
 }
+
 async function soPlaceOrder(){
   if(!soCart.length){al('so-alert','Chưa chọn món!','err');return;}
   var name=document.getElementById('so-name').value.trim()||'Khách lẻ';
@@ -980,10 +980,7 @@ async function soPlaceOrder(){
   var note='[Tại quầy] [NV: '+(staffInfo?staffInfo.name:'?')+'] '+document.getElementById('so-note').value.trim();
   if(soCouponData){
     note+=' [Mã: '+soCouponData.code+']';
-    if(soCouponData.type==='free_upsize'){
-      var upsized=soCart.find(function(it){return it._upsized;});
-      if(upsized)note+=' [Upsize miễn phí: '+upsized.name+']';
-    }
+    if(soCouponData.type==='free_upsize'){var upsized=soCart.find(function(it){return it._upsized;});if(upsized)note+=' [Upsize miễn phí: '+upsized.name+']';}
   }
   var d=await api({action:'placeOrder',password:PWD,phone:soMember?soMember.phone:'',name:name,note:note,items:JSON.stringify(soCart),total:total});
   if(!d.ok){al('so-alert',d.error,'err');return;}
@@ -1001,7 +998,7 @@ function soReset(){
   try{document.getElementById('so-coupon').value='';document.getElementById('so-coupon-result').style.display='none';}catch(e){}
   document.getElementById('so-success').style.display='none';document.getElementById('so-cart-card').style.display='none';
 }
- 
+
 // ── MEMBERS ───────────────────────────────────────────────────
 async function lookupMem(){
   var ph=document.getElementById('mem-phone').value.trim();if(!ph){al('mem-alert','Nhập SĐT.','err');return;}
@@ -1012,38 +1009,28 @@ async function lookupMem(){
     d={ok:true,member:Object.assign(d2.member,{tier:'matcha_tapsu',subActive:false,monthlyCount:0,monthlyWeekday:0})};
   }
   var m=d.member;
-  // Normalize subActive
   if(!m.subActive && m.tier==='subscription' && m.subExpiry){
     var expM=parseSubExpiry(m.subExpiry);
     if(expM&&expM>new Date()) m.subActive=true;
   }
-  m.stamps=Number(m.stamps)||0;
-  m.subUsedToday=Number(m.subUsedToday)||0;
+  m.stamps=Number(m.stamps)||0;m.subUsedToday=Number(m.subUsedToday)||0;
   currentMemPhone=m.phone;
   var dots='';for(var i=1;i<=7;i++){var c='sdot'+(i===3||i===5||i===7?' ms':'')+(i<=m.stamps?' on':'');dots+='<div class="'+c+'"></div>';}
   var pbns=menuS.filter(function(it){return it.available;}).map(function(it){return'<button class="pbtn" onclick="addPurch(\''+m.phone+'\',\''+it.name+'\')">'+it.name+'</button>';}).join('');
   if(!pbns)pbns='<button class="pbtn" onclick="addPurch(\''+m.phone+'\',\'Matcha\')">Matcha</button>';
-  // Build tier badge
   var tierLabel={'matcha_tapsu':'🍃 Matcha Newbie','vip':'💜 Matcha Senior','subscription':'💙 Béttie','pending_subscription':'📋 Chờ duyệt Béttie'};
   var tierColor={'matcha_tapsu':'#15803d','vip':'#7c3aed','subscription':'#0369a1','pending_subscription':'#888'};
   var tier=m.tier||'matcha_tapsu';
   var tierBadge='<span style="background:var(--blue-light);color:'+(tierColor[tier]||'var(--blue)')+';font-size:.68rem;font-weight:700;padding:.15rem .55rem;border-radius:8px;margin-left:.4rem">'+(tierLabel[tier]||tier)+'</span>';
- 
-  // Format ngày đẹp dd/mm/yyyy
   function fmtDate(s){if(!s)return'';var d=new Date(s);if(isNaN(d))return s;return('0'+d.getDate()).slice(-2)+'/'+(('0'+(d.getMonth()+1)).slice(-2))+'/'+d.getFullYear();}
-  // Subscription info — chỉ dùng subActive
   var subInfo='';
   if(m.subActive){
     subInfo='<div style="background:#e0f2fe;border:1.5px solid #7dd3fc;border-radius:10px;padding:.55rem .75rem;margin:.5rem 0;font-size:.78rem;color:#0369a1;font-weight:600">💙 Đã áp dụng giá Béttie · HH: '+fmtDate(m.subExpiry)+'<br/>Đã dùng hôm nay: '+m.subUsedToday+'/2 ly</div>';
-  } else if(tier==='subscription'){
-    subInfo='<div style="background:#f0f9ff;border:1.5px solid #7dd3fc;border-radius:10px;padding:.5rem .75rem;margin:.5rem 0;font-size:.78rem;color:#0369a1;font-weight:600">📋 Đăng ký Béttie · Đang chờ duyệt<br/><button class="btn btn-sm" onclick="activateSub(currentMemPhone)" style="background:linear-gradient(135deg,#0369a1,#0891b2);margin-top:.4rem;font-size:.75rem;width:100%">💙 Kích hoạt giá Béttie</button></div>';
-  } else if(tier==='pending_subscription'){
+  } else if(tier==='subscription'||tier==='pending_subscription'){
     subInfo='<div style="background:#f0f9ff;border:1.5px solid #7dd3fc;border-radius:10px;padding:.5rem .75rem;margin:.5rem 0;font-size:.78rem;color:#0369a1;font-weight:600">📋 Đăng ký Béttie · Đang chờ duyệt<br/><button class="btn btn-sm" onclick="activateSub(currentMemPhone)" style="background:linear-gradient(135deg,#0369a1,#0891b2);margin-top:.4rem;font-size:.75rem;width:100%">💙 Kích hoạt giá Béttie</button></div>';
   } else {
     subInfo='<button class="btn btn-sm" onclick="activateSub(currentMemPhone)" style="background:linear-gradient(135deg,#0369a1,#0891b2);width:100%;margin:.5rem 0;font-size:.78rem">💙 Kích hoạt giá Béttie</button>';
   }
- 
-  // Birthday input for VIP
   var bdayInput='';
   if(tier==='vip'||tier==='matcha_tapsu'){
     bdayInput='<div style="margin-top:.5rem;padding-top:.5rem;border-top:1px dashed var(--blue-mid)">'+
@@ -1053,19 +1040,15 @@ async function lookupMem(){
       '<button class="btn btn-sm" onclick="saveBday(currentMemPhone,&quot;bday-input-'+m.phone.slice(-4)+'&quot;)" style="font-size:.75rem">Lưu</button>'+
       '</div></div>';
   }
- 
   document.getElementById('mem-result').innerHTML=
     '<div class="card" style="margin:0">'+
     '<div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem">'+
     '<div style="width:40px;height:40px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-family:Merienda,cursive;font-size:.95rem;flex-shrink:0">'+m.name.charAt(0).toUpperCase()+'</div>'+
     '<div><div style="font-weight:700;color:var(--blue);font-size:.88rem">'+m.name+tierBadge+'</div>'+
     '<div style="font-size:.72rem;color:#888">'+m.phone+' · '+m.stamps+' mốc · Tháng này: '+m.monthlyCount+'/4</div></div></div>'+
-    subInfo+
-    '<div class="sdots" style="margin-bottom:.5rem">'+dots+'</div>'+
+    subInfo+'<div class="sdots" style="margin-bottom:.5rem">'+dots+'</div>'+
     '<div style="font-size:.73rem;font-weight:700;margin-bottom:.3rem">Cộng điểm thủ công:</div>'+
-    '<div class="pgrid">'+pbns+'</div>'+
-    bdayInput+
-    '</div>';
+    '<div class="pgrid">'+pbns+'</div>'+bdayInput+'</div>';
 }
 async function addPurch(phone,product){
   var d=await api({action:'purchase',password:PWD,phone:phone,product:product});
@@ -1080,21 +1063,14 @@ async function loadMembers(){
     var tier=m.tier||'matcha_tapsu';
     var isSub=(tier==='subscription'||tier==='pending_subscription');
     var cell='';
-    if(isSub){
-      var c2={'subscription':'#0369a1','pending_subscription':'#888'};
-      var lb={'subscription':'💙 Béttie','pending_subscription':'📋 Chờ duyệt Béttie'};
-      cell='<span style="font-size:.68rem;font-weight:700;color:'+(c2[tier]||'#888')+';background:#e0f2fe;padding:.1rem .5rem;border-radius:6px">'+(lb[tier]||tier)+'</span>';
-    } else if(tier==='vip'){
-      cell='<span style="font-size:.68rem;font-weight:700;color:#7c3aed;background:#f3f0ff;padding:.1rem .5rem;border-radius:6px">💜 Matcha Senior</span>';
-    } else {
-      var dots='';for(var i=1;i<=7;i++){var c='sdot'+(i===4||i===7?' ms':'')+(i<=m.stamps?' on':'');dots+='<div class="'+c+'"></div>';}
-      cell='<div class="sdots">'+dots+'</div>';
-    }
+    if(isSub){var c2={'subscription':'#0369a1','pending_subscription':'#888'};var lb={'subscription':'💙 Béttie','pending_subscription':'📋 Chờ duyệt Béttie'};cell='<span style="font-size:.68rem;font-weight:700;color:'+(c2[tier]||'#888')+';background:#e0f2fe;padding:.1rem .5rem;border-radius:6px">'+(lb[tier]||tier)+'</span>';}
+    else if(tier==='vip'){cell='<span style="font-size:.68rem;font-weight:700;color:#7c3aed;background:#f3f0ff;padding:.1rem .5rem;border-radius:6px">💜 Matcha Senior</span>';}
+    else{var dots2='';for(var i=1;i<=7;i++){var c='sdot'+(i===4||i===7?' ms':'')+(i<=m.stamps?' on':'');dots2+='<div class="'+c+'"></div>';}cell='<div class="sdots">'+dots2+'</div>';}
     return'<tr><td>'+m.name+'</td><td style="font-size:.7rem">'+m.phone+'</td><td>'+cell+'</td></tr>';
   }).join('');
   document.getElementById('mem-table').innerHTML='<div style="overflow-x:auto"><table class="mtable"><tr><th>Tên</th><th>SĐT</th><th>Mốc</th></tr>'+rows+'</table></div>';
 }
- 
+
 // ── INVENTORY ─────────────────────────────────────────────────
 async function loadInventory(){
   var d=await api({action:'getInventory',password:PWD});
@@ -1113,14 +1089,11 @@ function renderInventory(){
     var isLow=it.currentQty<=it.minQty;
     return'<div class="inv-item">'+
       '<div class="inv-name"><div class="inv-n">'+it.name+'</div><div class="inv-unit">'+it.unit+(isLow?' <span class="low-badge">Sắp hết</span>':'')+'</div></div>'+
-      '<div class="inv-qty-wrap">'+
-      '<input type="number" class="inv-qty'+(isLow?' low':'')+'" value="'+it.currentQty+'" min="0" data-id="'+it.id+'" style="width:60px;text-align:center;margin:0;padding:.35rem .4rem;font-size:.85rem;font-weight:700"/>'+
-      '</div></div>';
+      '<div class="inv-qty-wrap"><input type="number" class="inv-qty'+(isLow?' low':'')+'" value="'+it.currentQty+'" min="0" data-id="'+it.id+'" style="width:60px;text-align:center;margin:0;padding:.35rem .4rem;font-size:.85rem;font-weight:700"/></div></div>';
   }).join(''):'<div class="empty">Chưa có mặt hàng nào. Thêm bên dưới!</div>';
 }
 async function saveInventory(type){
-  var inputs=document.querySelectorAll('.inv-qty');
-  var updates=[];
+  var inputs=document.querySelectorAll('.inv-qty');var updates=[];
   inputs.forEach(function(inp){updates.push({id:inp.dataset.id,qty:Number(inp.value)});});
   if(!updates.length){alert('Chưa có hàng nào để lưu!');return;}
   var d=await api({action:'updateInventoryQty',password:PWD,updates:JSON.stringify(updates),type:type,note:type==='open_shift'?'Đầu ca':'Cuối ca'});
@@ -1136,7 +1109,7 @@ async function addInvItem(){
   if(d.ok){al('inv-alert','✅ Đã thêm "'+name+'"','ok');['inv-name','inv-unit','inv-min'].forEach(function(id){document.getElementById(id).value='';});loadInventory();}
   else al('inv-alert','Lỗi: '+d.error,'err');
 }
- 
+
 // ── PURCHASE ORDERS ───────────────────────────────────────────
 async function loadPOs(){
   var d=await api({action:'getPurchaseOrders',password:PWD});
@@ -1168,33 +1141,17 @@ async function createPO(){
   var items=document.getElementById('po-items').value.trim();
   var note=document.getElementById('po-note').value.trim();
   if(!items){al('po-alert','Nhập danh sách hàng cần nhập.','err');return;}
-  var imgFile=document.getElementById('po-img').files[0];
-  var imgUrl='';
-  if(imgFile){
-    try{
-      var fd=new FormData();fd.append('image',imgFile);
-      var r=await fetch('https://api.imgbb.com/1/upload?key='+IMGBB_KEY,{method:'POST',body:fd});
-      var id=await r.json();if(id.success)imgUrl=id.data.url;
-    }catch(e){}
-  }
+  var imgFile=document.getElementById('po-img').files[0];var imgUrl='';
+  if(imgFile){try{var fd=new FormData();fd.append('image',imgFile);var r=await fetch('https://api.imgbb.com/1/upload?key='+IMGBB_KEY,{method:'POST',body:fd});var id=await r.json();if(id.success)imgUrl=id.data.url;}catch(e){}}
   var d=await api({action:'createPO',password:PWD,items:items,note:note,orderImg:imgUrl});
   if(d.ok){al('po-alert','✅ Đã tạo phiếu #'+d.poID,'ok');document.getElementById('po-items').value='';document.getElementById('po-note').value='';document.getElementById('po-img').value='';loadPOs();}
   else al('po-alert','Lỗi: '+d.error,'err');
 }
 async function updatePOStatus(poID,action){
   var imgFile=null;
-  try{
-    var inp=document.createElement('input');inp.type='file';inp.accept='image/*';
-    await new Promise(function(res){inp.onchange=function(){imgFile=inp.files[0];res();};inp.oncancel=res;inp.click();});
-  }catch(e){}
+  try{var inp=document.createElement('input');inp.type='file';inp.accept='image/*';await new Promise(function(res){inp.onchange=function(){imgFile=inp.files[0];res();};inp.oncancel=res;inp.click();});}catch(e){}
   var imgUrl='';
-  if(imgFile){
-    try{
-      var fd=new FormData();fd.append('image',imgFile);
-      var r=await fetch('https://api.imgbb.com/1/upload?key='+IMGBB_KEY,{method:'POST',body:fd});
-      var id=await r.json();if(id.success)imgUrl=id.data.url;
-    }catch(e){}
-  }
+  if(imgFile){try{var fd=new FormData();fd.append('image',imgFile);var r=await fetch('https://api.imgbb.com/1/upload?key='+IMGBB_KEY,{method:'POST',body:fd});var id=await r.json();if(id.success)imgUrl=id.data.url;}catch(e){}}
   var now=new Date().toLocaleString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh'});
   var params={action:'updatePO',password:PWD,poID:poID};
   if(action==='received'){params.status='Đã nhận';params.receivedAt=now;params.receivedImg=imgUrl;}
@@ -1203,7 +1160,7 @@ async function updatePOStatus(poID,action){
   if(d.ok){al('po-alert','✅ Đã cập nhật!','ok');loadPOs();}
   else al('po-alert','Lỗi: '+d.error,'err');
 }
- 
+
 // ── MENU ──────────────────────────────────────────────────────
 async function loadMenuS(){
   var d=await api({action:'getMenu'});if(!d.ok)return;menuS=d.menu;renderMenuS();soRenderMenu();
@@ -1216,8 +1173,7 @@ function renderMenuS(){
     return'<div class="mrow">'+thumb+'<div class="mr-name"><div class="mr-n">'+it.name+'</div><div class="mr-cat">'+it.category+'</div></div>'+
       '<div class="mr-price">'+p+'</div>'+
       '<label class="toggle"><input type="checkbox"'+(it.available?' checked':'')+' onchange="menuS['+i+'].available=this.checked"/><span class="slider"></span></label>'+
-      '<button style="background:none;border:none;color:var(--red);cursor:pointer;font-size:.88rem;margin-left:.3rem;padding:.1rem" onclick="delItem('+i+')">🗑</button>'+
-      '</div>';
+      '<button style="background:none;border:none;color:var(--red);cursor:pointer;font-size:.88rem;margin-left:.3rem;padding:.1rem" onclick="delItem('+i+')">🗑</button></div>';
   }).join('');
 }
 function delItem(i){if(confirm('Xoá "'+menuS[i].name+'"?')){menuS.splice(i,1);renderMenuS();}}
@@ -1243,30 +1199,17 @@ function editItemImage(i){
   menuS[i].image=url.trim();renderMenuS();
   if(url.trim())api({action:'updateItemImage',password:PWD,itemId:menuS[i].id,imageUrl:url.trim()}).then(function(d){al('menu-alert',d.ok?'✅ Đã lưu ảnh!':'Lỗi: '+d.error,d.ok?'ok':'err');});
 }
- 
+
 // ── DASHBOARD ─────────────────────────────────────────────────
 function parseVNDate(str){
   if(!str||str==='undefined'||str==='null')return null;
-  try{
-    // Format : "HH:mm:ss DD/MM/YYYY" (giờ trước ngày sau, cách nhau bởi khoảng trắng)
-    var parts=str.trim().split(' ');
-    if(parts.length>=2){
-      var timePart=parts[0];var datePart=parts[1];
-      var dp2=datePart.split('/');var tp2=timePart.split(':');
-      if(dp2.length>=3)return new Date(Number(dp2[2]),Number(dp2[1])-1,Number(dp2[0]),Number(tp2[0]||0),Number(tp2[1]||0));
-    }
-    return null;
-  }catch(e){return null;}
-}function isSameDay(a,b){return a.getDate()===b.getDate()&&a.getMonth()===b.getMonth()&&a.getFullYear()===b.getFullYear();}
-function toDateOnly(d){return new Date(d.getFullYear(),d.getMonth(),d.getDate());}
-function setDateInputs(from,to){
-  var pad=function(n){return('0'+n).slice(-2);};var f=function(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());};
-  document.getElementById('date-from').value=f(from);document.getElementById('date-to').value=f(to);
-  dashFrom=toDateOnly(from);dashTo=new Date(to.getFullYear(),to.getMonth(),to.getDate(),23,59,59);
+  try{var parts=str.trim().split(' ');if(parts.length>=2){var timePart=parts[0];var datePart=parts[1];var dp2=datePart.split('/');var tp2=timePart.split(':');if(dp2.length>=3)return new Date(Number(dp2[2]),Number(dp2[1])-1,Number(dp2[0]),Number(tp2[0]||0),Number(tp2[1]||0));}return null;}catch(e){return null;}
 }
+function isSameDay(a,b){return a.getDate()===b.getDate()&&a.getMonth()===b.getMonth()&&a.getFullYear()===b.getFullYear();}
+function toDateOnly(d){return new Date(d.getFullYear(),d.getMonth(),d.getDate());}
+function setDateInputs(from,to){var pad=function(n){return('0'+n).slice(-2);};var f=function(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());};document.getElementById('date-from').value=f(from);document.getElementById('date-to').value=f(to);dashFrom=toDateOnly(from);dashTo=new Date(to.getFullYear(),to.getMonth(),to.getDate(),23,59,59);}
 function selQuick(el,period){
-  document.querySelectorAll('#panel-more .period-tabs .ptab').forEach(function(t){t.classList.remove('on');});
-  el.classList.add('on');
+  document.querySelectorAll('#panel-more .period-tabs .ptab').forEach(function(t){t.classList.remove('on');});el.classList.add('on');
   var now=new Date(),from,to;
   if(period==='today'){from=new Date(now);to=new Date(now);}
   else if(period==='week'){from=new Date(now);from.setDate(from.getDate()-6);to=new Date(now);}
@@ -1274,18 +1217,8 @@ function selQuick(el,period){
   else{from=new Date(2020,0,1);to=new Date(now);}
   setDateInputs(from,to);updateRangeLabel();renderDash();
 }
-function selCustomDate(){
-  var fv=document.getElementById('date-from').value,tv=document.getElementById('date-to').value;
-  if(!fv)return;if(!tv)tv=fv;
-  dashFrom=new Date(fv+'T00:00:00');dashTo=new Date(tv+'T23:59:59');
-  document.querySelectorAll('#panel-more .period-tabs .ptab').forEach(function(t){t.classList.remove('on');});
-  updateRangeLabel();renderDash();
-}
-function updateRangeLabel(){
-  var pad=function(n){return('0'+n).slice(-2);};var fmtD=function(d){return pad(d.getDate())+'/'+pad(d.getMonth()+1)+'/'+d.getFullYear();};
-  var el=document.getElementById('dash-range-label');if(!dashFrom){el.textContent='';return;}
-  el.textContent=isSameDay(dashFrom,dashTo)?'📅 Ngày '+fmtD(dashFrom):'📅 '+fmtD(dashFrom)+' → '+fmtD(dashTo);
-}
+function selCustomDate(){var fv=document.getElementById('date-from').value,tv=document.getElementById('date-to').value;if(!fv)return;if(!tv)tv=fv;dashFrom=new Date(fv+'T00:00:00');dashTo=new Date(tv+'T23:59:59');document.querySelectorAll('#panel-more .period-tabs .ptab').forEach(function(t){t.classList.remove('on');});updateRangeLabel();renderDash();}
+function updateRangeLabel(){var pad=function(n){return('0'+n).slice(-2);};var fmtD=function(d){return pad(d.getDate())+'/'+pad(d.getMonth()+1)+'/'+d.getFullYear();};var el=document.getElementById('dash-range-label');if(!dashFrom){el.textContent='';return;}el.textContent=isSameDay(dashFrom,dashTo)?'📅 Ngày '+fmtD(dashFrom):'📅 '+fmtD(dashFrom)+' → '+fmtD(dashTo);}
 function inRange(d){if(!d)return false;if(!dashFrom)return true;return toDateOnly(d)>=toDateOnly(dashFrom)&&toDateOnly(d)<=toDateOnly(dashTo);}
 function filterDone(list){return list.filter(function(o){return o.status==='Xong'&&inRange(parseVNDate(o.createdAt));});}
 function filterAll(list){return list.filter(function(o){return inRange(parseVNDate(o.createdAt));});}
@@ -1299,7 +1232,7 @@ function renderDash(){
   document.getElementById('d-done').textContent=done.length;
   document.getElementById('d-avg').textContent=done.length?fmt(avg):'--';
   var rankCls=['gold','silver','bronze','',''];
-  var itemMap={}; done.forEach(function(o){   (o.items||'').split(' | ').forEach(function(p){     var n=p.split(' (')[0].trim();     if(!n) return;     var qm=p.match(/x(\d+)\s*$/);     var qty=qm?Number(qm[1]):1;     itemMap[n]=(itemMap[n]||0)+qty;   }); });
+  var itemMap={};done.forEach(function(o){(o.items||'').split(' | ').forEach(function(p){var n=p.split(' (')[0].trim();if(!n)return;var qm=p.match(/x(\d+)\s*$/);var qty=qm?Number(qm[1]):1;itemMap[n]=(itemMap[n]||0)+qty;});});
   var topItems=Object.keys(itemMap).map(function(k){return{name:k,count:itemMap[k]};}).sort(function(a,b){return b.count-a.count;}).slice(0,5);
   document.getElementById('d-top-items').innerHTML=topItems.length?topItems.map(function(it,i){return'<div class="top-item"><div style="display:flex;align-items:center"><div class="top-rank '+(rankCls[i]||'')+'">'+(i+1)+'</div>'+it.name+'</div><div style="font-weight:700;color:var(--blue)">'+it.count+' ly</div></div>';}).join(''):'<div class="empty">Chưa có dữ liệu</div>';
   var custMap={};done.forEach(function(o){var k=o.name&&o.name!=='Khách lẻ'&&o.name!=='Khach'?o.name:'';if(!k)return;if(!custMap[k])custMap[k]={name:k,orders:0,revenue:0};custMap[k].orders++;custMap[k].revenue+=Number(o.total||0);});
@@ -1309,7 +1242,7 @@ function renderDash(){
   var dayKeys=Object.keys(dayMap).sort();var maxRev=Math.max.apply(null,Object.values(dayMap).map(function(v){return v.rev;}).concat([1]));
   document.getElementById('d-by-day').innerHTML=dayKeys.length?dayKeys.map(function(day){var v=dayMap[day];var pct=Math.round(v.rev/maxRev*100);return'<div style="margin-bottom:.65rem"><div style="display:flex;justify-content:space-between;font-size:.75rem;margin-bottom:.25rem"><span style="font-weight:700">'+day+'</span><span style="color:var(--blue);font-weight:700">'+fmt(v.rev)+' · '+v.cnt+' đơn</span></div><div style="height:10px;background:#eee;border-radius:5px"><div style="height:100%;width:'+pct+'%;background:var(--blue);border-radius:5px"></div></div></div>';}).join(''):'<div class="empty">Chưa có dữ liệu</div>';
 }
- 
+
 // ── SHIFTS ────────────────────────────────────────────────────
 async function loadShifts(){
   var d=await api({action:'getShifts',password:PWD});if(!d.ok)return;
@@ -1318,7 +1251,7 @@ async function loadShifts(){
     return'<div class="shift-row"><div><div class="shift-name">'+s.staffName+'</div><div class="shift-time">'+s.date+' · Vào: '+s.clockIn.split(', ')[1]+(s.clockOut?' · Ra: '+s.clockOut.split(', ')[1]:'')+'</div></div><div class="shift-hours">'+(s.hours?s.hours+'h':'Đang làm')+'</div></div>';
   }).join(''):'<div class="empty">Chưa có ca làm nào</div>';
 }
- 
+
 // ── COUPONS ───────────────────────────────────────────────────
 async function loadCoupons(){
   var d=await api({action:'getCoupons',password:PWD});if(!d.ok)return;couponsList=d.coupons;renderCoupons();
@@ -1359,46 +1292,33 @@ async function checkCoupon(){
   var el=document.getElementById('cp-check-result');
   el.innerHTML=d.ok?'<div style="background:#e6f7ed;border:1px solid #a3d9b1;border-radius:8px;padding:.5rem .75rem;color:#1a7f3c;font-weight:600">✅ Hợp lệ: '+d.coupon.description+(d.coupon.phone?' · Dành cho: '+d.coupon.phone:'')+'</div>':'<div style="background:#fdecea;border:1px solid #fca5a5;border-radius:8px;padding:.5rem .75rem;color:#b91c1c;font-weight:600">❌ '+d.error+'</div>';
 }
- 
-// ── BÉTTIE ACTIVATION ──────────────────────────────────────
+
+// ── BÉTTIE ACTIVATION ─────────────────────────────────────────
 async function activateSub(phone){
   if(!confirm('Kích hoạt giá Béttie cho '+phone+'?\n\nXác nhận đã duyệt và đồng ý kích hoạt tài khoản Béttie.')){return;}
   var d=await api({action:'activateSubscription',password:PWD,phone:phone});
-  if(d.ok){
-    al('mem-alert','✅ Đã kích hoạt giá Béttie cho '+d.member.name+' · HH: '+d.member.subExpiry,'ok');
-    document.getElementById('mem-phone').value=phone.replace('84','0');
-    setTimeout(function(){lookupMem();},400);
-  } else {
-    al('mem-alert','Lỗi: '+d.error,'err');
-  }
+  if(d.ok){al('mem-alert','✅ Đã kích hoạt giá Béttie cho '+d.member.name+' · HH: '+d.member.subExpiry,'ok');document.getElementById('mem-phone').value=phone.replace('84','0');setTimeout(function(){lookupMem();},400);}
+  else{al('mem-alert','Lỗi: '+d.error,'err');}
 }
- 
-async function saveBday(phone, inputId){
+async function saveBday(phone,inputId){
   var bday=document.getElementById(inputId).value.trim();
-  if(!bday||!bday.match(/^\d{1,2}\/\d{1,2}$/)){
-    alert('Nhập ngày sinh đúng định dạng dd/mm (VD: 15/08)');return;
-  }
+  if(!bday||!bday.match(/^\d{1,2}\/\d{1,2}$/)){alert('Nhập ngày sinh đúng định dạng dd/mm (VD: 15/08)');return;}
   var d=await api({action:'updateBirthday',phone:phone,birthday:bday});
-  if(d.ok){
-    al('mem-alert','✅ Đã lưu sinh nhật '+bday+' · Voucher sẽ tự động tạo trong tháng sinh nhật','ok');
-    document.getElementById('mem-phone').value=phone.replace('84','0');
-    lookupMem();
-  } else {
-    al('mem-alert','Lỗi: '+d.error,'err');
-  }
+  if(d.ok){al('mem-alert','✅ Đã lưu sinh nhật '+bday+' · Voucher sẽ tự động tạo trong tháng sinh nhật','ok');document.getElementById('mem-phone').value=phone.replace('84','0');lookupMem();}
+  else{al('mem-alert','Lỗi: '+d.error,'err');}
 }
- 
-// ── AUTO REFRESH ───────────────────────────────────────────────
+
+// ── AUTO REFRESH ──────────────────────────────────────────────
 loadOrders=async function(){
   var d=await api({action:'getOrders',password:PWD});
   if(d.ok){checkNewOrders(d.orders);orders=d.orders;try{localStorage.setItem('yoricha_orders_'+PWD,JSON.stringify(d.orders));}catch(e){}renderOrders();}
 };
- 
+
 // ── INIT ──────────────────────────────────────────────────────
 document.getElementById('logo-login').src='https://drive.google.com/thumbnail?id=1uQD0joy3YQ1PlHSGNZJoy_dFC_oT-miJ&sz=w300';
 if('Notification' in window&&Notification.permission==='default'){document.addEventListener('click',function(){Notification.requestPermission();},{once:true});}
 </script>
- 
+
 <!-- UPSIZE PICKER MODAL -->
 <div id="upsize-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center;padding:1rem">
   <div style="background:#fff;border-radius:18px;padding:1.25rem;width:100%;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,.18)">
