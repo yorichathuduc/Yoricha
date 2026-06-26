@@ -39,6 +39,22 @@ textarea{resize:none;height:56px}
 .mb-name{font-weight:700;color:var(--blue);font-size:.9rem}
 .mb-sub{font-size:.75rem;color:#0369a1;font-weight:700;margin-top:.2rem;background:#e0f2fe;border-radius:6px;padding:.15rem .5rem;display:inline-block}
 .sdots{display:flex;gap:3px;margin-top:.3rem;flex-wrap:wrap}
+/* MEMBER BANNER ON MENU PAGE */
+.mem-banner{border-radius:16px;padding:1rem 1.1rem;margin-bottom:.75rem}
+.mem-banner-matchaholic{background:linear-gradient(135deg,#44624a,#8ba888);color:#fff}
+.mem-banner-vip{background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff}
+.mem-banner-bettie{background:linear-gradient(135deg,#0369a1,#0891b2);color:#fff}
+.mem-banner-name{font-family:'Merienda',cursive;font-size:.95rem;margin-bottom:.15rem}
+.mem-banner-sub{font-size:.72rem;opacity:.85;margin-bottom:.65rem}
+.mem-stamp-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:.35rem}
+.mem-stamp{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0}
+.mem-stamp.filled{background:#fff;color:#44624a}
+.mem-stamp.filled-vip{background:#fff;color:#7c3aed}
+.mem-stamp.milestone{border-color:rgba(255,220,80,.9)}
+.mem-stamp.filled.milestone,.mem-stamp.filled-vip.milestone{background:#f6c90e;border-color:#f6c90e;color:#5a3a00}
+.mem-promo{background:rgba(255,255,255,.18);border-radius:10px;padding:.45rem .75rem;font-size:.8rem;font-weight:700;margin-top:.4rem;line-height:1.5}
+.mem-bettie-chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem}
+.mem-bettie-chip{background:rgba(255,255,255,.2);border-radius:8px;padding:.3rem .75rem;font-size:.8rem;font-weight:700}
 .sdot{width:9px;height:9px;border-radius:50%;background:#dde;border:1px solid #bbc}
 .sdot.on{background:var(--blue);border-color:var(--blue)}
 .sdot.ms.on{background:var(--gold-dark);border-color:var(--gold-dark)}
@@ -149,6 +165,7 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
 
   <!-- PAGE: MENU -->
   <div class="page" id="pg-menu">
+    <div id="member-banner"></div>
     <div class="cat-tabs" id="cat-tabs"></div>
     <div class="mgrid" id="mgrid"></div>
     <div style="height:80px"></div>
@@ -309,8 +326,8 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
         <div class="opt-label">Nền sữa</div>
         <div class="opt-chips" id="chips-sua">
           <div class="chip on" data-group="sua">Sữa Long Thành</div>
-          <div class="chip" data-group="sua">Hạt điều bí đỏ (+10k)</div>
-          <div class="chip" data-group="sua">Đậu nành mè đen (+10k)</div>
+          <div class="chip" data-group="sua">Hạt điều bí đỏ (+5k)</div>
+          <div class="chip" data-group="sua">Đậu nành mè đen (+5k)</div>
         </div>
       </div>
       <div class="opt-group">
@@ -502,6 +519,80 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
     el.innerHTML = html;
   }
 
+  function renderMenuBanner() {
+    var el = document.getElementById('member-banner');
+    if (!el) return;
+    if (!member) { el.innerHTML = ''; return; }
+
+    var stamps = member.stamps || 0;
+    var tier = member.tier || 'matcha_tapsu';
+    var isSub = member.subActive;
+    var html = '';
+
+    if (isSub || tier === 'subscription') {
+      // ── Béttie ──
+      html = '<div class="mem-banner mem-banner-bettie">';
+      html += '<div class="mem-banner-name">🌊 Hội viên Yoricha Béttie</div>';
+      html += '<div class="mem-banner-sub">Chào mừng ' + member.name + ' — Matcha đồng giá hội viên</div>';
+      html += '<div class="mem-bettie-chips">';
+      html += '<div class="mem-bettie-chip">💙 Size S = 29.000đ</div>';
+      html += '<div class="mem-bettie-chip">💙 Size L = 52.000đ</div>';
+      html += '</div>';
+      if (isSub) {
+        html += '<div class="mem-promo" style="margin-top:.65rem">Hôm nay đã dùng: ' + member.subUsedToday + '/2 ly · HH: ' + (member.subExpiry || '') + '</div>';
+      }
+      html += '</div>';
+
+    } else if (tier === 'vip') {
+      // ── Matcha Senior ──
+      html = '<div class="mem-banner mem-banner-vip">';
+      html += '<div class="mem-banner-name">💜 Matcha Senior</div>';
+      html += '<div class="mem-banner-sub">Chào ' + member.name + ' — Ưu đãi hội viên thân thiết</div>';
+      var today = new Date().getDay(); // 0=CN,1=T2,...
+      if (today === 2) {
+        html += '<div class="mem-promo">🥛 Hôm nay Thứ 3 — Đổi nền sữa hạt MIỄN PHÍ (1 ly)</div>';
+      } else if (today === 4) {
+        html += '<div class="mem-promo">📏 Hôm nay Thứ 5 — Upsize S → L MIỄN PHÍ (1 ly)</div>';
+      } else {
+        html += '<div class="mem-promo">✨ Thứ 3: sữa hạt miễn phí · Thứ 5: upsize miễn phí</div>';
+      }
+      html += '</div>';
+
+    } else {
+      // ── Matchaholic (Newbie) ──
+      html = '<div class="mem-banner mem-banner-matchaholic">';
+      html += '<div class="mem-banner-name">🍃 Matchaholic — ' + member.name + '</div>';
+      html += '<div class="mem-banner-sub">Thu thập 7 dấu mộc để lên hạng Matcha Senior</div>';
+      html += '<div class="mem-stamp-row">';
+      for (var i = 1; i <= 7; i++) {
+        var isFilled = i <= stamps;
+        var isMilestone = (i === 4 || i === 7);
+        var cls = 'mem-stamp' + (isFilled ? ' filled' : '') + (isMilestone ? ' milestone' : '');
+        var icon = '';
+        if (isFilled && isMilestone) icon = i === 4 ? '🎁' : '🎉';
+        else if (isFilled) icon = '✓';
+        else if (isMilestone) icon = i === 4 ? '🎁' : '🎉';
+        html += '<div class="' + cls + '">' + icon + '</div>';
+      }
+      html += '</div>';
+      // Promo messages
+      if (stamps === 3) {
+        html += '<div class="mem-promo">🎁 <b>Bạn đang ở ly thứ 4!</b> Mua 2 ly trở lên hôm nay để được giảm 10%</div>';
+      } else if (stamps === 6) {
+        html += '<div class="mem-promo">🎉 <b>Bạn đang ở ly thứ 7!</b> Ly này được tặng 1 ly Size S miễn phí</div>';
+      } else if (stamps < 4) {
+        var nextMilestone = 4 - stamps;
+        html += '<div class="mem-promo">Còn <b>' + nextMilestone + ' ly</b> nữa đến ưu đãi ly thứ 4 🎁</div>';
+      } else {
+        var nextMs = 7 - stamps;
+        html += '<div class="mem-promo">Còn <b>' + nextMs + ' ly</b> nữa đến tặng 1 ly miễn phí 🎉</div>';
+      }
+      html += '</div>';
+    }
+
+    el.innerHTML = html;
+  }
+
   // ─── Go to menu ─────────────────────────────────────────────────────────────
 
   function goMenu() {
@@ -521,10 +612,12 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
             if (d2.ok) member = normalizeMember(d2.member);
           });
         })
-        .then(function() { if (member) renderBadge(); })
+        .then(function() { if (member) { renderBadge(); renderMenuBanner(); } })
         .catch(function() {});
     } else {
       member = null;
+      var _mb = document.getElementById('member-banner');
+      if (_mb) _mb.innerHTML = '';
       memberPromise = Promise.resolve();
     }
 
@@ -704,8 +797,8 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
     var pr = basePrice;
     if (bot.includes('Premium')) pr += 5000;
     else if (bot.includes('MK4')) pr += 6000;
-    if (sua.includes('Hạt điều')) pr += 10000;
-    if (sua.includes('Đậu nành')) pr += 10000;
+    if (sua.includes('Hạt điều')) pr += 5000;
+    if (sua.includes('Đậu nành')) pr += 5000;
     var extraGam = isMatcha ? Math.max(0, Number(document.getElementById('mod-extragam').value) || 0) : 0;
     var extraGamCost = extraGam * getGamPricePerUnit();
     pr += extraGamCost;
