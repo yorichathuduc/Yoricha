@@ -493,7 +493,8 @@ input:checked+.slider::before{transform:translateX(16px)}
       <div class="opt-group"><div class="opt-label">Loại bột matcha</div>
         <div class="opt-chips" id="so-chips-bot">
           <div class="chip on" onclick="soSelChip(this,'bot');soUpdateExtraGamPrice()">Kagoshima</div>
-          <div class="chip" onclick="soSelChip(this,'bot');soUpdateExtraGamPrice()">MK4 (+15k)</div>
+          <div class="chip" onclick="soSelChip(this,'bot');soUpdateExtraGamPrice()">Kagoshima Premium (+5k)</div>
+          <div class="chip" onclick="soSelChip(this,'bot');soUpdateExtraGamPrice()">MK4 (+6k)</div>
         </div>
       </div>
       <div class="opt-group"><div class="opt-label">Nền sữa</div>
@@ -513,7 +514,7 @@ input:checked+.slider::before{transform:translateX(16px)}
           <span style="font-size:.78rem;color:#888">gam</span>
           <span id="so-extragam-price" style="font-size:.75rem;color:var(--blue);font-weight:700;margin-left:auto"></span>
         </div>
-        <div style="font-size:.66rem;color:#aaa;margin-top:.25rem">Kagoshima: +4.000đ/gam · MK4: +5.000đ/gam</div>
+        <div style="font-size:.66rem;color:#aaa;margin-top:.25rem">Kagoshima: +2.000đ/g · Premium: +3.500đ/g · MK4: +4.000đ/g</div>
       </div>
     </div>
     <div class="opt-group"><div class="opt-label">Độ ngọt</div>
@@ -874,7 +875,9 @@ function getSoChip(group){var el=document.querySelector('#so-chips-'+group+' .ch
 // ── EXTRA GAM HELPERS (NEW) ───────────────────────────────────
 function soGetGamPrice(){
   var bot=getSoChip('bot');
-  return bot.indexOf('MK4')>-1?5000:4000;
+  if(bot.indexOf('MK4')>-1) return 4000;
+  if(bot.indexOf('Premium')>-1) return 3500;
+  return 2000;
 }
 function soUpdateExtraGamPrice(){
   var el=document.getElementById('so-extragam');
@@ -891,7 +894,7 @@ function soAddCart(){
   var isSub=soMember&&soMember.subActive;
   var basePrice=isSub?(soCurSize==='S'?29000:52000):(soCurSize==='S'?soCurItem.price_s:soCurItem.price_l)*1000;
   var extras=0;
-  if(bot.includes('MK4'))extras+=15000;if(sua.includes('Hạt điều'))extras+=10000;if(sua.includes('Đậu nành'))extras+=10000;
+  if(bot.includes('Premium'))extras+=5000;else if(bot.includes('MK4'))extras+=6000;if(sua.includes('Hạt điều'))extras+=10000;if(sua.includes('Đậu nành'))extras+=10000;
   var extraGam=isMatcha?Math.max(0,Number(document.getElementById('so-extragam').value)||0):0;
   var extraGamCost=extraGam*soGetGamPrice();
   var pr=basePrice+extras+extraGamCost;
