@@ -301,7 +301,8 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
         <div class="opt-label">Loại bột matcha</div>
         <div class="opt-chips" id="chips-bot">
           <div class="chip on" data-group="bot">Kagoshima</div>
-          <div class="chip" data-group="bot">MK4 (+15k)</div>
+          <div class="chip" data-group="bot">Kagoshima Premium (+5k)</div>
+          <div class="chip" data-group="bot">MK4 (+6k)</div>
         </div>
       </div>
       <div class="opt-group">
@@ -319,7 +320,7 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
           <span style="font-size:.8rem;color:#888">gam</span>
           <span id="extragam-price" style="font-size:.78rem;color:var(--blue);font-weight:700;margin-left:auto"></span>
         </div>
-        <div style="font-size:.68rem;color:#aaa;margin-top:.3rem">Kagoshima: +4.000đ/gam · MK4: +5.000đ/gam</div>
+        <div style="font-size:.68rem;color:#aaa;margin-top:.3rem">Kagoshima: +2.000đ/g · Premium: +3.500đ/g · MK4: +4.000đ/g</div>
       </div>
     </div>
     <div class="opt-group">
@@ -456,7 +457,9 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
 
   function getGamPricePerUnit() {
     var bot = getChip('bot');
-    return bot.indexOf('MK4') >= 0 ? 5000 : 4000;
+    if (bot.indexOf('MK4') >= 0) return 4000;
+    if (bot.indexOf('Premium') >= 0) return 3500;
+    return 2000; // Kagoshima thường
   }
 
   function updateExtraGamPrice() {
@@ -699,7 +702,8 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
       ? (curSize === 'S' ? 29000 : 52000)
       : (curSize === 'S' ? Number(curItem.price_s) : Number(curItem.price_l)) * 1000;
     var pr = basePrice;
-    if (bot.includes('MK4')) pr += 15000;
+    if (bot.includes('Premium')) pr += 5000;
+    else if (bot.includes('MK4')) pr += 6000;
     if (sua.includes('Hạt điều')) pr += 10000;
     if (sua.includes('Đậu nành')) pr += 10000;
     var extraGam = isMatcha ? Math.max(0, Number(document.getElementById('mod-extragam').value) || 0) : 0;
