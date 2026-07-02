@@ -743,11 +743,12 @@ function renderOrders(){
     var note=o.note&&o.note!='undefined'&&o.note!='null'?o.note:'';
     var phoneM=note.match(/\[SĐT:([^\]]+)\]/);
     var payM=note.match(/\[(Tiền mặt|Chuyển khoản)\]/);
-    var delM=note.match(/\[(Pick-up[^\]]*|Ship đến[^\]]*|Tại quầy[^\]]*|Uống tại chỗ[^\]]*)\]/);
-    var delIcon=delM?(delM[1].indexOf('Pick-up')>-1?'🏃':delM[1].indexOf('Ship')>-1?'🛵':'🪑'):'';
+    var delM=note.match(/\[(Pick-up[^\]]*|Ship:[^\]]*|Tại quầy[^\]]*|Uống tại chỗ[^\]]*)\]/);
+    var delIcon=delM?(delM[1].indexOf('Pick-up')>-1?'🏃':delM[1].indexOf('Ship')>-1?'🛵':delM[1].indexOf('Uống tại chỗ')>-1?'🪑':'🧾'):'';
+    var delDetail=delM?delM[1].replace(/^Ship:\s*/,'Giao đến: '):'';
     var payBadge=payM?'<span style="font-size:.65rem;font-weight:700;padding:.1rem .4rem;border-radius:6px;margin-left:.3rem;'+(payM[1]==='Chuyển khoản'?'background:#e8f0fb;color:#3971b8':'background:#e6f7ed;color:#1a7f3c')+'">'+payM[1]+'</span>':'';
     var phoneTxt=phoneM?'<span style="color:var(--green2);font-size:.7rem;font-weight:700;margin-left:.3rem">📞 '+phoneM[1]+'</span>':'';
-    var cleanNote=note.replace(/\[(Tiền mặt|Chuyển khoản)\]/g,'').replace(/\[SĐT:[^\]]+\]/g,'').replace(/\[[^\]]*\]/g,'').trim();
+    var cleanNote=note.replace(/\[(Tiền mặt|Chuyển khoản)\]/g,'').replace(/\[SĐT:[^\]]+\]/g,'').replace(/\[(Pick-up[^\]]*|Ship:[^\]]*|Tại quầy[^\]]*|Uống tại chỗ[^\]]*)\]/g,'').replace(/\[[^\]]*\]/g,'').trim();
     var mem=o.phone?'<span class="mbadge">TV</span>':'';
     var btns='';
     var isTransfer=payM&&payM[1]==='Chuyển khoản';
@@ -760,6 +761,7 @@ function renderOrders(){
     if(o.status==='Đang làm')btns='<button class="btn btn-sm btn-green" onclick="updOrd(\''+o.orderID+'\',\'Xong\')">✅ Xong rồi</button>';
     return'<div class="ocard '+cls+'"><div class="ohead"><div class="oid">#'+o.orderID+'</div><div class="otime">'+o.createdAt+'</div></div>'+
       '<div class="oname">'+delIcon+' '+o.name+mem+phoneTxt+payBadge+'</div>'+
+      (delDetail?'<div style="font-size:.74rem;color:var(--blue);font-weight:700;margin-bottom:.3rem">'+delIcon+' '+delDetail+'</div>':'')+
       '<div class="oitems">'+o.items+'</div>'+
       (cleanNote?'<div class="onote">📝 '+cleanNote+'</div>':'')+
       '<div class="ofoot"><div class="oprice">'+fmt(o.total)+'</div><span class="opill '+cls+'">'+o.status+'</span></div>'+
@@ -925,7 +927,7 @@ function soRenderCart(){
       '<div style="font-weight:700;color:var(--blue);font-size:.82rem">'+fmt(it.price*it.qty)+'</div></div>';
   }).join('');
   var soDiscount=0;
-  if(soCouponData){if(soCouponData.type==='percent')soDiscount=Math.round(total*Number(soCouponData.value)/100);if(soCouponData.type==='fixed')soDiscount=Number(soCouponData.value);total=Math.max(0,total-soDiscount);}
+  if(soCouponData){if(soCouponData.type==='percent')soDiscount=Math.round(total*Number(soCouponData.value)/100);if(soCouponData.type==='fixed')soDiscount=Number(soCouponData.value)*1000;total=Math.max(0,total-soDiscount);}
   document.getElementById('so-total').textContent=fmt(total)+(soDiscount>0?' (giảm '+fmt(soDiscount)+')':'');
 }
 
@@ -979,7 +981,7 @@ async function soPlaceOrder(){
   if(!soCart.length){al('so-alert','Chưa chọn món!','err');return;}
   var name=document.getElementById('so-name').value.trim()||'Khách lẻ';
   var total=soCart.reduce(function(s,i){return s+i.price*i.qty;},0);
-  if(soCouponData){var disc=soCouponData.type==='percent'?Math.round(total*Number(soCouponData.value)/100):(Number(soCouponData.value));total=Math.max(0,total-disc);}
+  if(soCouponData){var disc=soCouponData.type==='percent'?Math.round(total*Number(soCouponData.value)/100):(Number(soCouponData.value)*1000);total=Math.max(0,total-disc);}
   var note='[Tại quầy] [NV: '+(staffInfo?staffInfo.name:'?')+'] '+document.getElementById('so-note').value.trim();
   if(soCouponData){
     note+=' [Mã: '+soCouponData.code+']';
