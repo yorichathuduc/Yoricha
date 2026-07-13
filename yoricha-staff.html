@@ -743,12 +743,20 @@ function renderOrders(){
     var note=o.note&&o.note!='undefined'&&o.note!='null'?o.note:'';
     var phoneM=note.match(/\[SĐT:([^\]]+)\]/);
     var payM=note.match(/\[(Tiền mặt|Chuyển khoản)\]/);
-    var delM=note.match(/\[(Pick-up[^\]]*|Ship:[^\]]*|Tại quầy[^\]]*|Uống tại chỗ[^\]]*)\]/);
-    var delIcon=delM?(delM[1].indexOf('Pick-up')>-1?'🏃':delM[1].indexOf('Ship')>-1?'🛵':delM[1].indexOf('Uống tại chỗ')>-1?'🪑':'🧾'):'';
-    var delDetail=delM?delM[1].replace(/^Ship:\s*/,'Giao đến: '):'';
+    // Quét TẤT CẢ đoạn [...] trong note, tìm đoạn nào chứa từ khoá giao/nhận hàng
+    // (robust hơn regex neo cứng — không phụ thuộc vị trí, icon, khoảng trắng...)
+    var allBrackets=note.match(/\[[^\]]*\]/g)||[];
+    var delBracket=allBrackets.find(function(b){
+      return b.indexOf('Ship')>-1||b.indexOf('Pick-up')>-1||b.indexOf('Uống tại chỗ')>-1||b.indexOf('Tại quầy')>-1;
+    });
+    var delInner=delBracket?delBracket.slice(1,-1):''; // bỏ dấu [ ]
+    var delIcon=delBracket?(delInner.indexOf('Pick-up')>-1?'🏃':delInner.indexOf('Ship')>-1?'🛵':delInner.indexOf('Uống tại chỗ')>-1?'🪑':'🧾'):'';
+    var delDetail=delBracket?delInner.replace(/^Ship:\s*/i,'Giao đến: '):'';
     var payBadge=payM?'<span style="font-size:.65rem;font-weight:700;padding:.1rem .4rem;border-radius:6px;margin-left:.3rem;'+(payM[1]==='Chuyển khoản'?'background:#e8f0fb;color:#3971b8':'background:#e6f7ed;color:#1a7f3c')+'">'+payM[1]+'</span>':'';
     var phoneTxt=phoneM?'<span style="color:var(--green2);font-size:.7rem;font-weight:700;margin-left:.3rem">📞 '+phoneM[1]+'</span>':'';
-    var cleanNote=note.replace(/\[(Tiền mặt|Chuyển khoản)\]/g,'').replace(/\[SĐT:[^\]]+\]/g,'').replace(/\[(Pick-up[^\]]*|Ship:[^\]]*|Tại quầy[^\]]*|Uống tại chỗ[^\]]*)\]/g,'').replace(/\[[^\]]*\]/g,'').trim();
+    var cleanNote=note;
+    if(delBracket)cleanNote=cleanNote.split(delBracket).join('');
+    cleanNote=cleanNote.replace(/\[(Tiền mặt|Chuyển khoản)\]/g,'').replace(/\[SĐT:[^\]]+\]/g,'').replace(/\[[^\]]*\]/g,'').trim();
     var mem=o.phone?'<span class="mbadge">TV</span>':'';
     var btns='';
     var isTransfer=payM&&payM[1]==='Chuyển khoản';
