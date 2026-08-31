@@ -8,6 +8,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1"/>
 <meta name="theme-color" content="#3971b8"/>
 <title>Yoricha — Order</title>
+<link rel="icon" type="image/png" href="https://drive.google.com/thumbnail?id=1uQD0joy3YQ1PlHSGNZJoy_dFC_oT-miJ&sz=w64"/>
+<link rel="apple-touch-icon" href="https://drive.google.com/thumbnail?id=1uQD0joy3YQ1PlHSGNZJoy_dFC_oT-miJ&sz=w180"/>
 <link href="https://fonts.googleapis.com/css2?family=Merienda:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -1008,7 +1010,7 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
     discount += ms.amount;
     if (couponData) {
       if (couponData.type === 'percent') discount += Math.round(sub * Number(couponData.value) / 100);
-      if (couponData.type === 'fixed')   discount += Number(couponData.value);
+      if (couponData.type === 'fixed')   discount += Number(couponData.value) * 1000;
     }
     var total = Math.max(0, sub - discount) + shipFee;
 
@@ -1096,7 +1098,7 @@ footer{text-align:center;padding:1rem .75rem 5rem;font-size:.72rem;color:#aaa}
     var discount = ms.amount;
     if (couponData) {
       if (couponData.type === 'percent') discount += Math.round(sub * Number(couponData.value) / 100);
-      if (couponData.type === 'fixed')   discount += Number(couponData.value);
+      if (couponData.type === 'fixed')   discount += Number(couponData.value) * 1000;
     }
     var total = Math.max(0, sub - discount) + shipFee;
     var note = document.getElementById('inp-note').value.trim();
